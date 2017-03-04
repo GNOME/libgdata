@@ -2,17 +2,17 @@
 # Copyright (C) 2011 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 #
-# Changwoo Ryu <cwryu@debian.org>, 2011-2016.
+# Changwoo Ryu <cwryu@debian.org>, 2011-2017.
 #
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-12 12:53+0000\n"
-"PO-Revision-Date: 2016-03-13 05:15+0900\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2017-02-24 23:45+0000\n"
+"PO-Revision-Date: 2017-03-04 03:35+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: Korean <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -43,7 +43,7 @@ msgstr "서버의 응답 형식이 잘못되었습니다."
 
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
-msgid "Cannot connect to the service's server."
+msgid "Cannot connect to the service’s server."
 msgstr "서비스 서버에 연결할 수 없습니다."
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
@@ -94,6 +94,7 @@ msgstr "해당 항목은 다운로드한 후에 수정되었습니다.: %s"
 msgid "Error code %u when authenticating: %s"
 msgstr "인증할 때 오류 코드 %u번: %s"
 
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
 #: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "로그인하려면 CAPTCHA를 작성해야 합니다."
@@ -114,13 +115,13 @@ msgstr "사용자 이름과 비밀번호가 틀렸습니다."
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr "계정의 전자메일 주소를 확인하지 못했습니다. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr "서비스 약관에 동의하지 않았습니다. (%s)"
 
 # 구글 비밀번호를 말하는 것이므로 비밀번호라고 번역
@@ -149,7 +150,7 @@ msgstr "이 계정은 제한되었습니다. (%s)"
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr "이 계정의 이 서비스 접근이 제한되었습니다. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -160,12 +161,16 @@ msgstr "현재 서비스를 사용할 수 없습니다. (%s)"
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
 #: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
 msgid "This entry does not support comments."
 msgstr "이 항목은 댓글을 지원하지 않습니다."
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
 #: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
 msgid "Comments may not be added to this entry."
 msgstr "이 항목에는 댓글을 추가할 수 없습니다."
@@ -176,7 +181,7 @@ msgid "This comment may not be deleted."
 msgstr "이 댓글은 삭제할 수 없습니다."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: ../gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
 msgstr "잘못된 seek 요청"
 
@@ -209,17 +214,17 @@ msgstr "빈 문서입니다."
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
 #: ../gdata/services/documents/gdata-documents-document.c:286
-#: ../gdata/services/documents/gdata-documents-entry.c:458
-#: ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480
-#: ../gdata/services/documents/gdata-documents-entry.c:527
-#: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:636
-#: ../gdata/services/documents/gdata-documents-entry.c:671
-#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:478
+#: ../gdata/services/documents/gdata-documents-entry.c:489
+#: ../gdata/services/documents/gdata-documents-entry.c:500
+#: ../gdata/services/documents/gdata-documents-entry.c:547
+#: ../gdata/services/documents/gdata-documents-entry.c:558
+#: ../gdata/services/documents/gdata-documents-entry.c:666
 #: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:716
 #: ../gdata/services/documents/gdata-documents-entry.c:731
-#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-entry.c:761
+#: ../gdata/services/documents/gdata-documents-entry.c:777
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -245,31 +250,31 @@ msgstr "%s 엘리먼트에 필요한 내용이 없습니다."
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
-msgstr "%s 엘리먼트의 내용이(\"%s\") ISO 8601 형식이 아닙니다."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
+msgstr "%s 엘리먼트의 내용이 (‘%s’) ISO 8601 형식이 아닙니다."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
 #: ../gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
-msgstr "%s 프로퍼티의(%s 엘리먼트) 값을(\"%s\") 알 수 없습니다."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
+msgstr "%s 프로퍼티의 (%s 엘리먼트) 값을 (‘%s’) 알 수 없습니다."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
 #: ../gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
-msgstr "%s 엘리먼트의 내용을(\"%s\") 알 수 없습니다."
+msgid "The content of a %s element (‘%s’) was unknown."
+msgstr "%s 엘리먼트의 내용을 (‘%s’) 알 수 없습니다."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -321,21 +326,21 @@ msgstr "하나만 쓸 수 있는 엘리먼트가(%s) 중복되었습니다."
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
+#. *  A ‘title’ element was missing required content.
 #: ../gdata/gdata-parser.c:273
 #, c-format
-msgid "A '%s' element was missing required content."
-msgstr "'%s' 엘리먼트에 필요한 내용이 없습니다."
+msgid "A ‘%s’ element was missing required content."
+msgstr "‘%s’ 엘리먼트에 필요한 내용이 없습니다."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:303
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-msgstr "'%s' 엘리먼트의 내용이(\"%s\") ISO 8601 형식이 아닙니다."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "‘%s’ 엘리먼트의 내용이 (‘%s’) ISO 8601 형식이 아닙니다."
 
 #. Translators: the parameter is an error message.
 #: ../gdata/gdata-parser.c:314
@@ -348,11 +353,11 @@ msgstr "서버에서 잘못된 JSON을 받았습니다: %s"
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
 #: ../gdata/gdata-parser.c:1179
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "%s 엘리먼트의 내용이(\"%s\") RGB 16진수 형식이 아닙니다."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
+msgstr "%s 엘리먼트의 내용이 (‘%s’) RGB 16진수 형식이 아닙니다."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -404,25 +409,25 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "일괄 작업을 실행할 때 오류 코드 %u번: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "리다이렉트 URI이 올바르지 않습니다: %s"
 
-#: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/gdata-service.c:1466
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "해당 항목을 이미 추가했습니다."
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#: ../gdata/gdata-upload-stream.c:794 ../gdata/gdata-upload-stream.c:876
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
 "재시작 가능한 업로드 청크를 업로드한 후 서버에서 오류 메시지를 받았습니다."
 
-#: ../gdata/gdata-upload-stream.c:936
+#: ../gdata/gdata-upload-stream.c:942
 msgid "Stream is already closed"
 msgstr "스트림을 이미 닫았습니다"
 
@@ -481,49 +486,49 @@ msgstr "문서를 다운로드하려면 인증해야 합니다."
 msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "알 수 없거나 지원하지 않는 문서 내보내기 형식 '%s'."
 
-#: ../gdata/services/documents/gdata-documents-service.c:513
-#: ../gdata/services/documents/gdata-documents-service.c:563
+#: ../gdata/services/documents/gdata-documents-service.c:454
+#: ../gdata/services/documents/gdata-documents-service.c:504
 msgid "You must be authenticated to query documents."
 msgstr "문서를 요청하려면 인증해야 합니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:628
+#: ../gdata/services/documents/gdata-documents-service.c:569
 msgid "You must be authenticated to upload documents."
 msgstr "문서를 업로드하려면 인증해야 합니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:634
+#: ../gdata/services/documents/gdata-documents-service.c:575
 msgid "The document has already been uploaded."
 msgstr "문서를 이미 업로드했습니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:779
+#: ../gdata/services/documents/gdata-documents-service.c:720
 msgid "You must be authenticated to update documents."
 msgstr "문서를 업데이트하려면 인증해야 합니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:946
+#: ../gdata/services/documents/gdata-documents-service.c:887
 #, c-format
 msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
-msgstr "제공한 문서의 content type이('%s') 알 수 없는 형식입니다."
+"The content type of the supplied document (‘%s’) could not be recognized."
+msgstr "제공한 문서의 content type이 (‘%s’) 알 수 없는 형식입니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:986
+#: ../gdata/services/documents/gdata-documents-service.c:927
 msgid "You must be authenticated to copy documents."
 msgstr "문서를 복사하려면 인증해야 합니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1014
+#: ../gdata/services/documents/gdata-documents-service.c:955
 msgid "Parent folder not found"
 msgstr "상위 폴더가 없습니다"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1160
+#: ../gdata/services/documents/gdata-documents-service.c:1102
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr "문서와 폴더를 넣거나 옮기려면 인증해야 합니다."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1359
+#: ../gdata/services/documents/gdata-documents-service.c:1303
 msgid "You must be authenticated to move documents and folders."
 msgstr "문서와 폴더를 옮기려면 인증해야 합니다."
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
-msgid "Property '%s' does not hold an image"
-msgstr "'%s' 속성에는 그림이 들어 있지 않습니다"
+msgid "Property ‘%s’ does not hold an image"
+msgstr "‘%s’ 속성에는 그림이 들어 있지 않습니다"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -543,15 +548,15 @@ msgstr "앨범을 요청하려면 사용자 이름을 지정하거나 인증해�
 msgid "The album did not have a feed link."
 msgstr "앨범에 피드 링크가 없습니다."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "파일을 업로드하려면 인증해야 합니다."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "해당 앨범을 이미 추가했습니다."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "앨범을 추가하려면 인증해야 합니다."
 
