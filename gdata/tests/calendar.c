@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /*
  * GData Client
- * Copyright (C) Philip Withnall 2009, 2010, 2014, 2015 <philip@tecnocode.co.uk>
+ * Copyright (C) Philip Withnall 2009, 2010, 2014, 2015, 2017 <philip@tecnocode.co.uk>
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -639,6 +639,100 @@ test_event_json (void)
 		"},"
 		"'location': 'Rolling Lawn Courts'"
 	"}");
+}
+
+static void
+test_event_json_attendees (void)
+{
+	GDataCalendarEvent *event;
+	GList/*<unowned GDataGDWho>*/ *l;
+	guint n_people;
+	const struct {
+		const gchar *relation_type;
+		const gchar *value_string;
+		const gchar *email_address;
+	} expected[] = {
+		{ GDATA_GD_WHO_EVENT_ATTENDEE, "Joe Hibbs", "person1@gmail.com" },
+		{ GDATA_GD_WHO_EVENT_ATTENDEE, "Me McMeeson", "me@gmail.com" },
+		{ GDATA_GD_WHO_EVENT_ATTENDEE, NULL, "person2@gmail.com" },
+		{ GDATA_GD_WHO_EVENT_ATTENDEE, "Example Person 3", "person3@gmail.com" },
+		{ GDATA_GD_WHO_EVENT_ATTENDEE, NULL, "person4@gmail.com" },
+		{ GDATA_GD_WHO_EVENT_ORGANIZER, "Ruth Pettut", "blah@example.com" },
+	};
+	GError *error = NULL;
+
+	event = GDATA_CALENDAR_EVENT (gdata_parsable_new_from_json (GDATA_TYPE_CALENDAR_EVENT, "{"
+		"'kind': 'calendar#event',"
+		"'id': 'some-id',"
+		"'created': '2017-02-04T17:53:47.000Z',"
+		"'summary': 'Duff this',"
+		"'organizer': {"
+			"'email': 'blah@example.com',"
+			"'displayName': 'Ruth Pettut'"
+		"},"
+		"'attendees': ["
+			"{"
+				"'email': 'person1@gmail.com',"
+				"'displayName': 'Joe Hibbs',"
+				"'responseStatus': 'accepted'"
+			"},"
+			"{"
+				"'email': 'me@gmail.com',"
+				"'displayName': 'Me McMeeson',"
+				"'self': true,"
+				"'responseStatus': 'needsAction'"
+			"},"
+			"{"
+				"'email': 'person2@gmail.com',"
+				"'responseStatus': 'needsAction'"
+			"},"
+			"{"
+				"'email': 'person3@gmail.com',"
+				"'displayName': 'Example Person 3',"
+				"'responseStatus': 'tentative',"
+				"'comment': 'Some poor excuse about not coming.'"
+			"},"
+			"{"
+				"'email': 'person4@gmail.com',"
+				"'responseStatus': 'accepted'"
+			"},"
+			"{"
+				"'email': 'blah@example.com',"
+				"'displayName': 'Ruth Pettut',"
+				"'organizer': true,"
+				"'responseStatus': 'accepted'"
+			"}"
+		"]"
+	"}", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_ENTRY (event));
+	g_clear_error (&error);
+
+	/* Check attendee details. */
+	for (n_people = 0, l = gdata_calendar_event_get_people (event);
+	     l != NULL;
+	     n_people += 1, l = l->next) {
+		GDataGDWho *who = GDATA_GD_WHO (l->data);
+		gsize i;
+
+		g_test_message ("Examining attendee: %s",
+		                gdata_gd_who_get_email_address (who));
+
+		for (i = 0; i < G_N_ELEMENTS (expected); i++) {
+			if (g_strcmp0 (gdata_gd_who_get_email_address (who),
+			               expected[i].email_address) == 0) {
+				g_assert_cmpstr (gdata_gd_who_get_relation_type (who), ==, expected[i].relation_type);
+				g_assert_cmpstr (gdata_gd_who_get_value_string (who), ==, expected[i].value_string);
+				break;
+			}
+		}
+
+		g_assert_cmpuint (i, <, G_N_ELEMENTS (expected));
+	}
+
+	g_assert_cmpuint (n_people, ==, G_N_ELEMENTS (expected));
+
+	g_object_unref (event);
 }
 
 static void
@@ -1470,6 +1564,7 @@ main (int argc, char *argv[])
 	            tear_down_temp_calendar_acls);
 
 	g_test_add_func ("/calendar/event/json", test_event_json);
+	g_test_add_func ("/calendar/event/json/attendees", test_event_json_attendees);
 	g_test_add_func ("/calendar/event/json/dates", test_event_json_dates);
 	g_test_add_func ("/calendar/event/json/organizer", test_event_json_organizer);
 	g_test_add_func ("/calendar/event/json/recurrence", test_event_json_recurrence);
