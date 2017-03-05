@@ -30,8 +30,13 @@
 
 #include "gdata.h"
 #include "common.h"
+#include "gdata-dummy-authorizer.h"
 
-#define PW_USERNAME "libgdata.picasaweb@gmail.com"
+#undef CLIENT_ID  /* from common.h */
+
+#define CLIENT_ID "352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com"
+#define CLIENT_SECRET "-fA4pHQJxR3zJ-FyAMPQsikg"
+#define REDIRECT_URI "urn:ietf:wg:oauth:2.0:oob"
 
 static UhmServer *mock_server = NULL;
 
@@ -344,74 +349,47 @@ assert_files_equal (GDataPicasaWebFile *file1, GDataPicasaWebFile *file2, gboole
 static void
 test_authentication (void)
 {
-	gboolean retval;
-	GDataClientLoginAuthorizer *authorizer;
-	GError *error = NULL;
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *authorisation_code;
 
 	gdata_test_mock_server_start_trace (mock_server, "authentication");
 
-	/* Create an authorizer */
-	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE);
+	authorizer = gdata_oauth2_authorizer_new (CLIENT_ID, CLIENT_SECRET,
+	                                          REDIRECT_URI,
+	                                          GDATA_TYPE_PICASAWEB_SERVICE);
 
-	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
+	/* Get an authentication URI. */
+	authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
+	g_assert (authentication_uri != NULL);
 
-	/* Log in */
-	retval = gdata_client_login_authorizer_authenticate (authorizer, PW_USERNAME, PASSWORD, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (retval == TRUE);
-	g_clear_error (&error);
+	/* Get the authorisation code off the user. */
+	if (uhm_server_get_enable_online (mock_server)) {
+		authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
+	} else {
+		/* Hard coded, extracted from the trace file. */
+		authorisation_code = g_strdup ("4/OEX-S1iMbOA_dOnNgUlSYmGWh3TK.QrR73axcNMkWoiIBeO6P2m_su7cwkQI");
+	}
+
+	g_free (authentication_uri);
+
+	if (authorisation_code == NULL) {
+		/* Skip tests. */
+		goto skip_test;
+	}
+
+	/* Authorise the token */
+	g_assert (gdata_oauth2_authorizer_request_authorization (authorizer, authorisation_code, NULL, NULL) == TRUE);
 
 	/* Check all is as it should be */
-	g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, PW_USERNAME);
-	g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
 	g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
 	                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
 
+skip_test:
+	g_free (authorisation_code);
 	g_object_unref (authorizer);
 
 	uhm_server_end_trace (mock_server);
 }
-
-GDATA_ASYNC_TEST_FUNCTIONS (authentication, void,
-G_STMT_START {
-	GDataClientLoginAuthorizer *authorizer;
-
-	/* Create an authorizer */
-	authorizer = gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE);
-
-	g_assert_cmpstr (gdata_client_login_authorizer_get_client_id (authorizer), ==, CLIENT_ID);
-
-	gdata_client_login_authorizer_authenticate_async (authorizer, PW_USERNAME, PASSWORD, cancellable, async_ready_callback, async_data);
-
-	g_object_unref (authorizer);
-} G_STMT_END,
-G_STMT_START {
-	gboolean retval;
-	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (obj);
-
-	retval = gdata_client_login_authorizer_authenticate_finish (authorizer, async_result, &error);
-
-	if (error == NULL) {
-		g_assert (retval == TRUE);
-
-		/* Check all is as it should be */
-		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, PW_USERNAME);
-		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, PASSWORD);
-
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == TRUE);
-	} else {
-		g_assert (retval == FALSE);
-
-		/* Check nothing's changed */
-		g_assert_cmpstr (gdata_client_login_authorizer_get_username (authorizer), ==, NULL);
-		g_assert_cmpstr (gdata_client_login_authorizer_get_password (authorizer), ==, NULL);
-
-		g_assert (gdata_authorizer_is_authorized_for_domain (GDATA_AUTHORIZER (authorizer),
-		                                                     gdata_picasaweb_service_get_primary_authorization_domain ()) == FALSE);
-	}
-} G_STMT_END);
 
 typedef struct {
 	GDataPicasaWebAlbum *album;
@@ -2093,6 +2071,57 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer use
 	}
 }
 
+/* Set up a global GDataAuthorizer to be used for all the tests. Unfortunately,
+ * the Google PicasaWeb API is limited to OAuth1 and OAuth2 authorisation, so
+ * this requires user interaction when online.
+ *
+ * If not online, use a dummy authoriser. */
+static GDataAuthorizer *
+create_global_authorizer (void)
+{
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
+	gchar *authentication_uri, *authorisation_code;
+	GError *error = NULL;
+
+	/* If not online, just return a dummy authoriser. */
+	if (!uhm_server_get_enable_online (mock_server)) {
+		return GDATA_AUTHORIZER (gdata_dummy_authorizer_new (GDATA_TYPE_PICASAWEB_SERVICE));
+	}
+
+	/* Otherwise, go through the interactive OAuth dance. */
+	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
+	authorizer = gdata_oauth2_authorizer_new (CLIENT_ID, CLIENT_SECRET,
+	                                          REDIRECT_URI,
+	                                          GDATA_TYPE_PICASAWEB_SERVICE);
+
+	/* Get an authentication URI */
+	authentication_uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer, NULL, FALSE);
+	g_assert (authentication_uri != NULL);
+
+	/* Get the authorisation code off the user. */
+	authorisation_code = gdata_test_query_user_for_verifier (authentication_uri);
+
+	g_free (authentication_uri);
+
+	if (authorisation_code == NULL) {
+		/* Skip tests. */
+		g_object_unref (authorizer);
+		authorizer = NULL;
+		goto skip_test;
+	}
+
+	/* Authorise the token */
+	g_assert (gdata_oauth2_authorizer_request_authorization (authorizer, authorisation_code, NULL, &error));
+	g_assert_no_error (error);
+
+skip_test:
+	g_free (authorisation_code);
+
+	uhm_server_end_trace (mock_server);
+
+	return GDATA_AUTHORIZER (authorizer);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -2112,18 +2141,11 @@ main (int argc, char *argv[])
 	uhm_server_set_trace_directory (mock_server, trace_directory);
 	g_object_unref (trace_directory);
 
-	gdata_test_mock_server_start_trace (mock_server, "global-authentication");
-	authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new (CLIENT_ID, GDATA_TYPE_PICASAWEB_SERVICE));
-	gdata_client_login_authorizer_authenticate (GDATA_CLIENT_LOGIN_AUTHORIZER (authorizer), PW_USERNAME, PASSWORD, NULL, NULL);
-	uhm_server_end_trace (mock_server);
+	authorizer = create_global_authorizer ();
 
 	service = GDATA_SERVICE (gdata_picasaweb_service_new (authorizer));
 
 	g_test_add_func ("/picasaweb/authentication", test_authentication);
-	g_test_add ("/picasaweb/authentication/async", GDataAsyncTestData, NULL, gdata_set_up_async_test_data, test_authentication_async,
-	            gdata_tear_down_async_test_data);
-	g_test_add ("/picasaweb/authentication/async/cancellation", GDataAsyncTestData, NULL, gdata_set_up_async_test_data,
-	            test_authentication_async_cancellation, gdata_tear_down_async_test_data);
 
 	g_test_add ("/picasaweb/query/all_albums", QueryAllAlbumsData, service, set_up_query_all_albums, test_query_all_albums,
 	            tear_down_query_all_albums);
