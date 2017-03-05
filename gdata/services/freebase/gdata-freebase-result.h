@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 #define GDATA_TYPE_FREEBASE_RESULT		(gdata_freebase_result_get_type ())
 #define GDATA_FREEBASE_RESULT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_FREEBASE_RESULT, GDataFreebaseResult))
 #define GDATA_FREEBASE_RESULT_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_FREEBASE_RESULT, GDataFreebaseResultClass))
@@ -67,10 +69,12 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseResultClass;
 
-GType gdata_freebase_result_get_type (void) G_GNUC_CONST;
+GType gdata_freebase_result_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 
-GDataFreebaseResult *gdata_freebase_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GVariant *gdata_freebase_result_dup_variant (GDataFreebaseResult *self) G_GNUC_WARN_UNUSED_RESULT;
+GDataFreebaseResult *gdata_freebase_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
+GVariant *gdata_freebase_result_dup_variant (GDataFreebaseResult *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_DEPRECATED;
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

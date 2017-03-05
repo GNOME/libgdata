@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 #define GDATA_TYPE_FREEBASE_SEARCH_QUERY		(gdata_freebase_search_query_get_type ())
 #define GDATA_FREEBASE_SEARCH_QUERY(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_FREEBASE_SEARCH_QUERY, GDataFreebaseSearchQuery))
 #define GDATA_FREEBASE_SEARCH_QUERY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_FREEBASE_SEARCH_QUERY, GDataFreebaseSearchQueryClass))
@@ -82,20 +84,22 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseSearchQueryClass;
 
-GType gdata_freebase_search_query_get_type (void) G_GNUC_CONST;
+GType gdata_freebase_search_query_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 
-GDataFreebaseSearchQuery *gdata_freebase_search_query_new (const gchar *search_terms) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataFreebaseSearchQuery *gdata_freebase_search_query_new (const gchar *search_terms) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
 
-void gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFreebaseSearchFilterType filter_type);
-void gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self);
-void gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gchar *property, const gchar *value);
-void gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint64 radius, gdouble lat, gdouble lon);
+void gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFreebaseSearchFilterType filter_type) G_GNUC_DEPRECATED;
+void gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self) G_GNUC_DEPRECATED;
+void gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gchar *property, const gchar *value) G_GNUC_DEPRECATED;
+void gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint64 radius, gdouble lat, gdouble lon) G_GNUC_DEPRECATED;
 
-void gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self, const gchar *lang);
-const gchar * gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self);
+void gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self, const gchar *lang) G_GNUC_DEPRECATED;
+const gchar * gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self) G_GNUC_DEPRECATED;
 
-void gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self, gboolean stemmed);
-gboolean gdata_freebase_search_query_get_stemmed (GDataFreebaseSearchQuery *self);
+void gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self, gboolean stemmed) G_GNUC_DEPRECATED;
+gboolean gdata_freebase_search_query_get_stemmed (GDataFreebaseSearchQuery *self) G_GNUC_DEPRECATED;
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

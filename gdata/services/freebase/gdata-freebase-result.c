@@ -29,6 +29,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 
 #include <config.h>
@@ -39,6 +40,8 @@
 #include "gdata-freebase-result.h"
 #include "gdata-private.h"
 #include "gdata-types.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 #define URLBASE "https://www.googleapis.com/freebase/v1/"
 
@@ -81,12 +84,14 @@ gdata_freebase_result_class_init (GDataFreebaseResultClass *klass)
 	 * containing (possibly nested) Freebase schema types and values.
 	 *
 	 * Since: 0.15.1
+	 * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
 	 */
 	g_object_class_install_property (gobject_class, PROP_VARIANT,
 	                                 g_param_spec_variant ("variant",
 							       "Variant", "Variant holding the raw result.",
 							       G_VARIANT_TYPE ("a{smv}"), NULL,
-							       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+							       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS |
+							       G_PARAM_DEPRECATED));
 }
 
 static void
@@ -162,6 +167,7 @@ get_entry_uri (const gchar *id)
  * Return value: (transfer full): a new #GDataFreebaseResult; unref with g_object_unref()
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 GDataFreebaseResult *
 gdata_freebase_result_new (void)
@@ -179,6 +185,7 @@ gdata_freebase_result_new (void)
  * Returns: (allow-none) (transfer full): the serialized result, or %NULL; unref with g_variant_unref()
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 GVariant *
 gdata_freebase_result_dup_variant (GDataFreebaseResult *self)
@@ -194,3 +201,5 @@ gdata_freebase_result_dup_variant (GDataFreebaseResult *self)
 
 	return g_variant_ref (priv->result);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

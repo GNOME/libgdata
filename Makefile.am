@@ -643,8 +643,7 @@ endif
 
 if HAVE_GTK
 noinst_PROGRAMS += 			\
-	demos/scrapbook/scrapbook	\
-	demos/freebase/freebase-cli
+	demos/scrapbook/scrapbook
 endif
 
 demos_docs_list_docs_list_SOURCES = \
@@ -709,38 +708,6 @@ demos_scrapbook_scrapbook_LDFLAGS = \
 demos_scrapbook_scrapbook_LDADD = \
 	$(top_builddir)/gdata/libgdata.la \
 	$(GTK_LIBS) \
-	$(GDATA_LIBS) \
-	$(GNOME_LIBS) \
-	$(AM_LDADD) \
-	$(NULL)
-
-demos_freebase_freebase_cli_SOURCES = \
-	demos/freebase/freebase-cli.c  \
-	$(NULL)
-
-demos_freebase_freebase_cli_CPPFLAGS = \
-	-I$(top_srcdir)/ \
-	-I$(top_srcdir)/gdata \
-	-DG_LOG_DOMAIN=\"freebase\" \
-	-DLIBGDATA_DISABLE_DEPRECATED \
-	$(DISABLE_DEPRECATED) \
-	$(AM_CPPFLAGS) \
-	$(NULL)
-
-demos_freebase_freebase_cli_CFLAGS = \
-	$(WARN_CFLAGS) \
-	$(GDATA_CFLAGS) \
-	$(GNOME_CFLAGS) \
-	$(AM_CFLAGS) \
-	$(NULL)
-
-demos_freebase_freebase_cli_LDFLAGS = \
-	$(WARN_LDFLAGS) \
-	$(AM_LDFLAGS) \
-	$(NULL)
-
-demos_freebase_freebase_cli_LDADD = \
-	$(top_builddir)/gdata/libgdata.la \
 	$(GDATA_LIBS) \
 	$(GNOME_LIBS) \
 	$(AM_LDADD) \

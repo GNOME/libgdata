@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 #define GDATA_TYPE_FREEBASE_TOPIC_QUERY			(gdata_freebase_topic_query_get_type ())
 #define GDATA_FREEBASE_TOPIC_QUERY(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_FREEBASE_TOPIC_QUERY, GDataFreebaseTopicQuery))
 #define GDATA_FREEBASE_TOPIC_QUERY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_FREEBASE_TOPIC_QUERY, GDataFreebaseTopicQueryClass))
@@ -66,14 +68,16 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseTopicQueryClass;
 
-GType gdata_freebase_topic_query_get_type (void) G_GNUC_CONST;
+GType gdata_freebase_topic_query_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 
-GDataFreebaseTopicQuery *gdata_freebase_topic_query_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-void gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self, const gchar *lang);
-const gchar *gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self);
+GDataFreebaseTopicQuery *gdata_freebase_topic_query_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
+void gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self, const gchar *lang) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self) G_GNUC_DEPRECATED;
 
-void gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gchar * const *filter);
-const gchar * const *gdata_freebase_topic_query_get_filter (GDataFreebaseTopicQuery *self);
+void gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gchar * const *filter) G_GNUC_DEPRECATED;
+const gchar * const *gdata_freebase_topic_query_get_filter (GDataFreebaseTopicQuery *self) G_GNUC_DEPRECATED;
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

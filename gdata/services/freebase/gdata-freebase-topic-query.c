@@ -34,6 +34,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 
 #include <config.h>
@@ -45,6 +46,8 @@
 #include "gdata-freebase-topic-query.h"
 #include "gdata-query.h"
 #include "gdata-parser.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 static void gdata_freebase_topic_query_finalize (GObject *self);
 static void gdata_freebase_topic_query_set_property (GObject *self, guint prop_id, const GValue *value, GParamSpec *pspec);
@@ -83,13 +86,15 @@ gdata_freebase_topic_query_class_init (GDataFreebaseTopicQueryClass *klass)
 	 * Language used for topic values in the result, in ISO-639-1 format.
 	 *
 	 * Since: 0.15.1
+	 * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
 	 */
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
 	                                 g_param_spec_string ("language",
 							      "Language used for results",
 							      "Language in ISO-639-1 format.",
 							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+							      G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataFreebaseTopicQuery:filter:
@@ -98,6 +103,7 @@ gdata_freebase_topic_query_class_init (GDataFreebaseTopicQueryClass *klass)
 	 * domains (eg. "/common/topic", or "/computer") to be used as filter.
 	 *
 	 * Since: 0.15.1
+	 * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
 	 */
 	g_object_class_install_property (gobject_class, PROP_FILTER,
 					 g_param_spec_boxed ("filter",
@@ -235,6 +241,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * Return value: (transfer full): a new #GDataFreebaseTopicQuery
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 GDataFreebaseTopicQuery *
 gdata_freebase_topic_query_new (const gchar *id)
@@ -252,6 +259,7 @@ gdata_freebase_topic_query_new (const gchar *id)
  * the locale preferences will be respected.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self,
@@ -281,6 +289,7 @@ gdata_freebase_topic_query_set_language (GDataFreebaseTopicQuery *self,
  * Return value: (allow-none): The language used on the query.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self)
@@ -305,6 +314,7 @@ gdata_freebase_topic_query_get_language (GDataFreebaseTopicQuery *self)
  * If no filter is set, the "commons" special value will be implicitly assumed, which returns a reasonably complete data set.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gchar * const *filter)
@@ -328,6 +338,7 @@ gdata_freebase_topic_query_set_filter (GDataFreebaseTopicQuery *self, const gcha
  * Return value: (array zero-terminated=1) (transfer none) (allow-none): The filter used on the query.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar * const *
 gdata_freebase_topic_query_get_filter (GDataFreebaseTopicQuery *self)
@@ -336,3 +347,5 @@ gdata_freebase_topic_query_get_filter (GDataFreebaseTopicQuery *self)
 
 	return (const gchar * const *) self->priv->filter;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

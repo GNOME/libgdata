@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 #define GDATA_TYPE_FREEBASE_TOPIC_OBJECT		(gdata_freebase_topic_object_get_type ())
 #define GDATA_TYPE_FREEBASE_TOPIC_VALUE			(gdata_freebase_topic_value_get_type ())
 #define GDATA_TYPE_FREEBASE_TOPIC_RESULT		(gdata_freebase_topic_result_get_type ())
@@ -89,42 +91,44 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseTopicResultClass;
 
-GType gdata_freebase_topic_object_get_type (void) G_GNUC_CONST;
-GType gdata_freebase_topic_value_get_type (void) G_GNUC_CONST;
-GType gdata_freebase_topic_result_get_type (void) G_GNUC_CONST;
+GType gdata_freebase_topic_object_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
+GType gdata_freebase_topic_value_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
+GType gdata_freebase_topic_result_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 
-GDataFreebaseTopicResult *gdata_freebase_topic_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataFreebaseTopicResult *gdata_freebase_topic_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
 
-GDataFreebaseTopicObject *gdata_freebase_topic_result_dup_object (GDataFreebaseTopicResult *self);
+GDataFreebaseTopicObject *gdata_freebase_topic_result_dup_object (GDataFreebaseTopicResult *self) G_GNUC_DEPRECATED;
 
-GDataFreebaseTopicObject *gdata_freebase_topic_object_ref (GDataFreebaseTopicObject *object);
-void gdata_freebase_topic_object_unref (GDataFreebaseTopicObject *object);
+GDataFreebaseTopicObject *gdata_freebase_topic_object_ref (GDataFreebaseTopicObject *object) G_GNUC_DEPRECATED;
+void gdata_freebase_topic_object_unref (GDataFreebaseTopicObject *object) G_GNUC_DEPRECATED;
 
-GPtrArray *gdata_freebase_topic_object_list_properties (const GDataFreebaseTopicObject *object);
+GPtrArray *gdata_freebase_topic_object_list_properties (const GDataFreebaseTopicObject *object) G_GNUC_DEPRECATED;
 
-const gchar *gdata_freebase_topic_object_get_id (const GDataFreebaseTopicObject *object);
-guint64 gdata_freebase_topic_object_get_property_count (const GDataFreebaseTopicObject *object, const gchar *property);
-guint64 gdata_freebase_topic_object_get_property_hits (const GDataFreebaseTopicObject *object, const gchar *property);
-GDataFreebaseTopicValue *gdata_freebase_topic_object_get_property_value (const GDataFreebaseTopicObject *object, const gchar *property, gint64 item);
+const gchar *gdata_freebase_topic_object_get_id (const GDataFreebaseTopicObject *object) G_GNUC_DEPRECATED;
+guint64 gdata_freebase_topic_object_get_property_count (const GDataFreebaseTopicObject *object, const gchar *property) G_GNUC_DEPRECATED;
+guint64 gdata_freebase_topic_object_get_property_hits (const GDataFreebaseTopicObject *object, const gchar *property) G_GNUC_DEPRECATED;
+GDataFreebaseTopicValue *gdata_freebase_topic_object_get_property_value (const GDataFreebaseTopicObject *object, const gchar *property, gint64 item) G_GNUC_DEPRECATED;
 
-GDataFreebaseTopicValue *gdata_freebase_topic_value_ref (GDataFreebaseTopicValue *value);
-void gdata_freebase_topic_value_unref (GDataFreebaseTopicValue *value);
+GDataFreebaseTopicValue *gdata_freebase_topic_value_ref (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+void gdata_freebase_topic_value_unref (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
 
-const gchar *gdata_freebase_topic_value_get_property (GDataFreebaseTopicValue *value);
+const gchar *gdata_freebase_topic_value_get_property (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
 
-const gchar *gdata_freebase_topic_value_get_text (GDataFreebaseTopicValue *value);
-const gchar *gdata_freebase_topic_value_get_language (GDataFreebaseTopicValue *value);
-const gchar *gdata_freebase_topic_value_get_creator (GDataFreebaseTopicValue *value);
-gint64 gdata_freebase_topic_value_get_timestamp (GDataFreebaseTopicValue *value);
-GType gdata_freebase_topic_value_get_value_type (GDataFreebaseTopicValue *value);
-void gdata_freebase_topic_value_copy_value (GDataFreebaseTopicValue *value, GValue *gvalue);
+const gchar *gdata_freebase_topic_value_get_text (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_topic_value_get_language (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_topic_value_get_creator (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+gint64 gdata_freebase_topic_value_get_timestamp (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+GType gdata_freebase_topic_value_get_value_type (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+void gdata_freebase_topic_value_copy_value (GDataFreebaseTopicValue *value, GValue *gvalue) G_GNUC_DEPRECATED;
 
-gint64 gdata_freebase_topic_value_get_int (GDataFreebaseTopicValue *value);
-gdouble gdata_freebase_topic_value_get_double (GDataFreebaseTopicValue *value);
-const gchar *gdata_freebase_topic_value_get_string (GDataFreebaseTopicValue *value);
-const GDataFreebaseTopicObject *gdata_freebase_topic_value_get_object (GDataFreebaseTopicValue *value);
+gint64 gdata_freebase_topic_value_get_int (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+gdouble gdata_freebase_topic_value_get_double (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_topic_value_get_string (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+const GDataFreebaseTopicObject *gdata_freebase_topic_value_get_object (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
 
-gboolean gdata_freebase_topic_value_is_image (GDataFreebaseTopicValue *value);
+gboolean gdata_freebase_topic_value_is_image (GDataFreebaseTopicValue *value) G_GNUC_DEPRECATED;
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 #define GDATA_TYPE_FREEBASE_SEARCH_RESULT_ITEM		(gdata_freebase_search_result_item_get_type ())
 #define GDATA_TYPE_FREEBASE_SEARCH_RESULT		(gdata_freebase_search_result_get_type ())
 #define GDATA_FREEBASE_SEARCH_RESULT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_FREEBASE_SEARCH_RESULT, GDataFreebaseSearchResult))
@@ -77,23 +79,25 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseSearchResultClass;
 
-GType gdata_freebase_search_result_item_get_type (void) G_GNUC_CONST;
-GType gdata_freebase_search_result_get_type (void) G_GNUC_CONST;
+GType gdata_freebase_search_result_item_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
+GType gdata_freebase_search_result_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 
-GDataFreebaseSearchResult *gdata_freebase_search_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataFreebaseSearchResult *gdata_freebase_search_result_new (void) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
 
-guint gdata_freebase_search_result_get_num_items (GDataFreebaseSearchResult *self);
-guint gdata_freebase_search_result_get_total_hits (GDataFreebaseSearchResult *self);
+guint gdata_freebase_search_result_get_num_items (GDataFreebaseSearchResult *self) G_GNUC_DEPRECATED;
+guint gdata_freebase_search_result_get_total_hits (GDataFreebaseSearchResult *self) G_GNUC_DEPRECATED;
 
-const GDataFreebaseSearchResultItem *gdata_freebase_search_result_get_item (GDataFreebaseSearchResult *self, guint i);
+const GDataFreebaseSearchResultItem *gdata_freebase_search_result_get_item (GDataFreebaseSearchResult *self, guint i) G_GNUC_DEPRECATED;
 
-const gchar *gdata_freebase_search_result_item_get_mid (const GDataFreebaseSearchResultItem *item);
-const gchar *gdata_freebase_search_result_item_get_id (const GDataFreebaseSearchResultItem *item);
-const gchar *gdata_freebase_search_result_item_get_name (const GDataFreebaseSearchResultItem *item);
-const gchar *gdata_freebase_search_result_item_get_language (const GDataFreebaseSearchResultItem *item);
-const gchar *gdata_freebase_search_result_item_get_notable_id (const GDataFreebaseSearchResultItem *item);
-const gchar *gdata_freebase_search_result_item_get_notable_name (const GDataFreebaseSearchResultItem *item);
-gdouble gdata_freebase_search_result_item_get_score (const GDataFreebaseSearchResultItem *item);
+const gchar *gdata_freebase_search_result_item_get_mid (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_search_result_item_get_id (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_search_result_item_get_name (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_search_result_item_get_language (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_search_result_item_get_notable_id (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+const gchar *gdata_freebase_search_result_item_get_notable_name (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+gdouble gdata_freebase_search_result_item_get_score (const GDataFreebaseSearchResultItem *item) G_GNUC_DEPRECATED;
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

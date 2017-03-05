@@ -51,7 +51,6 @@ test_programs = \
 	general \
 	calendar \
 	contacts \
-	freebase \
 	tasks \
 	perf \
 	authorization \
@@ -261,10 +260,6 @@ dist_test_data = \
 	traces/documents/upload_content-only-root-folder-resumable-odt-no-convert \
 	traces/documents/upload_metadata-only-in-folder-non-resumable-odt-convert \
 	traces/documents/upload_metadata-only-root-folder-non-resumable-odt-convert \
-	\
-	traces/freebase/search \
-	traces/freebase/search-complex \
-	traces/freebase/topic \
 	\
 	traces/oauth1-authorizer/oauth1-authorizer-interactive-data-bad-credentials \
 	traces/oauth1-authorizer/oauth1-authorizer-refresh-authorization \

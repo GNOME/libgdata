@@ -29,6 +29,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 
 #include <config.h>
@@ -39,6 +40,8 @@
 #include "gdata-freebase-search-result.h"
 #include "gdata-private.h"
 #include "gdata-types.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 #define URLBASE "https://www.googleapis.com/freebase/v1"
 
@@ -220,6 +223,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
  * Return value: (transfer full): a new #GDataFreebaseSearchResult; unref with g_object_unref()
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 GDataFreebaseSearchResult *
 gdata_freebase_search_result_new (void)
@@ -236,6 +240,7 @@ gdata_freebase_search_result_new (void)
  * Returns: The number of items
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 guint
 gdata_freebase_search_result_get_num_items (GDataFreebaseSearchResult *self)
@@ -254,6 +259,7 @@ gdata_freebase_search_result_get_num_items (GDataFreebaseSearchResult *self)
  * Returns: the total number of hits.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 guint
 gdata_freebase_search_result_get_total_hits (GDataFreebaseSearchResult *self)
@@ -273,6 +279,7 @@ gdata_freebase_search_result_get_total_hits (GDataFreebaseSearchResult *self)
  * Returns: (transfer none) (allow-none): a search result item, or %NULL on invalid item.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const GDataFreebaseSearchResultItem *
 gdata_freebase_search_result_get_item (GDataFreebaseSearchResult *self, guint i)
@@ -298,6 +305,7 @@ gdata_freebase_search_result_get_item (GDataFreebaseSearchResult *self, guint i)
  * Returns: (transfer none): The result item MID.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_result_item_get_mid (const GDataFreebaseSearchResultItem *item)
@@ -315,6 +323,7 @@ gdata_freebase_search_result_item_get_mid (const GDataFreebaseSearchResultItem *
  * Returns: (transfer none): The search result item Freebase ID.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_result_item_get_id (const GDataFreebaseSearchResultItem *item)
@@ -336,6 +345,7 @@ gdata_freebase_search_result_item_get_id (const GDataFreebaseSearchResultItem *i
  * Returns: (transfer none): The human readable name of the item.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_result_item_get_name (const GDataFreebaseSearchResultItem *item)
@@ -353,6 +363,7 @@ gdata_freebase_search_result_item_get_name (const GDataFreebaseSearchResultItem 
  * Returns: (transfer none): The language of the search result item.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_result_item_get_language (const GDataFreebaseSearchResultItem *item)
@@ -371,6 +382,7 @@ gdata_freebase_search_result_item_get_language (const GDataFreebaseSearchResultI
  * Returns: (transfer none) (allow-none): The topic the result item is most notable of, or %NULL.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_result_item_get_notable_id (const GDataFreebaseSearchResultItem *item)
@@ -389,6 +401,7 @@ gdata_freebase_search_result_item_get_notable_id (const GDataFreebaseSearchResul
  * Returns: (transfer none) (allow-none): The human readable topic name, or %NULL
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_result_item_get_notable_name (const GDataFreebaseSearchResultItem *item)
@@ -407,6 +420,7 @@ gdata_freebase_search_result_item_get_notable_name (const GDataFreebaseSearchRes
  * Returns: the result item score.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 gdouble
 gdata_freebase_search_result_item_get_score (const GDataFreebaseSearchResultItem *item)
@@ -414,3 +428,5 @@ gdata_freebase_search_result_item_get_score (const GDataFreebaseSearchResultItem
 	g_return_val_if_fail (item != NULL, 0.0);
 	return item->score;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

@@ -28,6 +28,8 @@
 
 G_BEGIN_DECLS
 
+#ifndef LIBGDATA_DISABLE_DEPRECATED
+
 #define GDATA_TYPE_FREEBASE_QUERY		(gdata_freebase_query_get_type ())
 #define GDATA_FREEBASE_QUERY(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_FREEBASE_QUERY, GDataFreebaseQuery))
 #define GDATA_FREEBASE_QUERY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_FREEBASE_QUERY, GDataFreebaseQueryClass))
@@ -67,10 +69,12 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataFreebaseQueryClass;
 
-GType gdata_freebase_query_get_type (void) G_GNUC_CONST;
+GType gdata_freebase_query_get_type (void) G_GNUC_CONST G_GNUC_DEPRECATED;
 
-GDataFreebaseQuery *gdata_freebase_query_new (const gchar *mql) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-GDataFreebaseQuery *gdata_freebase_query_new_from_variant (GVariant *variant) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+GDataFreebaseQuery *gdata_freebase_query_new (const gchar *mql) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
+GDataFreebaseQuery *gdata_freebase_query_new_from_variant (GVariant *variant) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED;
+
+#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

@@ -33,6 +33,7 @@
  * online documentation</ulink>.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 
 #include <config.h>
@@ -44,6 +45,8 @@
 #include "gdata-freebase-search-query.h"
 #include "gdata-query.h"
 #include "gdata-parser.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 static void gdata_freebase_search_query_finalize (GObject *self);
 static void gdata_freebase_search_query_set_property (GObject *self, guint prop_id, const GValue *value, GParamSpec *pspec);
@@ -114,13 +117,15 @@ gdata_freebase_search_query_class_init (GDataFreebaseSearchQueryClass *klass)
 	 * Language used for search results, in ISO-639-1 format.
 	 *
 	 * Since: 0.15.1
+	 * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
 	 */
 	g_object_class_install_property (gobject_class, PROP_LANGUAGE,
 	                                 g_param_spec_string ("language",
 							      "Language used for results",
 							      "Language in ISO-639-1 format.",
 							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+							      G_PARAM_DEPRECATED));
 	/**
 	 * GDataFreebaseSearchQuery:stemmed:
 	 *
@@ -129,13 +134,15 @@ gdata_freebase_search_query_class_init (GDataFreebaseSearchQueryClass *klass)
 	 * for search purposes.
 	 *
 	 * Since: 0.15.1
+	 * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
 	 */
 	g_object_class_install_property (gobject_class, PROP_STEMMED,
 	                                 g_param_spec_boolean ("stemmed",
 							       "Stem search terms",
 							       "Whether the search terms should be stemmed",
 							       FALSE,
-							       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+							       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
+							       G_PARAM_DEPRECATED));
 }
 
 static void
@@ -365,6 +372,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * Return value: (transfer full): a new #GDataFreebaseSearchQuery; unref with g_object_unref()
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 GDataFreebaseSearchQuery *
 gdata_freebase_search_query_new (const gchar *search_terms)
@@ -382,6 +390,7 @@ gdata_freebase_search_query_new (const gchar *search_terms)
  * Every call to this function must be paired by a call to gdata_freebase_search_query_close_filter().
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFreebaseSearchFilterType filter_type)
@@ -417,6 +426,7 @@ gdata_freebase_search_query_open_filter (GDataFreebaseSearchQuery *self, GDataFr
  * Closes a filter level.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self)
@@ -444,6 +454,7 @@ gdata_freebase_search_query_close_filter (GDataFreebaseSearchQuery *self)
  * and gdata_freebase_search_query_close_filter().
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gchar *property, const gchar *value)
@@ -483,6 +494,7 @@ gdata_freebase_search_query_add_filter (GDataFreebaseSearchQuery *self, const gc
  * and gdata_freebase_search_query_close_filter().
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint64 radius, gdouble lat, gdouble lon)
@@ -517,6 +529,7 @@ gdata_freebase_search_query_add_location (GDataFreebaseSearchQuery *self, guint6
  * the locale preferences will be respected.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self,
@@ -546,6 +559,7 @@ gdata_freebase_search_query_set_language (GDataFreebaseSearchQuery *self,
  * Return value: (allow-none): The language used on the query.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 const gchar *
 gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self)
@@ -568,6 +582,7 @@ gdata_freebase_search_query_get_language (GDataFreebaseSearchQuery *self)
  * for search purposes.
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 void
 gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self,
@@ -595,6 +610,7 @@ gdata_freebase_search_query_set_stemmed (GDataFreebaseSearchQuery *self,
  * Return value: %TRUE if the #GDataFreebaseSearchQuery performs stemming
  *
  * Since: 0.15.1
+ * Deprecated: 0.17.7: Google Freebase has been permanently shut down.
  */
 gboolean
 gdata_freebase_search_query_get_stemmed (GDataFreebaseSearchQuery *self)
@@ -606,3 +622,5 @@ gdata_freebase_search_query_get_stemmed (GDataFreebaseSearchQuery *self)
 	priv = self->priv;
 	return priv->stemmed;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
