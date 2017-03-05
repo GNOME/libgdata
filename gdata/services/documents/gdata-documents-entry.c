@@ -302,7 +302,7 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
          * #GDataDocumentsSpreadsheet and #GDataDocumentsFolder are not binary
          * data and so have no size. Measured in bytes.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.7
 	 */
 	g_object_class_install_property (gobject_class, PROP_FILE_SIZE,
 	                                 g_param_spec_int64 ("file-size",
@@ -1129,7 +1129,7 @@ gdata_documents_entry_get_quota_used (GDataDocumentsEntry *self)
  *
  * Return value: the size of the document in bytes
  *
- * Since: UNRELEASED
+ * Since: 0.17.7
  */
 goffset
 gdata_documents_entry_get_file_size (GDataDocumentsEntry *self)

@@ -1,3 +1,62 @@
+Overview of changes from libgdata 0.17.6 to libgdata 0.17.7
+===========================================================
+
+Major changes:
+ • Fix licensing in OAuth2 files (they were mistakenly declared as GPLv3+; they’re actually LGPLv2.1+)
+ • More Google Drive fixes and tests
+ • Documentation improvements (including bumping the gtk-doc dependency to 1.25)
+ • Google Calendar parsing fixes
+ • Pagination fixes for more modern APIs (Calendar, Documents, Tasks, YouTube)
+ • Pagination support in demo programs
+ • Add a demo program for Google Tasks
+ • Fix Google Calendar query parameters for v3 of the API
+ • Disable PicasaWeb tests as PicasaWeb server is now mostly read-only
+ • Deprecate Freebase service as Freebase server is now shutdown
+
+API changes:
+ • Add GDataDocumentsEntry:file-size
+ • Add gdata_parsable_get_content_type()
+ • Add GDataFeed:next-page-token
+ • Deprecate GDataCalendarQuery:recurrence-expansion-start
+ • Deprecate GDataCalendarQuery:recurrence-expansion-end
+ • Deprecate GDataCalendarQuery:sort-order
+ • Deprecate everything to do with GDataFreebase*
+
+Bugs fixed:
+ • Bug 684920 — Port to Google Drive API v2
+ • Bug 772756 — Take advantage of Unicode
+ • Bug 773057 — Provide document file size
+ • Bug 774179 — Fails to build VAPI file with GOA enabled
+ • Bug 777980 — Add a public wrapper for GDataParsable:get_content_type
+ • Bug 775813 — GTasks pagination doesn't work
+
+Updated translations:
+ • cs (Marek Černocký)
+ • da (Ask Hjorth Larsen)
+ • de (Mario Blättermann)
+ • es (Daniel Mustieles)
+ • eu (Inaki Larranaga Murgoitio)
+ • fi (Jiri Grönroos)
+ • fr (Claude Paroz)
+ • fur (Fabio Tomat)
+ • hu (Gábor Kelemen)
+ • id (Kukuh Syafaat)
+ • it (Gianvito Cavasoli)
+ • ko (Changwoo Ryu)
+ • lt (Aurimas Černius)
+ • lv (Rūdolfs Mazurs)
+ • nb (Kjartan Maraas)
+ • pl (Piotr Drąg)
+ • pt (Tiago Santos)
+ • pt_BR (Rafael Fontenelle)
+ • sk (Dušan Kazik)
+ • sl (Matej Urbančič)
+ • sr (Марко М. Костић)
+ • sv (Anders Jonsson)
+ • zh_CN (Qizhi Zhou)
+ • zh_TW (Chao-Hsiung Liao)
+
+
 Overview of changes from libgdata 0.17.5 to libgdata 0.17.6
 ===========================================================
 

@@ -555,7 +555,7 @@ _gdata_parsable_new_from_json_node (GType parsable_type, JsonReader *reader, gpo
  *
  * Return value: the parsable's content type
  *
- * Since: UNRELEASED
+ * Since: 0.17.7
  */
 const gchar *
 gdata_parsable_get_content_type (GDataParsable *self)

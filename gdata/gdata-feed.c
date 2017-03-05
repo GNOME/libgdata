@@ -307,7 +307,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 	 * querying APIs which use page tokens rather than page numbers or
 	 * offsets.
 	 *
-	 * Since: UNRELEASED
+	 * Since: 0.17.7
 	 */
 	g_object_class_install_property (gobject_class, PROP_NEXT_PAGE_TOKEN,
 	                                 g_param_spec_string ("next-page-token",
@@ -1108,7 +1108,7 @@ gdata_feed_get_total_results (GDataFeed *self)
  *
  * Return value: (nullable): the next page token
  *
- * Since: UNRELEASED
+ * Since: 0.17.7
  */
 const gchar *
 gdata_feed_get_next_page_token (GDataFeed *self)

@@ -32,7 +32,7 @@
  *
  * Adds a #GDataCategory representing @content_type to @entry.
  *
- * Since: UNRELEASED
+ * Since: 0.17.7
  */
 void
 gdata_documents_utils_add_content_type (GDataDocumentsEntry *entry, const gchar *content_type)
