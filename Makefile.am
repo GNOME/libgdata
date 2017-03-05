@@ -824,7 +824,9 @@ CLEANFILES += \
 	`find "$(srcdir)" -type f -name .dirstamp -print`
 
 DISTCLEANFILES = \
-	gtk-doc.make
+	gtk-doc.make \
+	default.profraw \
+	$(NULL)
 
 MAINTAINERCLEANFILES += \
 	$(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) \

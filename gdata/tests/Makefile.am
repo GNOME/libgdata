@@ -403,4 +403,7 @@ dist_test_data = \
 	traces/tasks/teardown-update-tasklist \
 	$(NULL)
 
+# Clang code coverage
+DISTCLEANFILES += default.profraw
+
 -include $(top_srcdir)/git.mk
