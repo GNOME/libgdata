@@ -1,60 +1,62 @@
-> GET /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks HTTP/1.1
-> Soup-Debug-Timestamp: 1411311983
-> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 9 (0xff2280), SoupSocket 6 (0x103a410)
+> GET /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks HTTP/1.1
+> Soup-Debug-Timestamp: 1488730795
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 23 (0x131f2b0), SoupSocket 14 (0xc29260)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311983
-< Soup-Debug: SoupMessage 9 (0xff2280)
-< Expires: Sun, 21 Sep 2014 15:06:23 GMT
-< Date: Sun, 21 Sep 2014 15:06:23 GMT
+< Soup-Debug-Timestamp: 1488730796
+< Soup-Debug: SoupMessage 23 (0x131f2b0)
+< Expires: Sun, 05 Mar 2017 16:19:56 GMT
+< Date: Sun, 05 Mar 2017 16:19:56 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTE3MzIyNTc1NTM"
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTE2MjI4NTcwMjM"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#tasks",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTE3MzIyNTc1NTM\"",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTE2MjI4NTcwMjM\"",
 <  "items": [
 <   {
 <    "kind": "tasks#task",
-<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMTU3NTQzNjg5",
-<    "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTgxNzc5ODY2Nw\"",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjgxMTI4NjMzNw",
+<    "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTY2MTU1MTA3Nw\"",
 <    "title": "Task 3",
-<    "updated": "2014-09-21T15:06:23.000Z",
-<    "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMTU3NTQzNjg5",
+<    "updated": "2017-03-05T16:19:55.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjgxMTI4NjMzNw",
 <    "position": "00000000001234803096",
 <    "status": "needsAction"
 <   },
 <   {
 <    "kind": "tasks#task",
-<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxNDY3MTQwNDcw",
-<    "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/NTY5MzIxODcx\"",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjE0NDIwMDc3OTE",
+<    "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/NDg2MTYwNTc0\"",
 <    "title": "Task 2",
-<    "updated": "2014-09-21T15:06:22.000Z",
-<    "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxNDY3MTQwNDcw",
+<    "updated": "2017-03-05T16:19:55.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjE0NDIwMDc3OTE",
 <    "position": "00000000001610612734",
 <    "status": "needsAction"
 <   },
 <   {
 <    "kind": "tasks#task",
-<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMzMyNDAxMTM2",
-<    "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/MzE3NzgwODgx\"",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjczNDk3OTc1NA",
+<    "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTE4NDA5NDc4NzQ\"",
 <    "title": "Task 1",
-<    "updated": "2014-09-21T15:06:21.000Z",
-<    "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMzMyNDAxMTM2",
+<    "updated": "2017-03-05T16:19:54.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjczNDk3OTc1NA",
 <    "position": "00000000002147483647",
 <    "status": "needsAction"
 <   }

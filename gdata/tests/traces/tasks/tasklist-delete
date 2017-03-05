@@ -1,23 +1,25 @@
-> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTE0MDkwNzk5Njow HTTP/1.1
-> Soup-Debug-Timestamp: 1411306827
-> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 14 (0x1a99280), SoupSocket 8 (0x199fa70)
+> DELETE /tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzUwMTc2NDY3OjA HTTP/1.1
+> Soup-Debug-Timestamp: 1488730789
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 14 (0x131f490), SoupSocket 8 (0xc29190)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
-> If-Match: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/C1YQlR3vXAgqp98al63Zwv69j00"
+> If-Match: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/FGjS7DYKYr6UbyOOfOp6rMeFdO8"
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 204 No Content
-< Soup-Debug-Timestamp: 1411306828
-< Soup-Debug: SoupMessage 14 (0x1a99280)
+< Soup-Debug-Timestamp: 1488730789
+< Soup-Debug: SoupMessage 14 (0x131f490)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 13:40:28 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:49 GMT
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/vyGp6PvFo4RvsFtPoIWeCReyIC8"
+< Vary: Origin
+< Vary: X-Origin
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < 
   

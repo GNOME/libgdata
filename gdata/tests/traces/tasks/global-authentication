@@ -1,35 +1,35 @@
 > POST /o/oauth2/token HTTP/1.1
-> Soup-Debug-Timestamp: 1411311975
-> Soup-Debug: SoupSession 1 (0xcfb110), SoupMessage 1 (0xff20a0), SoupSocket 1 (0x103a0d0)
+> Soup-Debug-Timestamp: 1488730761
+> Soup-Debug: SoupSession 1 (0xc11100), SoupMessage 1 (0x131f0d0), SoupSocket 1 (0xc29400)
 > Host: accounts.google.com
 > Content-Type: application/x-www-form-urlencoded
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
 > 
-> client_id=352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com&client_secret=-fA4pHQJxR3zJ-FyAMPQsikg&code=4%2FhmXZtrXmXMqK1hwiWPZs9F_N6DK-.Ap4OICAUIe0WoiIBeO6P2m8IDoMxkQI&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&grant_type=authorization_code
+> client_id=352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com&client_secret=-fA4pHQJxR3zJ-FyAMPQsikg&code=4%2FwSlJrnFORySOLgS1wsOe6UxnX7M29DLRr78UDcg_Tfw&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&grant_type=authorization_code
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311975
-< Soup-Debug: SoupMessage 1 (0xff20a0)
+< Soup-Debug-Timestamp: 1488730761
+< Soup-Debug: SoupMessage 1 (0x131f0d0)
 < Content-Type: application/json; charset=utf-8
+< X-Content-Type-Options: nosniff
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 15:06:15 GMT
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:21 GMT
 < Content-Disposition: attachment; filename="json.txt"; filename*=UTF-8''json.txt
 < Content-Encoding: gzip
-< X-Content-Type-Options: nosniff
-< X-Frame-Options: SAMEORIGIN
+< Server: ESF
 < X-XSS-Protection: 1; mode=block
-< Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< X-Frame-Options: SAMEORIGIN
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
-<   "access_token" : "ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU",
-<   "token_type" : "Bearer",
+<   "access_token" : "ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_",
 <   "expires_in" : 3600,
-<   "refresh_token" : "1/pdQzbl1uTCsnztMYVypgAH-ldUeZV2n7S6GDq6-tYF8"
+<   "refresh_token" : "1/q6ANQdPdeMOZQrOI55_5rpLXO7If75scdqCvUI2YTQ8",
+<   "token_type" : "Bearer"
 < }
   

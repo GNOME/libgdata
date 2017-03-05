@@ -1,161 +1,169 @@
 > POST /tasks/v1/users/@me/lists HTTP/1.1
-> Soup-Debug-Timestamp: 1411311980
-> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 5 (0xff2550), SoupSocket 3 (0x103a270)
+> Soup-Debug-Timestamp: 1488730792
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 19 (0x131f490), SoupSocket 11 (0xc290c0)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Content-Type: application/json
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
 > 
 > {"title":"Some tasklist","kind":"tasks#taskList"}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311981
-< Soup-Debug: SoupMessage 5 (0xff2550)
+< Soup-Debug-Timestamp: 1488730794
+< Soup-Debug: SoupMessage 19 (0x131f490)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 15:06:21 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/PbVEEtyPldOicyVC8KpBcIrP3co"
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:54 GMT
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/CcJ1Sga0a7yaJVWgBeDczyDdLZg"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#taskList",
-<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/PbVEEtyPldOicyVC8KpBcIrP3co\"",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/CcJ1Sga0a7yaJVWgBeDczyDdLZg\"",
 <  "title": "Some tasklist",
-<  "updated": "2014-09-21T15:06:21.000Z",
-<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow"
+<  "updated": "2017-03-05T16:19:54.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA"
 < }
   
-> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks HTTP/1.1
-> Soup-Debug-Timestamp: 1411311981
-> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 6 (0xff2550), SoupSocket 4 (0x103a340)
+> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks HTTP/1.1
+> Soup-Debug-Timestamp: 1488730794
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 20 (0x131f2b0), SoupSocket 12 (0xc29260)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Content-Type: application/json
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
 > 
 > {"title":"Task 1","kind":"tasks#task","deleted":false,"hidden":false}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311982
-< Soup-Debug: SoupMessage 6 (0xff2550)
+< Soup-Debug-Timestamp: 1488730795
+< Soup-Debug: SoupMessage 20 (0x131f2b0)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 15:06:22 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/MzE3NzgwODgx"
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:55 GMT
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTE4NDA5NDc4NzQ"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#task",
-<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMzMyNDAxMTM2",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/MzE3NzgwODgx\"",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjczNDk3OTc1NA",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTE4NDA5NDc4NzQ\"",
 <  "title": "Task 1",
-<  "updated": "2014-09-21T15:06:21.000Z",
-<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMzMyNDAxMTM2",
+<  "updated": "2017-03-05T16:19:54.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjczNDk3OTc1NA",
 <  "position": "00000000002147483647",
 <  "status": "needsAction"
 < }
   
-> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks HTTP/1.1
-> Soup-Debug-Timestamp: 1411311982
-> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 7 (0xff2460), SoupSocket 5 (0x103a4e0)
+> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks HTTP/1.1
+> Soup-Debug-Timestamp: 1488730795
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 21 (0x131f0d0), SoupSocket 13 (0xc29330)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Content-Type: application/json
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
 > 
 > {"title":"Task 2","kind":"tasks#task","deleted":false,"hidden":false}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311982
-< Soup-Debug: SoupMessage 7 (0xff2460)
+< Soup-Debug-Timestamp: 1488730795
+< Soup-Debug: SoupMessage 21 (0x131f0d0)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 15:06:22 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/NTY5MzIxODcx"
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:55 GMT
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/NDg2MTYwNTc0"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#task",
-<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxNDY3MTQwNDcw",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/NTY5MzIxODcx\"",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjE0NDIwMDc3OTE",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/NDg2MTYwNTc0\"",
 <  "title": "Task 2",
-<  "updated": "2014-09-21T15:06:22.000Z",
-<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxNDY3MTQwNDcw",
+<  "updated": "2017-03-05T16:19:55.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjE0NDIwMDc3OTE",
 <  "position": "00000000001610612734",
 <  "status": "needsAction"
 < }
   
-> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks HTTP/1.1
-> Soup-Debug-Timestamp: 1411311983
-> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 8 (0xff2370), SoupSocket 6 (0x103a410)
+> POST /tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks HTTP/1.1
+> Soup-Debug-Timestamp: 1488730795
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 22 (0x131f0d0), SoupSocket 14 (0xc29260)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Content-Type: application/json
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
 > 
 > {"title":"Task 3","kind":"tasks#task","deleted":false,"hidden":false}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311983
-< Soup-Debug: SoupMessage 8 (0xff2370)
+< Soup-Debug-Timestamp: 1488730795
+< Soup-Debug: SoupMessage 22 (0x131f0d0)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 15:06:23 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTgxNzc5ODY2Nw"
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:55 GMT
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTY2MTU1MTA3Nw"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#task",
-<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMTU3NTQzNjg5",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/LTgxNzc5ODY2Nw\"",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjgxMTI4NjMzNw",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/LTY2MTU1MTA3Nw\"",
 <  "title": "Task 3",
-<  "updated": "2014-09-21T15:06:23.000Z",
-<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1Mzow/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjA0NDQ5MjU1MzoxMTU3NTQzNjg5",
+<  "updated": "2017-03-05T16:19:55.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjA/tasks/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzQzNDE2NzAwOjgxMTI4NjMzNw",
 <  "position": "00000000001234803096",
 <  "status": "needsAction"
 < }

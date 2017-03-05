@@ -1,39 +1,41 @@
 > POST /tasks/v1/users/@me/lists HTTP/1.1
-> Soup-Debug-Timestamp: 1411311976
-> Soup-Debug: SoupSession 1 (0xcfb240), SoupMessage 1 (0xff2190), SoupSocket 1 (0x103a340)
+> Soup-Debug-Timestamp: 1488730789
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 15 (0x131f0d0), SoupSocket 9 (0xc295a0)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBmb1VipGbRU4lS3f_ArcJ5AOMHpxH7USM_aSAwW9eA2csUF3cAbLzU
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Content-Type: application/json
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
 > 
 > {"title":"Some tasklist","kind":"tasks#taskList"}
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411311977
-< Soup-Debug: SoupMessage 1 (0xff2190)
+< Soup-Debug-Timestamp: 1488730791
+< Soup-Debug: SoupMessage 15 (0x131f0d0)
 < Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 < Pragma: no-cache
-< Expires: Fri, 01 Jan 1990 00:00:00 GMT
-< Date: Sun, 21 Sep 2014 15:06:17 GMT
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/_OP1nZig6T24458ddfbOXnBLhjE"
+< Expires: Mon, 01 Jan 1990 00:00:00 GMT
+< Date: Sun, 05 Mar 2017 16:19:51 GMT
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/MJwJ9Df_LrfvTqk17JrrSZENalc"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#taskList",
-<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6NDA1MjA2NTQ6MA",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/_OP1nZig6T24458ddfbOXnBLhjE\"",
+<  "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTU1NzYzNjQwOjA",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/MJwJ9Df_LrfvTqk17JrrSZENalc\"",
 <  "title": "Some tasklist",
-<  "updated": "2014-09-21T15:06:17.000Z",
-<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6NDA1MjA2NTQ6MA"
+<  "updated": "2017-03-05T16:19:51.000Z",
+<  "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTU1NzYzNjQwOjA"
 < }
   

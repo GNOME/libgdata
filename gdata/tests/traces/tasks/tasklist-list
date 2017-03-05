@@ -1,60 +1,90 @@
 > GET /tasks/v1/users/@me/lists HTTP/1.1
-> Soup-Debug-Timestamp: 1411306820
-> Soup-Debug: SoupSession 1 (0x17da240), SoupMessage 6 (0x1a99550), SoupSocket 4 (0x199fc10)
+> Soup-Debug-Timestamp: 1488730782
+> Soup-Debug: SoupSession 1 (0xc11340), SoupMessage 6 (0x131f2b0), SoupSocket 4 (0xc29330)
 > Host: www.googleapis.com
-> Authorization: Bearer ya29.hwBNWh8HN9uE1GavhuMocWgGo8JMHW75_WeLz4IIH2wNrn0Vmb1onGuz
+> Authorization: Bearer ya29.GlsFBF-OmjaBxyVt07b_VA59pQBW56_qLGYrHeFJXmAwFrBWjHldsCzVM3Tu9DECD218fDB4z03cc9ueSYP3-0YbtFqkVorRzqOb0HwXAkfxFNjgJgfTjPd3_MP_
 > GData-Version: 2
 > Accept-Encoding: gzip, deflate
-> User-Agent: libgdata/0.17.0 - gzip
+> User-Agent: libgdata/0.17.7 - gzip
 > Connection: Keep-Alive
   
 < HTTP/1.1 200 OK
-< Soup-Debug-Timestamp: 1411306820
-< Soup-Debug: SoupMessage 6 (0x1a99550)
-< Expires: Sun, 21 Sep 2014 13:40:20 GMT
-< Date: Sun, 21 Sep 2014 13:40:20 GMT
+< Soup-Debug-Timestamp: 1488730782
+< Soup-Debug: SoupMessage 6 (0x131f2b0)
+< Expires: Sun, 05 Mar 2017 16:19:42 GMT
+< Date: Sun, 05 Mar 2017 16:19:42 GMT
 < Cache-Control: private, max-age=0, must-revalidate, no-transform
-< ETag: "Lck7VNWFJuXdzMtOmrYPx0KFV2s/90SjER9vi17HFYtnlu6S6TjNRaU"
+< ETag: "NEVtLf5Q_dTURZbE3E-zlPpPgGk/G8kd-PXyly6FTFimI_ecwhye7YM"
+< Vary: Origin
+< Vary: X-Origin
 < Content-Type: application/json; charset=UTF-8
 < Content-Encoding: gzip
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < X-XSS-Protection: 1; mode=block
 < Server: GSE
-< Alternate-Protocol: 443:quic,p=0.002
+< Alt-Svc: quic=":443"; ma=2592000; v="36,35,34"
 < Transfer-Encoding: chunked
 < 
 < {
 <  "kind": "tasks#taskLists",
-<  "etag": "\"Lck7VNWFJuXdzMtOmrYPx0KFV2s/90SjER9vi17HFYtnlu6S6TjNRaU\"",
+<  "etag": "\"NEVtLf5Q_dTURZbE3E-zlPpPgGk/G8kd-PXyly6FTFimI_ecwhye7YM\"",
 <  "items": [
 <   {
 <    "kind": "tasks#taskList",
 <    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MDow",
 <    "title": "libgdata.test's list",
-<    "updated": "2014-09-21T13:40:18.000Z",
+<    "updated": "2017-03-05T16:19:41.000Z",
 <    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MDow"
 <   },
 <   {
 <    "kind": "tasks#taskList",
-<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTM0OTQ3MzMyOjA",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTk0MTU0NjM0OjA",
+<    "title": "Tasklist 3",
+<    "updated": "2017-03-05T16:19:41.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTk0MTU0NjM0OjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjE0NTIxMTkxOjA",
+<    "title": "Some tasklist",
+<    "updated": "2015-08-12T10:00:28.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjE0NTIxMTkxOjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MjIzNTU2OTAxOjA",
+<    "title": "Tasklist 2",
+<    "updated": "2017-03-05T16:19:40.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MjIzNTU2OTAxOjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MzcyMzQwODg0OjA",
+<    "title": "Some tasklist",
+<    "updated": "2017-03-02T17:44:29.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MzcyMzQwODg0OjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6Njg1MzY2MTE2OjA",
+<    "title": "Some tasklist",
+<    "updated": "2017-03-05T15:59:19.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6Njg1MzY2MTE2OjA"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTQ3NTQ1MjE3MTow",
+<    "title": "Some tasklist",
+<    "updated": "2017-03-02T20:06:51.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTQ3NTQ1MjE3MTow"
+<   },
+<   {
+<    "kind": "tasks#taskList",
+<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTk3Mjg3NzkzOTow",
 <    "title": "Tasklist 1",
-<    "updated": "2014-09-21T13:40:16.000Z",
-<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTM0OTQ3MzMyOjA"
-<   },
-<   {
-<    "kind": "tasks#taskList",
-<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6NzcyNzY3ODAxOjA",
-<    "title": "Tasklist 2",
-<    "updated": "2014-09-21T13:40:18.000Z",
-<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6NzcyNzY3ODAxOjA"
-<   },
-<   {
-<    "kind": "tasks#taskList",
-<    "id": "MTY4ODYzMjk0OTkzNDgxODY2Njk6MTg1OTU0NTMxOTow",
-<    "title": "Tasklist 2",
-<    "updated": "2014-09-21T13:40:19.000Z",
-<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTg1OTU0NTMxOTow"
+<    "updated": "2017-03-05T16:19:38.000Z",
+<    "selfLink": "https://www.googleapis.com/tasks/v1/users/@me/lists/MTY4ODYzMjk0OTkzNDgxODY2Njk6MTk3Mjg3NzkzOTow"
 <   }
 <  ]
 < }
