@@ -73,7 +73,6 @@
 #include "services/contacts/gdata-contacts-service.h"
 #include "services/documents/gdata-documents-service.h"
 #include "services/picasaweb/gdata-picasaweb-service.h"
-#include "services/freebase/gdata-freebase-service.h"
 
 #define HMAC_SHA1_LEN 20 /* bytes, raw */
 
@@ -392,8 +391,6 @@ gdata_goa_authorizer_set_goa_object (GDataGoaAuthorizer *self, GoaObject *goa_ob
 	if (goa_object_peek_photos (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_PICASAWEB_SERVICE);
 	}
-
-	add_authorization_domains (self, GDATA_TYPE_FREEBASE_SERVICE);
 }
 
 static void
