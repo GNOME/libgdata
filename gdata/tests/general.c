@@ -1309,7 +1309,7 @@ test_query_properties (void)
 		g_assert_##cmptype (gdata_query_get_##name_underscores (query), ==, new_val); \
  \
 		notification_received = FALSE; \
-		g_object_set (query, name_hyphens, new_val2, NULL); \
+		g_object_set (query, name_hyphens, (val_type) new_val2, NULL); \
 		g_assert (notification_received == TRUE); \
  \
 		g_assert_##cmptype (gdata_query_get_##name_underscores (query), ==, new_val2); \
