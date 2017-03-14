@@ -619,11 +619,11 @@ test_event_json (void)
 		"'guestsCanSeeOtherGuests': false,"
 		"'anyoneCanAddSelf': false,"
 		"'start': {"
-			"'dateTime': '2009-04-17T15:00:00.000001+00:00',"
+			"'dateTime': '2009-04-17T15:00:00Z',"
 			"'timeZone': 'UTC'"
 		"},"
 		"'end': {"
-			"'dateTime': '2009-04-17T17:00:00.000001+00:00',"
+			"'dateTime': '2009-04-17T17:00:00Z',"
 			"'timeZone': 'UTC'"
 		"},"
 		"'attendees': ["
@@ -758,11 +758,11 @@ test_event_json_dates (void)
 		"}", TRUE, 1239926400, 1239926400 + 86400, NULL },
 		/* Full date and time. */
 		{ "'start': {"
-			"'dateTime': '2009-04-17T15:00:00.000001+00:00',"
+			"'dateTime': '2009-04-17T15:00:00Z',"
 			"'timeZone': 'UTC'"
 		"},"
 		"'end': {"
-			"'dateTime': '2009-04-17T16:00:00.000001+00:00',"
+			"'dateTime': '2009-04-17T16:00:00Z',"
 			"'timeZone': 'UTC'"
 		"}", FALSE, 1239926400 + 54000, 1239926400 + 54000 + 3600, NULL },
 		/* Start and end time. */
@@ -1152,21 +1152,21 @@ G_GNUC_END_IGNORE_DEPRECATIONS
 	/* Check the built query URI with a normal feed URI */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com");
 	g_assert_cmpstr (query_uri, ==, "http://example.com?q=q&orderBy=startTime&singleEvents=true"
-			                "&timeMin=2009-04-17T15:00:00.000001+00:00&timeMax=2010-04-17T15:00:00.000001+00:00&timeZone=America%2FLos_Angeles&maxAttendees=15"
+			                "&timeMin=2009-04-17T15:00:00Z&timeMax=2010-04-17T15:00:00Z&timeZone=America%2FLos_Angeles&maxAttendees=15"
 			                "&showDeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with a trailing slash */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/?q=q&orderBy=startTime&singleEvents=true"
-	                                "&timeMin=2009-04-17T15:00:00.000001+00:00&timeMax=2010-04-17T15:00:00.000001+00:00&timeZone=America%2FLos_Angeles&maxAttendees=15"
+	                                "&timeMin=2009-04-17T15:00:00Z&timeMax=2010-04-17T15:00:00Z&timeZone=America%2FLos_Angeles&maxAttendees=15"
 	                                "&showDeleted=true");
 	g_free (query_uri);
 
 	/* …with a feed URI with pre-existing arguments */
 	query_uri = gdata_query_get_query_uri (GDATA_QUERY (query), "http://example.com/bar/?test=test&this=that");
 	g_assert_cmpstr (query_uri, ==, "http://example.com/bar/?test=test&this=that&q=q&orderBy=startTime"
-	                                "&singleEvents=true&timeMin=2009-04-17T15:00:00.000001+00:00&timeMax=2010-04-17T15:00:00.000001+00:00"
+	                                "&singleEvents=true&timeMin=2009-04-17T15:00:00Z&timeMax=2010-04-17T15:00:00Z"
 	                                "&timeZone=America%2FLos_Angeles&maxAttendees=15&showDeleted=true");
 	g_free (query_uri);
 
