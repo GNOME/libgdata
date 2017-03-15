@@ -55,10 +55,6 @@ gdata_test_init (int argc, char **argv)
 
 	setlocale (LC_ALL, "");
 
-#if !GLIB_CHECK_VERSION (2, 35, 0)
-	g_type_init ();
-#endif
-
 	/* Parse the custom options */
 	for (i = 1; i < argc; i++) {
 		if (strcmp ("--no-interactive", argv[i]) == 0 || strcmp ("-ni", argv[i]) == 0) {

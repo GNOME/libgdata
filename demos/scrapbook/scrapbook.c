@@ -644,9 +644,6 @@ main(int argc, char **argv)
 	scrapbook = g_slice_new (struct _ScrapData);
 	scrapbook->max_rows			= 5;
 
-#if !GLIB_CHECK_VERSION (2, 35, 0)
-	g_type_init ();
-#endif
 	gtk_init	(&argc, &argv);
 
 	scrapbook->currentCol 							= 0;
