@@ -93,11 +93,12 @@ GDATA_CFLAGS="$GDATA_CFLAGS -DJSON_VERSION_MIN_REQUIRED=$JSON_GLIB_MIN_REQUIRED 
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
-# libsoup 2.47.3 is needed for the new SoupServer API.
-PKG_CHECK_MODULES([LIBSOUP], [libsoup-2.4 >= 2.47.3],
-                  [have_libsoup_2_47_3=yes], [have_libsoup_2_47_3=no])
-AS_IF([test "x$have_libsoup_2_47_3" = "xyes"], [
-	AC_DEFINE([HAVE_LIBSOUP_2_47_3], [1],
+# libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
+# soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
+PKG_CHECK_MODULES([LIBSOUP], [libsoup-2.4 >= 2.55.90],
+                  [have_libsoup_2_55_90=yes], [have_libsoup_2_55_90=no])
+AS_IF([test "x$have_libsoup_2_55_90" = "xyes"], [
+	AC_DEFINE([HAVE_LIBSOUP_2_55_90], [1],
 	          [Define if the new SoupServer API is available])
 ])
 

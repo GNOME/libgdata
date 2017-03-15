@@ -30,7 +30,7 @@
 #include "gdata.h"
 #include "common.h"
 
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 static gpointer
 run_server_thread (GMainLoop *loop)
 {
@@ -40,7 +40,7 @@ run_server_thread (GMainLoop *loop)
 
 	return NULL;
 }
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 static gpointer
 run_server_thread (SoupServer *server)
 {
@@ -48,7 +48,7 @@ run_server_thread (SoupServer *server)
 
 	return NULL;
 }
-#endif /* !HAVE_LIBSOUP_2_47_3 */
+#endif /* !HAVE_LIBSOUP_2_55_90 */
 
 static GThread *
 run_server (SoupServer *server, GMainLoop *loop)
@@ -58,16 +58,16 @@ run_server (SoupServer *server, GMainLoop *loop)
 	GError *error = NULL;
 	guint16 port;
 
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 	thread = g_thread_try_new ("server-thread", (GThreadFunc) run_server_thread, loop, &error);
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 	thread = g_thread_try_new ("server-thread", (GThreadFunc) run_server_thread, server, &error);
-#endif /* !HAVE_LIBSOUP_2_47_3 */
+#endif /* !HAVE_LIBSOUP_2_55_90 */
 	g_assert_no_error (error);
 	g_assert (thread != NULL);
 
 	/* Set the port so that libgdata doesn't override it. */
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 {
 	GSList *uris;  /* owned */
 
@@ -77,9 +77,9 @@ run_server (SoupServer *server, GMainLoop *loop)
 
 	g_slist_free_full (uris, (GDestroyNotify) soup_uri_free);
 }
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 	port = soup_server_get_port (server);
-#endif /* !HAVE_LIBSOUP_2_47_3 */
+#endif /* !HAVE_LIBSOUP_2_55_90 */
 
 	port_string = g_strdup_printf ("%u", port);
 	g_setenv ("LIBGDATA_HTTPS_PORT", port_string, TRUE);
@@ -88,7 +88,7 @@ run_server (SoupServer *server, GMainLoop *loop)
 	return thread;
 }
 
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 static gboolean
 quit_server_cb (GMainLoop *loop)
 {
@@ -103,7 +103,7 @@ stop_server (SoupServer *server, GMainLoop *loop)
 	soup_add_completion (g_main_loop_get_context (loop),
 	                     (GSourceFunc) quit_server_cb, loop);
 }
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 static gboolean
 quit_server_cb (SoupServer *server)
 {
@@ -118,7 +118,7 @@ stop_server (SoupServer *server, GMainLoop *loop)
 	soup_add_completion (g_main_loop_get_context (loop),
 	                     (GSourceFunc) quit_server_cb, server);
 }
-#endif /* !HAVE_LIBSOUP_2_47_3 */
+#endif /* !HAVE_LIBSOUP_2_55_90 */
 
 static gchar *
 get_test_string (guint start_num, guint end_num)
@@ -160,23 +160,23 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainLoop **main
 {
 	GMainContext *context;
 	SoupServer *server;
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 	gchar *cert_path = NULL, *key_path = NULL;
 	GError *error = NULL;
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 	union {
 		struct sockaddr_in in;
 		struct sockaddr norm;
 	} sock;
 	SoupAddress *addr;
-#endif /* HAVE_LIBSOUP_2_47_3 */
+#endif /* HAVE_LIBSOUP_2_55_90 */
 
 	/* Create the server */
 	g_assert (main_loop != NULL);
 	context = g_main_context_new ();
 	*main_loop = g_main_loop_new (context, FALSE);
 
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 	server = soup_server_new (NULL, NULL);
 
 	cert_path = g_test_build_filename (G_TEST_DIST, "cert.pem", NULL);
@@ -197,7 +197,7 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainLoop **main
 	g_assert_no_error (error);
 
 	g_main_context_pop_thread_default (context);
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 	memset (&sock, 0, sizeof (sock));
 	sock.in.sin_family = AF_INET;
 	sock.in.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
@@ -213,7 +213,7 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainLoop **main
 	soup_server_add_handler (server, NULL, callback, user_data, NULL);
 
 	g_object_unref (addr);
-#endif /* !HAVE_LIBSOUP_2_47_3 */
+#endif /* !HAVE_LIBSOUP_2_55_90 */
 
 	g_assert (server != NULL);
 	g_main_context_unref (context);
@@ -224,7 +224,7 @@ create_server (SoupServerCallback callback, gpointer user_data, GMainLoop **main
 static gchar *
 build_server_uri (SoupServer *server)
 {
-#ifdef HAVE_LIBSOUP_2_47_3
+#ifdef HAVE_LIBSOUP_2_55_90
 	GSList *uris;  /* owned */
 	GSList *l;  /* unowned */
 	gchar *retval = NULL;  /* owned */
@@ -242,11 +242,11 @@ build_server_uri (SoupServer *server)
 	g_assert (retval != NULL);
 
 	return retval;
-#else /* if !HAVE_LIBSOUP_2_47_3 */
+#else /* if !HAVE_LIBSOUP_2_55_90 */
 	return g_strdup_printf ("https://%s:%u/",
 	                        soup_address_get_physical (soup_socket_get_local_address (soup_server_get_listener (server))),
 	                        soup_server_get_port (server));
-#endif /* !HAVE_LIBSOUP_2_47_3 */
+#endif /* !HAVE_LIBSOUP_2_55_90 */
 }
 
 static void
