@@ -10,19 +10,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-08 12:53+0000\n"
-"PO-Revision-Date: 2016-03-08 21:08+0300\n"
-"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2017-02-24 23:45+0000\n"
+"PO-Revision-Date: 2017-03-18 10:49+0400\n"
+"Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ../gdata/gdata-batch-operation.c:635
 #, c-format
@@ -46,7 +46,7 @@ msgstr "Сервер вернул искажённый ответ."
 
 #: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
 #, c-format
-msgid "Cannot connect to the service's server."
+msgid "Cannot connect to the service’s server."
 msgstr "Не удалось подключиться к серверу службы."
 
 #: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
@@ -97,6 +97,7 @@ msgstr "Запись была изменена с момента последн�
 msgid "Error code %u when authenticating: %s"
 msgstr "Произошла ошибка %u при аутентификации: %s"
 
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
 #: ../gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "Чтобы войти, необходимо заполнить поле CAPTCHA."
@@ -114,13 +115,13 @@ msgstr "Ваше имя пользователя или пароль невер�
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:854
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr "Адрес эл. почты вашей учётной записи не был проверен. (%s)"
 
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:859
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr "Вы не одобрили лицензионное соглашение. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -148,7 +149,7 @@ msgstr "Учётная запись отключена. (%s)"
 #. Translators: the parameter is a URI for further information.
 #: ../gdata/gdata-client-login-authorizer.c:880
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr "Доступ учётной записи к этой службе отключён. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -159,12 +160,16 @@ msgstr "В данный момент служба недоступна. (%s)"
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
 #: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
 msgid "This entry does not support comments."
 msgstr "Для данного элемента комментарии не поддерживаются."
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
 #: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
 msgid "Comments may not be added to this entry."
 msgstr "Для этого элемента комментарии добавить нельзя."
@@ -175,7 +180,7 @@ msgid "This comment may not be deleted."
 msgstr "Данный комментарий не может быть удалён."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: ../gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
 msgstr "Недопустимый запрос на переход"
 
@@ -208,17 +213,17 @@ msgstr "Пустой документ."
 #: ../gdata/services/documents/gdata-documents-access-rule.c:144
 #: ../gdata/services/documents/gdata-documents-access-rule.c:154
 #: ../gdata/services/documents/gdata-documents-document.c:286
-#: ../gdata/services/documents/gdata-documents-entry.c:458
-#: ../gdata/services/documents/gdata-documents-entry.c:469
-#: ../gdata/services/documents/gdata-documents-entry.c:480
-#: ../gdata/services/documents/gdata-documents-entry.c:527
-#: ../gdata/services/documents/gdata-documents-entry.c:538
-#: ../gdata/services/documents/gdata-documents-entry.c:636
-#: ../gdata/services/documents/gdata-documents-entry.c:671
-#: ../gdata/services/documents/gdata-documents-entry.c:686
+#: ../gdata/services/documents/gdata-documents-entry.c:478
+#: ../gdata/services/documents/gdata-documents-entry.c:489
+#: ../gdata/services/documents/gdata-documents-entry.c:500
+#: ../gdata/services/documents/gdata-documents-entry.c:547
+#: ../gdata/services/documents/gdata-documents-entry.c:558
+#: ../gdata/services/documents/gdata-documents-entry.c:666
 #: ../gdata/services/documents/gdata-documents-entry.c:701
+#: ../gdata/services/documents/gdata-documents-entry.c:716
 #: ../gdata/services/documents/gdata-documents-entry.c:731
-#: ../gdata/services/documents/gdata-documents-entry.c:747
+#: ../gdata/services/documents/gdata-documents-entry.c:761
+#: ../gdata/services/documents/gdata-documents-entry.c:777
 #: ../gdata/services/documents/gdata-documents-feed.c:81
 #: ../gdata/services/documents/gdata-documents-feed.c:92
 #: ../gdata/services/documents/gdata-documents-feed.c:142
@@ -244,30 +249,30 @@ msgstr "Внутри элемента %s пропущено требуемое �
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr "Содержимое элемента %s («%s») не соответствует формату ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
 #: ../gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
 msgstr "Неизвестное значение свойства %s элемента %s («%s»)."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
 #: ../gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "Неизвестное содержимое элемента %s («%s»)."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -320,20 +325,20 @@ msgstr "Повторение единичного элемента (%s)."
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
+#. *  A ‘title’ element was missing required content.
 #: ../gdata/gdata-parser.c:273
 #, c-format
-msgid "A '%s' element was missing required content."
-msgstr "В элементе «%s» отсутствует необходимое содержимое."
+msgid "A ‘%s’ element was missing required content."
+msgstr "Внутри элемента %s пропущено требуемое содержимое."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
 #: ../gdata/gdata-parser.c:303
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
 msgstr "Содержимое элемента %s («%s») не соответствует формату ISO 8601."
 
 #. Translators: the parameter is an error message.
@@ -347,10 +352,10 @@ msgstr "От сервера был получен некорректный об�
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
 #: ../gdata/gdata-parser.c:1179
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr ""
 "Содержимое элемента %s («%s») не соответствует шестнадцатеричному формату "
 "RGB."
@@ -405,25 +410,25 @@ msgid "Error code %u when running a batch operation: %s"
 msgstr "При выполнении групповой операции получен код ошибки %u: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
+#: ../gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Неверное перенаправление URI: %s"
 
-#: ../gdata/gdata-service.c:1454
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
+#: ../gdata/gdata-service.c:1466
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:626
 #: ../gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "Запись уже вставлена."
 
 #. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:788 ../gdata/gdata-upload-stream.c:870
+#: ../gdata/gdata-upload-stream.c:794 ../gdata/gdata-upload-stream.c:876
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
 "Получена ошибка от сервера после отправки возобновляющей отправленной части."
 
-#: ../gdata/gdata-upload-stream.c:936
+#: ../gdata/gdata-upload-stream.c:942
 msgid "Stream is already closed"
 msgstr "Поток уже закрыт"
 
@@ -484,52 +489,52 @@ msgstr "Для загрузки документов необходимо про
 msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "Неизвестный или неподдерживаемый формат экспорта документов «%s»."
 
-#: ../gdata/services/documents/gdata-documents-service.c:513
-#: ../gdata/services/documents/gdata-documents-service.c:563
+#: ../gdata/services/documents/gdata-documents-service.c:454
+#: ../gdata/services/documents/gdata-documents-service.c:504
 msgid "You must be authenticated to query documents."
 msgstr "Для доступа к документам необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:628
+#: ../gdata/services/documents/gdata-documents-service.c:569
 msgid "You must be authenticated to upload documents."
 msgstr "Для загрузки документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:634
+#: ../gdata/services/documents/gdata-documents-service.c:575
 msgid "The document has already been uploaded."
 msgstr "Документ уже загружен."
 
-#: ../gdata/services/documents/gdata-documents-service.c:779
+#: ../gdata/services/documents/gdata-documents-service.c:720
 msgid "You must be authenticated to update documents."
 msgstr "Для обновления документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:946
+#: ../gdata/services/documents/gdata-documents-service.c:887
 #, c-format
 msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+"The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
 "Не удалось распознать тип содержимого предоставленного документа («%s»)."
 
-#: ../gdata/services/documents/gdata-documents-service.c:986
+#: ../gdata/services/documents/gdata-documents-service.c:927
 msgid "You must be authenticated to copy documents."
 msgstr "Для копирования документов необходимо пройти аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1014
+#: ../gdata/services/documents/gdata-documents-service.c:955
 msgid "Parent folder not found"
 msgstr "Родительский каталог не найден"
 
-#: ../gdata/services/documents/gdata-documents-service.c:1160
+#: ../gdata/services/documents/gdata-documents-service.c:1102
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Для вставки или перемещения документов и папок необходимо пройти "
 "аутентификацию."
 
-#: ../gdata/services/documents/gdata-documents-service.c:1359
+#: ../gdata/services/documents/gdata-documents-service.c:1303
 msgid "You must be authenticated to move documents and folders."
 msgstr "Для перемещения документов и папок необходимо пройти аутентификацию."
 
 #: ../gdata/services/freebase/gdata-freebase-service.c:479
 #, c-format
-msgid "Property '%s' does not hold an image"
-msgstr "Свойство «%s» не содержит изображение"
+msgid "Property ‘%s’ does not hold an image"
+msgstr "Свойство «%s» не содержит изображения"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -553,15 +558,15 @@ msgstr ""
 msgid "The album did not have a feed link."
 msgstr "У альбома отсутствует лента новостей."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:633
 msgid "You must be authenticated to upload a file."
 msgstr "Для загрузки файла необходимо пройти аутентификацию."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:709
 msgid "The album has already been inserted."
 msgstr "Альбом уже добавлен."
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
+#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:716
 msgid "You must be authenticated to insert an album."
 msgstr "Для добавления альбома необходимо пройти аутентификацию."
 
@@ -596,6 +601,12 @@ msgstr ""
 #: ../gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Для загрузки видео, необходимо пройти аутентификацию."
+
+#~ msgid "A '%s' element was missing required content."
+#~ msgstr "В элементе «%s» отсутствует необходимое содержимое."
+
+#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+#~ msgstr "Содержимое элемента %s («%s») не соответствует формату ISO 8601."
 
 #~ msgid "The calendar did not have a content URI."
 #~ msgstr "У календаря нет содержимого URI."
