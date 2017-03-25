@@ -35,7 +35,7 @@
 static void
 open_in_web_browser (GtkWidget *widget, gchar *uri) /* quicky wrapper for gtk_show_uri */
 {
-	gtk_show_uri_on_window (gtk_widget_get_toplevel (widget), uri, GDK_CURRENT_TIME, NULL);
+	gtk_show_uri_on_window (GTK_WINDOW (gtk_widget_get_toplevel (widget)), uri, GDK_CURRENT_TIME, NULL);
 }
 
 static void
