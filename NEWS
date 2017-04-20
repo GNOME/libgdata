@@ -1,3 +1,27 @@
+Overview of changes from libgdata 0.17.7 to libgdata 0.17.8
+===========================================================
+
+Major changes:
+ • Bump GLib dependency to 2.38.0 for G_TEST_DIST
+ • Bump libsoup dependency for tests to 2.55.90; the dependency if building
+   libgdata without tests is still 2.42.0
+ • Fix use of deprecated GTK+ API in the demos
+
+Bugs fixed:
+ • Bug 779641 — test_query_properties broken on i686
+ • Bug 780067 — Unable to sync Google Contacts
+ • Bug 780081 — libgdata 0.17.7 fails streams tests (unable to set up SSL cert)
+
+Updated translations:
+ • be (Yuras Shumovich)
+ • da (Alan Mortensen)
+ • el (Tom Tryfonidis)
+ • fi (Jiri Grönroos)
+ • gl (Fran Dieguez)
+ • oc (Cédric Valmary)
+ • ru (Yuri Myasoedov)
+
+
 Overview of changes from libgdata 0.17.6 to libgdata 0.17.7
 ===========================================================
 
