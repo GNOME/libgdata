@@ -248,6 +248,37 @@ gdata_parser_int64_to_iso8601 (gint64 _time)
 	return g_time_val_to_iso8601 (&time_val);
 }
 
+gchar *
+gdata_parser_int64_to_iso8601_numeric_timezone (gint64 _time)
+{
+	GTimeVal time_val;
+	gchar *iso8601;
+	gchar **date_time_components;
+	gchar *retval;
+
+	time_val.tv_sec = _time;
+	time_val.tv_usec = 0;
+
+	iso8601 = g_time_val_to_iso8601 (&time_val);
+
+	/* FIXME: Work around for Google's incorrect ISO 8601 implementation.
+	 * They appear to not like dates in the format ‘2014-08-09T21:07:05Z’
+	 * which specify a timezone using ‘Z’ and no microseconds. This varies
+	 * between services.
+	 *
+	 * See: https://bugzilla.gnome.org/show_bug.cgi?id=732809
+	 * https://bugzilla.gnome.org/show_bug.cgi?id=780067
+	 * https://code.google.com/a/google.com/p/apps-api-issues/issues/detail?id=3595
+	 * http://stackoverflow.com/a/17630320/2931197 */
+	date_time_components = g_strsplit (iso8601, "Z", 2);
+	retval = g_strjoinv (".000001+00:00", date_time_components);
+	g_strfreev (date_time_components);
+
+	g_free (iso8601);
+
+	return retval;
+}
+
 gboolean
 gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
 {

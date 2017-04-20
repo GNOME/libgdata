@@ -333,11 +333,50 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
 	gchar *due;
 	gchar *completed;
-
+	GList *i;
+	GDataLink *_link;
+	GDataEntry *entry = GDATA_ENTRY (parsable);
 	GDataTasksTaskPrivate *priv = GDATA_TASKS_TASK (parsable)->priv;
 
-	/* Chain up to the parent class */
-	GDATA_PARSABLE_CLASS (gdata_tasks_task_parent_class)->get_json (parsable, builder);
+	/* Add all the general JSON. We can’t chain up to #GDataEntry here
+	 * because Google Tasks uses a different date format. */
+	json_builder_set_member_name (builder, "title");
+	json_builder_add_string_value (builder, gdata_entry_get_title (entry));
+
+	if (gdata_entry_get_id (entry)) {
+		json_builder_set_member_name (builder, "id");
+		json_builder_add_string_value (builder, gdata_entry_get_id (entry));
+	}
+
+	if (gdata_entry_get_updated (entry) != -1) {
+		gchar *updated = gdata_parser_int64_to_iso8601_numeric_timezone (gdata_entry_get_updated (entry));
+		json_builder_set_member_name (builder, "updated");
+		json_builder_add_string_value (builder, updated);
+		g_free (updated);
+	}
+
+	/* If we have a "kind" category, add that. */
+	for (i = gdata_entry_get_categories (entry); i != NULL; i = i->next) {
+		GDataCategory *category = GDATA_CATEGORY (i->data);
+
+		if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+			json_builder_set_member_name (builder, "kind");
+			json_builder_add_string_value (builder, gdata_category_get_term (category));
+		}
+	}
+
+	/* Add the ETag, if available. */
+	if (gdata_entry_get_etag (entry) != NULL) {
+		json_builder_set_member_name (builder, "etag");
+		json_builder_add_string_value (builder, gdata_entry_get_etag (entry));
+	}
+
+	/* Add the self-link. */
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (parsable), GDATA_LINK_SELF);
+	if (_link != NULL) {
+		json_builder_set_member_name (builder, "selfLink");
+		json_builder_add_string_value (builder, gdata_link_get_uri (_link));
+	}
 
 	/* Add all the task specific JSON */
 
@@ -358,13 +397,13 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		json_builder_add_string_value (builder, priv->status);
 	}
 	if (priv->due != -1) {
-		due = gdata_parser_int64_to_iso8601 (priv->due);
+		due = gdata_parser_int64_to_iso8601_numeric_timezone (priv->due);
 		json_builder_set_member_name (builder, "due");
 		json_builder_add_string_value (builder, due);
 		g_free (due);
 	}
 	if (priv->completed != -1) {
-		completed = gdata_parser_int64_to_iso8601 (priv->completed);
+		completed = gdata_parser_int64_to_iso8601_numeric_timezone (priv->completed);
 		json_builder_set_member_name (builder, "completed");
 		json_builder_add_string_value (builder, completed);
 		g_free (completed);

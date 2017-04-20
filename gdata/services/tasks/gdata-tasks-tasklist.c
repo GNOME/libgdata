@@ -40,6 +40,7 @@
 #include "gdata-private.h"
 #include "gdata-types.h"
 
+static void get_json (GDataParsable *parsable, JsonBuilder *builder);
 static const gchar *get_content_type (void);
 
 G_DEFINE_TYPE (GDataTasksTasklist, gdata_tasks_tasklist, GDATA_TYPE_ENTRY)
@@ -50,6 +51,7 @@ gdata_tasks_tasklist_class_init (GDataTasksTasklistClass *klass)
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
+	parsable_class->get_json = get_json;
 	parsable_class->get_content_type = get_content_type;
 
 	entry_class->kind_term = "tasks#taskList";
@@ -59,6 +61,54 @@ static void
 gdata_tasks_tasklist_init (GDataTasksTasklist *self)
 {
 	/* Empty */
+}
+
+static void
+get_json (GDataParsable *parsable, JsonBuilder *builder)
+{
+	GList *i;
+	GDataLink *_link;
+	GDataEntry *entry = GDATA_ENTRY (parsable);
+
+	/* Add all the general JSON. We can’t chain up to #GDataEntry here
+	 * because Google Tasks uses a different date format. */
+	json_builder_set_member_name (builder, "title");
+	json_builder_add_string_value (builder, gdata_entry_get_title (entry));
+
+	if (gdata_entry_get_id (entry)) {
+		json_builder_set_member_name (builder, "id");
+		json_builder_add_string_value (builder, gdata_entry_get_id (entry));
+	}
+
+	if (gdata_entry_get_updated (entry) != -1) {
+		gchar *updated = gdata_parser_int64_to_iso8601_numeric_timezone (gdata_entry_get_updated (entry));
+		json_builder_set_member_name (builder, "updated");
+		json_builder_add_string_value (builder, updated);
+		g_free (updated);
+	}
+
+	/* If we have a "kind" category, add that. */
+	for (i = gdata_entry_get_categories (entry); i != NULL; i = i->next) {
+		GDataCategory *category = GDATA_CATEGORY (i->data);
+
+		if (g_strcmp0 (gdata_category_get_scheme (category), "http://schemas.google.com/g/2005#kind") == 0) {
+			json_builder_set_member_name (builder, "kind");
+			json_builder_add_string_value (builder, gdata_category_get_term (category));
+		}
+	}
+
+	/* Add the ETag, if available. */
+	if (gdata_entry_get_etag (entry) != NULL) {
+		json_builder_set_member_name (builder, "etag");
+		json_builder_add_string_value (builder, gdata_entry_get_etag (entry));
+	}
+
+	/* Add the self-link. */
+	_link = gdata_entry_look_up_link (GDATA_ENTRY (parsable), GDATA_LINK_SELF);
+	if (_link != NULL) {
+		json_builder_set_member_name (builder, "selfLink");
+		json_builder_add_string_value (builder, gdata_link_get_uri (_link));
+	}
 }
 
 static const gchar *
