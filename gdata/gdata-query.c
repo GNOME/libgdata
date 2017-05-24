@@ -442,8 +442,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		APPEND_SEP
 		g_string_append (query_uri, "q=");
 
-		if (priv->q != NULL)
+		if (priv->q != NULL) {
 			g_string_append_uri_escaped (query_uri, priv->q, NULL, FALSE);
+			if (priv->q_internal != NULL)
+				g_string_append (query_uri, "%20and%20");
+		}
 		if (priv->q_internal != NULL)
 			g_string_append_uri_escaped (query_uri, priv->q_internal, NULL, FALSE);
 	}
