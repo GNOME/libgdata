@@ -1,0 +1,12 @@
+language: c
+sudo: required
+    # test installation
+
+dist: trusty
+
+before_install:
+- sudo apt-get update
+- sudo apt-get build-dep libgdata-dev
+
+script:
+- ./autogen.sh && ./configure && make -j8 && make -j8 check && sudo make install
