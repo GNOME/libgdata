@@ -882,7 +882,7 @@ output_commented_lines (const gchar *message)
 {
 	const gchar *i, *next_newline;
 
-	for (i = message; i != NULL && i != '\0'; i = next_newline) {
+	for (i = message; i != NULL && *i != '\0'; i = next_newline) {
 		gchar *line;
 
 		next_newline = strchr (i, '\n');
