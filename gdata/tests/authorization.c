@@ -245,14 +245,15 @@ complex_authorizer_init (ComplexAuthorizer *self)
 static void
 complex_authorizer_refresh_authorization_async (GDataAuthorizer *self, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
-	GError *error = NULL;
+	g_autoptr(GTask) task = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* Check the inputs */
 	g_assert (GDATA_IS_AUTHORIZER (self));
 	g_assert (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, complex_authorizer_refresh_authorization_async);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, complex_authorizer_refresh_authorization_async);
 
 	/* Increment the async counter on the authorizer so we know if this function's been called more than once */
 	g_object_set_data (G_OBJECT (self), "async-counter",
@@ -260,16 +261,13 @@ complex_authorizer_refresh_authorization_async (GDataAuthorizer *self, GCancella
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, &error) == TRUE) {
 		/* Handle cancellation */
-		g_simple_async_result_set_from_error (result, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 	} else if (g_object_get_data (G_OBJECT (self), "error") != NULL) {
 		/* If we're instructed to set an error, do so (with an arbitrary error code) */
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR, "%s", "Error message");
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NETWORK_ERROR, "%s", "Error message");
+	} else {
+		g_task_return_boolean (task, TRUE);
 	}
-
-	g_simple_async_result_complete_in_idle (result);
-
-	g_object_unref (result);
-	g_clear_error (&error);
 }
 
 static gboolean
@@ -279,8 +277,8 @@ complex_authorizer_refresh_authorization_finish (GDataAuthorizer *self, GAsyncRe
 	g_assert (GDATA_IS_AUTHORIZER (self));
 	g_assert (G_IS_ASYNC_RESULT (async_result));
 	g_assert (error == NULL || *error == NULL);
-
-	g_assert (g_simple_async_result_is_valid (async_result, G_OBJECT (self), complex_authorizer_refresh_authorization_async) == TRUE);
+	g_assert (g_task_is_valid (async_result, self));
+	g_assert (g_async_result_is_tagged (async_result, complex_authorizer_refresh_authorization_async));
 
 	/* Assert that the async function's already been called (once) */
 	g_assert_cmpuint (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (self), "async-counter")), ==, 1);
@@ -289,7 +287,7 @@ complex_authorizer_refresh_authorization_finish (GDataAuthorizer *self, GAsyncRe
 	g_object_set_data (G_OBJECT (self), "finish-counter",
 	                   GUINT_TO_POINTER (GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (self), "finish-counter")) + 1));
 
-	return (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (async_result), error) == FALSE) ? TRUE : FALSE;
+	return g_task_propagate_boolean (G_TASK (async_result), error);
 }
 
 static void
