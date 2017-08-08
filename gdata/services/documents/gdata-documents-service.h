@@ -27,6 +27,7 @@
 #include <gdata/gdata-upload-stream.h>
 #include <gdata/services/documents/gdata-documents-query.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
+#include <gdata/services/documents/gdata-documents-metadata.h>
 
 G_BEGIN_DECLS
 
@@ -93,6 +94,13 @@ GDataDocumentsService *gdata_documents_service_new (GDataAuthorizer *authorizer)
 
 GDataAuthorizationDomain *gdata_documents_service_get_primary_authorization_domain (void) G_GNUC_CONST;
 GDataAuthorizationDomain *gdata_documents_service_get_spreadsheet_authorization_domain (void) G_GNUC_CONST;
+
+GDataDocumentsMetadata *gdata_documents_service_get_metadata (GDataDocumentsService *self, GCancellable *cancellable,
+                                                              GError **error)  G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_documents_service_get_metadata_async (GDataDocumentsService *self, GCancellable *cancellable,
+                                                 GAsyncReadyCallback callback, gpointer user_data);
+GDataDocumentsMetadata *gdata_documents_service_get_metadata_finish (GDataDocumentsService *self, GAsyncResult *async_result,
+                                                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataDocumentsFeed *gdata_documents_service_query_documents (GDataDocumentsService *self, GDataDocumentsQuery *query, GCancellable *cancellable,
                                                              GDataQueryProgressCallback progress_callback, gpointer progress_user_data,

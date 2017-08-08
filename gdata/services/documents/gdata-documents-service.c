@@ -411,6 +411,142 @@ gdata_documents_service_get_spreadsheet_authorization_domain (void)
 	return get_spreadsheets_authorization_domain ();
 }
 
+/**
+ * gdata_documents_service_get_metadata:
+ * @self: a #GDataDocumentsService
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets a #GDataDocumentsMetadata object containing metadata about the documents
+ * service itself, like how large the user quota is.
+ *
+ * Return value: (transfer full): the service's metadata object; unref with g_object_unref()
+ *
+ * Since: 0.17.9
+ */
+GDataDocumentsMetadata *
+gdata_documents_service_get_metadata (GDataDocumentsService *self, GCancellable *cancellable, GError **error)
+{
+	GDataDocumentsMetadata *metadata;
+	const gchar *uri = "https://www.googleapis.com/drive/v2/about";
+	SoupMessage *message;
+	guint status;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_GET, uri, NULL, FALSE);
+
+	/* Send the message */
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
+		g_object_unref (message);
+		return NULL;
+	} else if (status != SOUP_STATUS_OK) {
+		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (klass->parse_error_response != NULL);
+		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_QUERY, status, message->reason_phrase, message->response_body->data,
+					     message->response_body->length, error);
+		g_object_unref (message);
+		return NULL;
+	}
+
+	/* Parse the JSON; and update the entry */
+	g_assert (message->response_body->data != NULL);
+	metadata = GDATA_DOCUMENTS_METADATA (gdata_parsable_new_from_json (GDATA_TYPE_DOCUMENTS_METADATA, message->response_body->data, message->response_body->length,
+	                                                                    error));
+	g_object_unref (message);
+
+	return metadata;
+}
+
+static void
+get_metadata_thread (GSimpleAsyncResult *result, GDataDocumentsService *service, GCancellable *cancellable)
+{
+	GDataDocumentsMetadata *metadata;
+	GError *error = NULL;
+
+	/* Copy the metadata and return */
+	metadata = gdata_documents_service_get_metadata (service, cancellable, &error);
+	if (error != NULL) {
+		g_simple_async_result_set_from_error (result, error);
+		g_error_free (error);
+		return;
+	}
+
+	/* Return the metadata */
+	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (metadata), (GDestroyNotify) g_object_unref);
+}
+
+/**
+ * gdata_documents_service_get_metadata_async:
+ * @self: a #GDataDocumentsService
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the operation is finished, or %NULL
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Gets a #GDataDocumentsMetadata object containing metadata about the documents
+ * service itself, like how large the user quota is.
+ *
+ * For more details, see gdata_documents_service_get_metadata(), which is the synchronous version of this function.
+ *
+ * When the operation is finished, @callback will be called. You can then call gdata_documents_service_get_metadata_finish() to get the results
+ * of the operation.
+ *
+ * Since: 0.17.9
+ */
+void
+gdata_documents_service_get_metadata_async (GDataDocumentsService *self, GCancellable *cancellable,
+                                            GAsyncReadyCallback callback, gpointer user_data)
+{
+	GSimpleAsyncResult *result;
+
+	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_documents_service_get_metadata_async);
+	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_metadata_thread, G_PRIORITY_DEFAULT, cancellable);
+	g_object_unref (result);
+}
+
+/**
+ * gdata_documents_service_get_metadata_finish:
+ * @self: a #GDataDocumentsService
+ * @async_result: a #GAsyncResult
+ * @error: a #GError, or %NULL
+ *
+ * Finish an asynchronous operation to get a #GDataDocumentsMetadata started with gdata_documents_service_get_metadata_async().
+ *
+ * Return value: (transfer full): the service's metadata object; unref with g_object_unref()
+ *
+ * Since: 0.17.9
+ */
+GDataDocumentsMetadata *
+gdata_documents_service_get_metadata_finish (GDataDocumentsService *self, GAsyncResult *async_result, GError **error)
+{
+	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	GDataDocumentsMetadata *metadata;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_documents_service_get_metadata_async);
+
+	if (g_simple_async_result_propagate_error (result, error) == TRUE) {
+		return NULL;
+	}
+
+	metadata = g_simple_async_result_get_op_res_gpointer (result);
+	g_assert (GDATA_IS_DOCUMENTS_METADATA (metadata));
+
+	return metadata;
+}
+
 static gchar *
 _query_documents_build_request_uri (GDataDocumentsQuery *query)
 {

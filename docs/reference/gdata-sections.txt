@@ -1783,6 +1783,9 @@ GDataDocumentsServiceError
 gdata_documents_service_new
 gdata_documents_service_get_primary_authorization_domain
 gdata_documents_service_get_spreadsheet_authorization_domain
+gdata_documents_service_get_metadata
+gdata_documents_service_get_metadata_async
+gdata_documents_service_get_metadata_finish
 gdata_documents_service_query_documents
 gdata_documents_service_query_documents_async
 gdata_documents_service_upload_document
@@ -1812,6 +1815,25 @@ GDATA_TYPE_DOCUMENTS_SERVICE
 gdata_documents_service_error_quark
 <SUBSECTION Private>
 GDataDocumentsServicePrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-metadata</FILE>
+<TITLE>GDataDocumentsMetadata</TITLE>
+GDataDocumentsMetadata
+GDataDocumentsMetadataClass
+gdata_documents_metadata_get_quota_total
+gdata_documents_metadata_get_quota_used
+<SUBSECTION Standard>
+gdata_documents_metadata_get_type
+GDATA_DOCUMENTS_METADATA
+GDATA_DOCUMENTS_METADATA_CLASS
+GDATA_DOCUMENTS_METADATA_GET_CLASS
+GDATA_IS_DOCUMENTS_METADATA
+GDATA_IS_DOCUMENTS_METADATA_CLASS
+GDATA_TYPE_METADATA_SERVICE
+<SUBSECTION Private>
+GDataDocumentsMetadataPrivate
 </SECTION>
 
 <SECTION>

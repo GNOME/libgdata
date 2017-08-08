@@ -287,6 +287,7 @@ gdatacontactsinclude_HEADERS = \
 gdatadocumentsincludedir = $(gdataincludedir)/services/documents
 gdata_documents_headers = \
 	gdata/services/documents/gdata-documents-service.h	\
+	gdata/services/documents/gdata-documents-metadata.h	\
 	gdata/services/documents/gdata-documents-feed.h		\
 	gdata/services/documents/gdata-documents-entry.h	\
 	gdata/services/documents/gdata-documents-query.h	\
@@ -427,6 +428,7 @@ gdata_sources = \
 	gdata/services/contacts/gdata-contacts-query.c		\
 	\
 	gdata/services/documents/gdata-documents-service.c	\
+	gdata/services/documents/gdata-documents-metadata.c	\
 	gdata/services/documents/gdata-documents-feed.c		\
 	gdata/services/documents/gdata-documents-entry.c	\
 	gdata/services/documents/gdata-documents-document.c	\

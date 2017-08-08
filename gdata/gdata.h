@@ -134,6 +134,7 @@
 #include <gdata/services/documents/gdata-documents-folder.h>
 #include <gdata/services/documents/gdata-documents-query.h>
 #include <gdata/services/documents/gdata-documents-service.h>
+#include <gdata/services/documents/gdata-documents-metadata.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
 #include <gdata/services/documents/gdata-documents-drawing.h>
 #include <gdata/services/documents/gdata-documents-pdf.h>
