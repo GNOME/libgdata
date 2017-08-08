@@ -881,21 +881,24 @@ request_authentication_uri_async_data_free (RequestAuthenticationUriAsyncData *d
 	g_slice_free (RequestAuthenticationUriAsyncData, data);
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (RequestAuthenticationUriAsyncData, request_authentication_uri_async_data_free)
+
 static void
-request_authentication_uri_thread (GSimpleAsyncResult *result, GDataOAuth1Authorizer *authorizer, GCancellable *cancellable)
+request_authentication_uri_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	RequestAuthenticationUriAsyncData *data;
-	GError *error = NULL;
+	GDataOAuth1Authorizer *authorizer = GDATA_OAUTH1_AUTHORIZER (source_object);
+	g_autoptr(RequestAuthenticationUriAsyncData) data = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *authentication_uri = NULL;
 
-	data = g_simple_async_result_get_op_res_gpointer (result);
-
+	data = g_slice_new0 (RequestAuthenticationUriAsyncData);
 	data->authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (authorizer, &(data->token), &(data->token_secret),
 	                                                                               cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&data), (GDestroyNotify) request_authentication_uri_async_data_free);
 }
 
 /**
@@ -919,22 +922,15 @@ void
 gdata_oauth1_authorizer_request_authentication_uri_async (GDataOAuth1Authorizer *self, GCancellable *cancellable,
                                                           GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
-	RequestAuthenticationUriAsyncData *data;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	data = g_slice_new (RequestAuthenticationUriAsyncData);
-	data->token = NULL;
-	data->token_secret = NULL;
-	data->authentication_uri = NULL;
-
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_oauth1_authorizer_request_authentication_uri_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) request_authentication_uri_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) request_authentication_uri_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_oauth1_authorizer_request_authentication_uri_async);
+	g_task_run_in_thread (task, request_authentication_uri_thread);
 }
 
 /**
@@ -968,18 +964,19 @@ gchar *
 gdata_oauth1_authorizer_request_authentication_uri_finish (GDataOAuth1Authorizer *self, GAsyncResult *async_result, gchar **token,
                                                            gchar **token_secret, GError **error)
 {
-	RequestAuthenticationUriAsyncData *data;
-	gchar *authentication_uri;
+	g_autoptr(RequestAuthenticationUriAsyncData) data = NULL;
 
-	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
+	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), NULL);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
 	g_return_val_if_fail (token != NULL, NULL);
 	g_return_val_if_fail (token_secret != NULL, NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_oauth1_authorizer_request_authentication_uri_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_is_valid (async_result, G_OBJECT (self), gdata_oauth1_authorizer_request_authentication_uri_async));
+	data = g_task_propagate_pointer (G_TASK (async_result), error);
 
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (async_result), error) == TRUE) {
+	if (data == NULL) {
 		/* Return the error and set all of the output parameters to NULL */
 		*token = NULL;
 		*token_secret = NULL;
@@ -988,17 +985,10 @@ gdata_oauth1_authorizer_request_authentication_uri_finish (GDataOAuth1Authorizer
 	}
 
 	/* Success! Transfer the output to the appropriate parameters and nullify it so it doesn't get freed when the async result gets finalised */
-	data = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (async_result));
+	*token = g_steal_pointer (&data->token);
+	*token_secret = g_steal_pointer (&data->token_secret);
 
-	*token = data->token;
-	*token_secret = data->token_secret;
-	authentication_uri = data->authentication_uri;
-
-	data->token = NULL;
-	data->token_secret = NULL;
-	data->authentication_uri = NULL;
-
-	return authentication_uri;
+	return g_steal_pointer (&data->authentication_uri);
 }
 
 /**
