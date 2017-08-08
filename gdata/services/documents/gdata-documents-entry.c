@@ -24,7 +24,7 @@
  * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-entry.h
  *
- * #GDataDocumentsEntry is a subclass of #GDataEntry to represent a Google Documents entry, which is then further subclassed
+ * #GDataDocumentsEntry is a subclass of #GDataEntry to represent a Google Drive entry, which is then further subclassed
  * to give specific document types.
  *
  * #GDataDocumentsEntry implements #GDataAccessHandler, meaning the access rules to it can be modified using that interface. As well as the
@@ -36,8 +36,8 @@
  * and document ID should almost always be considered as internal, and thus entry IDs (#GDataEntry:id) should normally be used to uniquely identify
  * documents. For more information, see #GDataDocumentsEntry:resource-id.
  *
- * For more details of Google Documents' GData API, see the
- * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
+ * For more details of Google Drive's GData API, see the
+ * <ulink type="http" url="https://developers.google.com/drive/v2/web/about-sdk">online documentation</ulink>.
  *
  * <example>
  * 	<title>Moving an Entry Between Folders</title>

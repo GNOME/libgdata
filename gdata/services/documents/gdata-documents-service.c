@@ -25,10 +25,13 @@
  * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-service.h
  *
- * #GDataDocumentsService is a subclass of #GDataService for communicating with the GData API of Google Documents. It supports querying
+ * #GDataDocumentsService is a subclass of #GDataService for communicating with the GData API of Google Drive. It supports querying
  * for, inserting, editing and deleting documents, as well as a folder hierarchy.
+ * The API is named ‘documents’ rather than ‘drive’ as it used to use the Google
+ * Documents API, which has since been deprecated.
  *
- * For more details of Google Documents' GData API, see the <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">
+ * For more details of Google Drive's GData API, see the
+ * <ulink type="http" url="https://developers.google.com/drive/v2/web/about-sdk">
  * online documentation</ulink>.
  *
  * Fore more details about the spreadsheet downloads handling, see the
@@ -136,7 +139,7 @@
  * 	</programlisting>
  * </example>
  *
- * The Documents service can be manipulated using batch operations, too. See the
+ * The Drive service can be manipulated using batch operations, too. See the
  * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#batching_acl_requests">online documentation on batch
  * operations</ulink> for more information.
  *

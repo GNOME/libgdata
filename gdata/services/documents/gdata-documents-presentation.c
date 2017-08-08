@@ -27,8 +27,8 @@
  *
  * #GDataDocumentsPresentation is a subclass of #GDataDocumentsDocument to represent a Google Documents presentation.
  *
- * For more details of Google Documents' GData API, see the
- * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
+ * For more details of Google Drive's GData API, see the
+ * <ulink type="http" url="https://developers.google.com/drive/v2/web/about-sdk">online documentation</ulink>.
  *
  * Since: 0.4.0
  */

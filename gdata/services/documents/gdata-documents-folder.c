@@ -27,8 +27,8 @@
  *
  * #GDataDocumentsFolder is a subclass of #GDataDocumentsEntry to represent a folder from Google Documents.
  *
- * For more details of Google Documents' GData API, see the
- * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
+ * For more details of Google Drive's GData API, see the
+ * <ulink type="http" url="https://developers.google.com/drive/v2/web/about-sdk">online documentation</ulink>.
  *
  * <example>
  * 	<title>Adding a Folder</title>

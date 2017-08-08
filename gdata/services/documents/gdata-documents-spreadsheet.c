@@ -27,8 +27,8 @@
  *
  * #GDataDocumentsSpreadsheet is a subclass of #GDataDocumentsDocument to represent a spreadsheet from Google Documents.
  *
- * For more details of Google Documents' GData API, see the
- * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
+ * For more details of Google Drive's GData API, see the
+ * <ulink type="http" url="https://developers.google.com/drive/v2/web/about-sdk">online documentation</ulink>.
  *
  * <example>
  * 	<title>Downloading a Specific Sheet of a Spreadsheet</title>

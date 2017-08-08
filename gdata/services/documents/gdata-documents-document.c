@@ -24,7 +24,7 @@
  * @stability: Stable
  * @include: gdata/services/documents/gdata-documents-document.h
  *
- * #GDataDocumentsDocument is a subclass of #GDataDocumentsEntry to represent an arbitrary Google Documents document (i.e. an arbitrary file which
+ * #GDataDocumentsDocument is a subclass of #GDataDocumentsEntry to represent an arbitrary Google Drive document (i.e. an arbitrary file which
  * isn't a Google Documents presentation, text document, PDF, drawing or spreadsheet). It is subclassed by #GDataDocumentsPresentation, #GDataDocumentsText,
  * #GDataDocumentsPdf,  #GDataDocumentsDrawing and #GDataDocumentsSpreadsheet, which represent those specific types of Google Document, respectively.
  *
@@ -35,8 +35,8 @@
  * It should be noted that #GDataDocumentsDocument should only be used to represent arbitrary files; its subclasses should be used any time a standard
  * Google Document (spreadsheet, text document, presentation, etc.) is to be represented.
  *
- * For more details of Google Documents' GData API, see the
- * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/">online documentation</ulink>.
+ * For more details of Google Drive’s GData API, see the
+ * <ulink type="http" url="https://developers.google.com/drive/v2/web/about-sdk">online documentation</ulink>.
  *
  * <example>
  * 	<title>Downloading a Document</title>
