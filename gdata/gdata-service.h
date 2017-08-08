@@ -178,6 +178,8 @@ typedef struct {
 	void (*_g_reserved7) (void);
 } GDataServiceClass;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataService, g_object_unref)
+
 GType gdata_service_get_type (void) G_GNUC_CONST;
 GQuark gdata_service_error_quark (void) G_GNUC_CONST;
 

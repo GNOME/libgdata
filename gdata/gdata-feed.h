@@ -70,6 +70,7 @@ typedef struct {
 } GDataFeedClass;
 
 GType gdata_feed_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataFeed, g_object_unref)
 
 GList *gdata_feed_get_entries (GDataFeed *self) G_GNUC_PURE;
 GDataEntry *gdata_feed_look_up_entry (GDataFeed *self, const gchar *id) G_GNUC_PURE;

@@ -77,6 +77,7 @@ typedef struct {
 } GDataEntryClass;
 
 GType gdata_entry_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataEntry, g_object_unref)
 
 GDataEntry *gdata_entry_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
