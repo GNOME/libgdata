@@ -981,20 +981,16 @@ authenticate_async_data_free (AuthenticateAsyncData *self)
 }
 
 static void
-authenticate_thread (GSimpleAsyncResult *result, GDataClientLoginAuthorizer *authorizer, GCancellable *cancellable)
+authenticate_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GError *error = NULL;
-	gboolean success;
-	AuthenticateAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataClientLoginAuthorizer *authorizer = GDATA_CLIENT_LOGIN_AUTHORIZER (source_object);
+	g_autoptr(GError) error = NULL;
+	AuthenticateAsyncData *data = task_data;
 
-	success = authenticate_loop (authorizer, TRUE, data->username, data->password, cancellable, &error);
-
-	g_simple_async_result_set_op_res_gboolean (result, success);
-
-	if (success == FALSE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (!authenticate_loop (authorizer, TRUE, data->username, data->password, cancellable, &error))
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -1020,7 +1016,7 @@ void
 gdata_client_login_authorizer_authenticate_async (GDataClientLoginAuthorizer *self, const gchar *username, const gchar *password,
                                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	AuthenticateAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_CLIENT_LOGIN_AUTHORIZER (self));
@@ -1032,11 +1028,10 @@ gdata_client_login_authorizer_authenticate_async (GDataClientLoginAuthorizer *se
 	data->username = g_strdup (username);
 	data->password = _gdata_service_secure_strdup (password);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_client_login_authorizer_authenticate_async);
-	g_simple_async_result_set_handle_cancellation (result, FALSE); /* we handle our own cancellation so we can set ::username and ::password */
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) authenticate_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) authenticate_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_client_login_authorizer_authenticate_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) authenticate_async_data_free);
+	g_task_run_in_thread (task, authenticate_thread);
 }
 
 /**
@@ -1057,14 +1052,10 @@ gdata_client_login_authorizer_authenticate_finish (GDataClientLoginAuthorizer *s
 	g_return_val_if_fail (GDATA_IS_CLIENT_LOGIN_AUTHORIZER (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_client_login_authorizer_authenticate_async), FALSE);
 
-	g_warn_if_fail (g_simple_async_result_is_valid (async_result, G_OBJECT (self), gdata_client_login_authorizer_authenticate_async));
-
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (async_result), error) == TRUE) {
-		return FALSE;
-	}
-
-	return TRUE;
+	return g_task_propagate_boolean (G_TASK (async_result), error);
 }
 
 /**

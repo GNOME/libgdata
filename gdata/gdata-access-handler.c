@@ -69,7 +69,6 @@ typedef struct {
 	GDataQueryProgressCallback progress_callback;
 	gpointer progress_user_data;
 	GDestroyNotify destroy_progress_user_data;
-	GDataFeed *feed;
 } GetRulesAsyncData;
 
 static void
@@ -77,8 +76,6 @@ get_rules_async_data_free (GetRulesAsyncData *self)
 {
 	if (self->service != NULL)
 		g_object_unref (self->service);
-	if (self->feed != NULL)
-		g_object_unref (self->feed);
 
 	g_slice_free (GetRulesAsyncData, self);
 }
@@ -136,24 +133,26 @@ gdata_access_handler_real_get_rules (GDataAccessHandler *self,
 }
 
 static void
-get_rules_thread (GSimpleAsyncResult *result, GDataAccessHandler *access_handler, GCancellable *cancellable)
+get_rules_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
+	GDataAccessHandler *access_handler = GDATA_ACCESS_HANDLER (source_object);
 	GDataAccessHandlerIface *iface;
-	GError *error = NULL;
-	GetRulesAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GDataFeed) feed = NULL;
+	GetRulesAsyncData *data = task_data;
 
 	/* Execute the query and return */
 	iface = GDATA_ACCESS_HANDLER_GET_IFACE (access_handler);
 	g_assert (iface->get_rules != NULL);
 
-	data->feed = iface->get_rules (access_handler, data->service,
-	                               cancellable, data->progress_callback,
-	                               data->progress_user_data, &error);
+	feed = iface->get_rules (access_handler, data->service,
+	                         cancellable, data->progress_callback,
+	                         data->progress_user_data, &error);
 
-	if (data->feed == NULL && error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (feed == NULL && error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&feed), g_object_unref);
 
 	if (data->destroy_progress_user_data != NULL) {
 		data->destroy_progress_user_data (data->progress_user_data);
@@ -189,7 +188,7 @@ gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *se
                                       GDestroyNotify destroy_progress_user_data,
                                       GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	GetRulesAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_ACCESS_HANDLER (self));
@@ -203,10 +202,10 @@ gdata_access_handler_get_rules_async (GDataAccessHandler *self, GDataService *se
 	data->progress_user_data = progress_user_data;
 	data->destroy_progress_user_data = destroy_progress_user_data;
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) get_rules_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_rules_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_service_query_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) get_rules_async_data_free);
+	g_task_run_in_thread (task, get_rules_thread);
 }
 
 /**

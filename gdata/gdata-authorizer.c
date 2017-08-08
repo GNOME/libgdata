@@ -196,17 +196,18 @@ gdata_authorizer_refresh_authorization (GDataAuthorizer *self, GCancellable *can
 }
 
 static void
-refresh_authorization_thread (GSimpleAsyncResult *result, GDataAuthorizer *authorizer, GCancellable *cancellable)
+refresh_authorization_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GError *error = NULL;
+	GDataAuthorizer *authorizer = GDATA_AUTHORIZER (source_object);
+	g_autoptr(GError) error = NULL;
 
 	/* Refresh the authorisation and return */
 	gdata_authorizer_refresh_authorization (authorizer, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -247,20 +248,20 @@ gdata_authorizer_refresh_authorization_async (GDataAuthorizer *self, GCancellabl
 	if (iface->refresh_authorization_async != NULL) {
 		/* Call the method */
 		iface->refresh_authorization_async (self, cancellable, callback, user_data);
-	} else if (iface->refresh_authorization != NULL) {
-		/* If the _async() method isn't implemented, fall back to running the sync method in a thread */
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
-		                                                        gdata_authorizer_refresh_authorization_async);
-		g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) refresh_authorization_thread, G_PRIORITY_DEFAULT, cancellable);
-		g_object_unref (result);
-
-		return;
 	} else {
-		/* If neither are implemented, immediately return FALSE with no error in a callback */
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
-		                                                        gdata_authorizer_refresh_authorization_async);
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_autoptr(GTask) task = NULL;
+
+		task = g_task_new (self, cancellable, callback, user_data);
+		g_task_set_source_tag (task, gdata_authorizer_refresh_authorization_async);
+
+
+		if (iface->refresh_authorization != NULL) {
+			/* If the _async() method isn't implemented, fall back to running the sync method in a thread */
+			g_task_run_in_thread (task, refresh_authorization_thread);
+		} else {
+			/* If neither are implemented, immediately return FALSE with no error in a callback */
+			g_task_return_boolean (task, FALSE);
+		}
 
 		return;
 	}
@@ -300,13 +301,10 @@ gdata_authorizer_refresh_authorization_finish (GDataAuthorizer *self, GAsyncResu
 		return iface->refresh_authorization_finish (self, async_result, error);
 	} else if (iface->refresh_authorization != NULL) {
 		/* If the _async() method isn't implemented, fall back to finishing off running the sync method in a thread */
-		g_warn_if_fail (g_simple_async_result_is_valid (async_result, G_OBJECT (self), gdata_authorizer_refresh_authorization_async) == TRUE);
+		g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+		g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_authorizer_refresh_authorization_async), FALSE);
 
-		if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (async_result), error) == TRUE) {
-			return FALSE;
-		}
-
-		return TRUE;
+		return g_task_propagate_boolean (G_TASK (async_result), error);
 	}
 
 	/* Fall back to just returning FALSE if none of the methods are implemented */

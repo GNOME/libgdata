@@ -724,20 +724,16 @@ error:
 }
 
 static void
-run_thread (GSimpleAsyncResult *result, GDataBatchOperation *operation, GCancellable *cancellable)
+run_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	gboolean success;
-	GError *error = NULL;
+	GDataBatchOperation *operation = GDATA_BATCH_OPERATION (source_object);
+	g_autoptr(GError) error = NULL;
 
 	/* Run the batch operation and return */
-	success = gdata_batch_operation_run (operation, cancellable, &error);
-	g_simple_async_result_set_op_res_gboolean (result, success);
-
-	/* Propagate any errors */
-	if (success == FALSE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (!gdata_batch_operation_run (operation, cancellable, &error))
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -761,7 +757,7 @@ run_thread (GSimpleAsyncResult *result, GDataBatchOperation *operation, GCancell
 void
 gdata_batch_operation_run_async (GDataBatchOperation *self, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (GDATA_IS_BATCH_OPERATION (self));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
@@ -770,14 +766,9 @@ gdata_batch_operation_run_async (GDataBatchOperation *self, GCancellable *cancel
 	/* Mark the operation as async for the purposes of deciding where to call the callbacks */
 	self->priv->is_async = TRUE;
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_batch_operation_run_async);
-
-	/* Disable handling of cancellation so that g_simple_async_result_run_in_thread() doesn't return immediately without calling run_thread() if
-	 * cancellable has already been cancelled by this point. */
-	g_simple_async_result_set_handle_cancellation (result, FALSE);
-
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) run_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_batch_operation_run_async);
+	g_task_run_in_thread (task, run_thread);
 }
 
 /**
@@ -798,16 +789,15 @@ gboolean
 gdata_batch_operation_run_finish (GDataBatchOperation *self, GAsyncResult *async_result, GError **error)
 {
 	GDataBatchOperationPrivate *priv = self->priv;
-	GError *child_error = NULL;
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	g_autoptr(GError) child_error = NULL;
 
 	g_return_val_if_fail (GDATA_IS_BATCH_OPERATION (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_batch_operation_run_async), FALSE);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_batch_operation_run_async);
-
-	if (g_simple_async_result_propagate_error (result, &child_error) == TRUE) {
+	if (!g_task_propagate_boolean (G_TASK (async_result), &child_error)) {
 		if (priv->has_run == FALSE) {
 			GHashTableIter iter;
 			gpointer op_id;
@@ -826,10 +816,10 @@ gdata_batch_operation_run_finish (GDataBatchOperation *self, GAsyncResult *async
 			priv->is_async = TRUE;
 		}
 
-		g_propagate_error (error, child_error);
+		g_propagate_error (error, g_steal_pointer (&child_error));
 
 		return FALSE;
 	}
 
-	return g_simple_async_result_get_op_res_gboolean (result);
+	return TRUE;
 }

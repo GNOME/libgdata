@@ -787,7 +787,6 @@ typedef struct {
 	GType entry_type;
 
 	/* Output */
-	GDataFeed *feed;
 	GDataQueryProgressCallback progress_callback;
 	gpointer progress_user_data;
 	GDestroyNotify destroy_progress_user_data;
@@ -802,25 +801,25 @@ query_async_data_free (QueryAsyncData *self)
 	g_free (self->feed_uri);
 	if (self->query)
 		g_object_unref (self->query);
-	if (self->feed)
-		g_object_unref (self->feed);
 
 	g_slice_free (QueryAsyncData, self);
 }
 
 static void
-query_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+query_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GError *error = NULL;
-	QueryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataService *service = GDATA_SERVICE (source_object);
+	g_autoptr(GError) error = NULL;
+	QueryAsyncData *data = task_data;
+	g_autoptr(GDataFeed) feed = NULL;
 
 	/* Execute the query and return */
-	data->feed = __gdata_service_query (service, data->domain, data->feed_uri, data->query, data->entry_type, cancellable,
-	                                    data->progress_callback, data->progress_user_data, &error);
-	if (data->feed == NULL && error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	feed = __gdata_service_query (service, data->domain, data->feed_uri, data->query, data->entry_type, cancellable,
+	                              data->progress_callback, data->progress_user_data, &error);
+	if (feed == NULL && error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&feed), g_object_unref);
 
 	if (data->destroy_progress_user_data != NULL) {
 		data->destroy_progress_user_data (data->progress_user_data);
@@ -857,7 +856,7 @@ gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain,
                            GCancellable *cancellable, GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                            GDestroyNotify destroy_progress_user_data, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	QueryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
@@ -872,15 +871,14 @@ gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain,
 	data->feed_uri = g_strdup (feed_uri);
 	data->query = (query != NULL) ? g_object_ref (query) : NULL;
 	data->entry_type = entry_type;
-	data->feed = NULL;
 	data->progress_callback = progress_callback;
 	data->progress_user_data = progress_user_data;
 	data->destroy_progress_user_data = destroy_progress_user_data;
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) query_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) query_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_service_query_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) query_async_data_free);
+	g_task_run_in_thread (task, query_thread);
 }
 
 /**
@@ -896,22 +894,13 @@ gdata_service_query_async (GDataService *self, GDataAuthorizationDomain *domain,
 GDataFeed *
 gdata_service_query_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	QueryAsyncData *data;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_service_query_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_query_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return NULL;
-
-	data = g_simple_async_result_get_op_res_gpointer (result);
-	if (data->feed != NULL)
-		return g_object_ref (data->feed);
-	return NULL;
+	return g_task_propagate_pointer (G_TASK (async_result), error);
 }
 
 /* Does the bulk of the work of gdata_service_query. Split out because certain queries (such as that done by
@@ -1199,21 +1188,19 @@ query_single_entry_async_data_free (QuerySingleEntryAsyncData *data)
 }
 
 static void
-query_single_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+query_single_entry_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GDataEntry *entry;
-	GError *error = NULL;
-	QuerySingleEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataService *service = GDATA_SERVICE (source_object);
+	g_autoptr(GDataEntry) entry = NULL;
+	g_autoptr(GError) error = NULL;
+	QuerySingleEntryAsyncData *data = task_data;
 
 	/* Execute the query and return */
 	entry = gdata_service_query_single_entry (service, data->domain, data->entry_id, data->query, data->entry_type, cancellable, &error);
-	if (entry == NULL && error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	g_simple_async_result_set_op_res_gpointer (result, entry, (GDestroyNotify) g_object_unref);
+	if (entry == NULL && error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&entry), g_object_unref);
 }
 
 /**
@@ -1242,7 +1229,7 @@ void
 gdata_service_query_single_entry_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *entry_id, GDataQuery *query,
                                         GType entry_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	QuerySingleEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
@@ -1259,10 +1246,10 @@ gdata_service_query_single_entry_async (GDataService *self, GDataAuthorizationDo
 	data->entry_id = g_strdup (entry_id);
 	data->entry_type = entry_type;
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_single_entry_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) query_single_entry_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) query_single_entry_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_service_query_single_entry_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) query_single_entry_async_data_free);
+	g_task_run_in_thread (task, query_single_entry_thread);
 }
 
 /**
@@ -1280,22 +1267,13 @@ gdata_service_query_single_entry_async (GDataService *self, GDataAuthorizationDo
 GDataEntry *
 gdata_service_query_single_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	GDataEntry *entry;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_service_query_single_entry_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_query_single_entry_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return NULL;
-
-	entry = g_simple_async_result_get_op_res_gpointer (result);
-	if (entry != NULL)
-		return g_object_ref (entry);
-	return NULL;
+	return g_task_propagate_pointer (G_TASK (async_result), error);
 }
 
 typedef struct {
@@ -1318,22 +1296,19 @@ insert_entry_async_data_free (InsertEntryAsyncData *self)
 }
 
 static void
-insert_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+insert_entry_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GDataEntry *updated_entry;
-	GError *error = NULL;
-	InsertEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataService *service = GDATA_SERVICE (source_object);
+	g_autoptr(GDataEntry) updated_entry = NULL;
+	g_autoptr(GError) error = NULL;
+	InsertEntryAsyncData *data = task_data;
 
 	/* Insert the entry and return */
 	updated_entry = gdata_service_insert_entry (service, data->domain, data->upload_uri, data->entry, cancellable, &error);
-	if (updated_entry == NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	/* Swap the old entry with the new one */
-	g_simple_async_result_set_op_res_gpointer (result, updated_entry, (GDestroyNotify) g_object_unref);
+	if (updated_entry == NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&updated_entry), g_object_unref);
 }
 
 /**
@@ -1360,7 +1335,7 @@ void
 gdata_service_insert_entry_async (GDataService *self, GDataAuthorizationDomain *domain, const gchar *upload_uri, GDataEntry *entry,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	InsertEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
@@ -1374,10 +1349,10 @@ gdata_service_insert_entry_async (GDataService *self, GDataAuthorizationDomain *
 	data->upload_uri = g_strdup (upload_uri);
 	data->entry = g_object_ref (entry);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_insert_entry_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) insert_entry_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) insert_entry_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_service_insert_entry_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) insert_entry_async_data_free);
+	g_task_run_in_thread (task, insert_entry_thread);
 }
 
 /**
@@ -1395,22 +1370,13 @@ gdata_service_insert_entry_async (GDataService *self, GDataAuthorizationDomain *
 GDataEntry *
 gdata_service_insert_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	GDataEntry *entry;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_service_insert_entry_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_insert_entry_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return NULL;
-
-	entry = g_simple_async_result_get_op_res_gpointer (result);
-	g_assert (entry != NULL);
-
-	return g_object_ref (entry);
+	return g_task_propagate_pointer (G_TASK (async_result), error);
 }
 
 /**
@@ -1529,22 +1495,19 @@ update_entry_async_data_free (UpdateEntryAsyncData *data)
 }
 
 static void
-update_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+update_entry_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GDataEntry *updated_entry;
-	GError *error = NULL;
-	UpdateEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataService *service = GDATA_SERVICE (source_object);
+	g_autoptr(GDataEntry) updated_entry = NULL;
+	g_autoptr(GError) error = NULL;
+	UpdateEntryAsyncData *data = task_data;
 
 	/* Update the entry and return */
 	updated_entry = gdata_service_update_entry (service, data->domain, data->entry, cancellable, &error);
-	if (updated_entry == NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	/* Swap the old entry with the new one */
-	g_simple_async_result_set_op_res_gpointer (result, updated_entry, (GDestroyNotify) g_object_unref);
+	if (updated_entry == NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&updated_entry), g_object_unref);
 }
 
 /**
@@ -1570,7 +1533,7 @@ void
 gdata_service_update_entry_async (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	UpdateEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
@@ -1582,10 +1545,10 @@ gdata_service_update_entry_async (GDataService *self, GDataAuthorizationDomain *
 	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
 	data->entry = g_object_ref (entry);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_update_entry_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) update_entry_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) update_entry_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (task, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_service_update_entry_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) update_entry_async_data_free);
+	g_task_run_in_thread (task, update_entry_thread);
 }
 
 /**
@@ -1603,22 +1566,13 @@ gdata_service_update_entry_async (GDataService *self, GDataAuthorizationDomain *
 GDataEntry *
 gdata_service_update_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	GDataEntry *entry;
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_service_update_entry_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_update_entry_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return NULL;
-
-	entry = g_simple_async_result_get_op_res_gpointer (result);
-	g_assert (entry != NULL);
-
-	return g_object_ref (entry);
+	return g_task_propagate_pointer (G_TASK (async_result), error);
 }
 
 /**
@@ -1731,22 +1685,17 @@ delete_entry_async_data_free (DeleteEntryAsyncData *data)
 }
 
 static void
-delete_entry_thread (GSimpleAsyncResult *result, GDataService *service, GCancellable *cancellable)
+delete_entry_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	gboolean success;
-	GError *error = NULL;
-	DeleteEntryAsyncData *data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataService *service = GDATA_SERVICE (source_object);
+	g_autoptr(GError) error = NULL;
+	DeleteEntryAsyncData *data = task_data;
 
 	/* Delete the entry and return */
-	success = gdata_service_delete_entry (service, data->domain, data->entry, cancellable, &error);
-	if (success == FALSE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	/* Replace the entry with the success value */
-	g_simple_async_result_set_op_res_gboolean (result, success);
+	if (!gdata_service_delete_entry (service, data->domain, data->entry, cancellable, &error))
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -1772,7 +1721,7 @@ void
 gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDomain *domain, GDataEntry *entry,
                                   GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	DeleteEntryAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_SERVICE (self));
@@ -1784,10 +1733,10 @@ gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDomain *
 	data->domain = (domain != NULL) ? g_object_ref (domain) : NULL;
 	data->entry = g_object_ref (entry);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_delete_entry_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) delete_entry_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) delete_entry_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_service_delete_entry_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) delete_entry_async_data_free);
+	g_task_run_in_thread (task, delete_entry_thread);
 }
 
 /**
@@ -1805,18 +1754,13 @@ gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDomain *
 gboolean
 gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-
 	g_return_val_if_fail (GDATA_IS_SERVICE (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_service_delete_entry_async), FALSE);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_service_delete_entry_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (result);
+	return g_task_propagate_boolean (G_TASK (async_result), error);
 }
 
 /**
