@@ -90,6 +90,8 @@ typedef struct {
 GType gdata_documents_service_get_type (void) G_GNUC_CONST;
 GQuark gdata_documents_service_error_quark (void) G_GNUC_CONST;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsService, g_object_unref)
+
 GDataDocumentsService *gdata_documents_service_new (GDataAuthorizer *authorizer) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 GDataAuthorizationDomain *gdata_documents_service_get_primary_authorization_domain (void) G_GNUC_CONST;

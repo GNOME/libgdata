@@ -67,6 +67,7 @@ typedef struct {
 } GDataDocumentsDocumentClass;
 
 GType gdata_documents_document_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsDocument, g_object_unref)
 
 GDataDocumentsDocument *gdata_documents_document_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

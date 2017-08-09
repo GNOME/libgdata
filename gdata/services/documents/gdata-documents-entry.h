@@ -96,6 +96,7 @@ typedef struct {
 } GDataDocumentsEntryClass;
 
 GType gdata_documents_entry_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsEntry, g_object_unref)
 
 gchar *gdata_documents_entry_get_path (GDataDocumentsEntry *self) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

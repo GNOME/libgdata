@@ -68,6 +68,7 @@ typedef struct {
 } GDataDocumentsQueryClass;
 
 GType gdata_documents_query_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsQuery, g_object_unref)
 
 GDataDocumentsQuery *gdata_documents_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataDocumentsQuery *gdata_documents_query_new_with_limits (const gchar *q,

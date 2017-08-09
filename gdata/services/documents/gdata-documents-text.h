@@ -183,6 +183,7 @@ typedef struct {
 } GDataDocumentsTextClass;
 
 GType gdata_documents_text_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsText, g_object_unref)
 
 GDataDocumentsText *gdata_documents_text_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

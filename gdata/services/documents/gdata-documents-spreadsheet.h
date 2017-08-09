@@ -147,6 +147,7 @@ typedef struct {
 } GDataDocumentsSpreadsheetClass;
 
 GType gdata_documents_spreadsheet_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsSpreadsheet, g_object_unref)
 
 GDataDocumentsSpreadsheet *gdata_documents_spreadsheet_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

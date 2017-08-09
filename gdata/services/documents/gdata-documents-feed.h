@@ -66,6 +66,7 @@ typedef struct {
 } GDataDocumentsFeedClass;
 
 GType gdata_documents_feed_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsFeed, g_object_unref)
 
 G_END_DECLS
 

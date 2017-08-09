@@ -67,6 +67,7 @@ typedef struct {
 } GDataDocumentsMetadataClass;
 
 GType gdata_documents_metadata_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDocumentsMetadata, g_object_unref)
 
 goffset gdata_documents_metadata_get_quota_total (GDataDocumentsMetadata *self) G_GNUC_PURE;
 goffset gdata_documents_metadata_get_quota_used (GDataDocumentsMetadata *self) G_GNUC_PURE;
