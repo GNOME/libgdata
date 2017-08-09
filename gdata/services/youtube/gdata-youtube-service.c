@@ -1159,20 +1159,18 @@ gdata_youtube_service_get_categories (GDataYouTubeService *self, GCancellable *c
 }
 
 static void
-get_categories_thread (GSimpleAsyncResult *result, GDataYouTubeService *service, GCancellable *cancellable)
+get_categories_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GDataAPPCategories *categories;
-	GError *error = NULL;
+	GDataYouTubeService *service = GDATA_YOUTUBE_SERVICE (source_object);
+	g_autoptr(GDataAPPCategories) categories = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* Get the categories and return */
 	categories = gdata_youtube_service_get_categories (service, cancellable, &error);
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	g_simple_async_result_set_op_res_gpointer (result, categories, (GDestroyNotify) g_object_unref);
+	if (error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&categories), g_object_unref);
 }
 
 /**
@@ -1195,15 +1193,15 @@ get_categories_thread (GSimpleAsyncResult *result, GDataYouTubeService *service,
 void
 gdata_youtube_service_get_categories_async (GDataYouTubeService *self, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (GDATA_IS_YOUTUBE_SERVICE (self));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_youtube_service_get_categories_async);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_categories_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_youtube_service_get_categories_async);
+	g_task_run_in_thread (task, get_categories_thread);
 }
 
 /**
@@ -1221,20 +1219,11 @@ gdata_youtube_service_get_categories_async (GDataYouTubeService *self, GCancella
 GDataAPPCategories *
 gdata_youtube_service_get_categories_finish (GDataYouTubeService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-	GDataAPPCategories *categories;
-
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_youtube_service_get_categories_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_youtube_service_get_categories_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return NULL;
-
-	categories = g_simple_async_result_get_op_res_gpointer (result);
-	if (categories != NULL)
-		return g_object_ref (categories);
-	return NULL;
+	return g_task_propagate_pointer (G_TASK (async_result), error);
 }
