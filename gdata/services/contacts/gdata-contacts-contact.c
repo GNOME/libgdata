@@ -3241,27 +3241,25 @@ photo_data_free (PhotoData *data)
 	g_slice_free (PhotoData, data);
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (PhotoData, photo_data_free)
+
 static void
-get_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCancellable *cancellable)
+get_photo_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GDataContactsService *service;
-	PhotoData *data;
-	GError *error = NULL;
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (source_object);
+	GDataContactsService *service = GDATA_CONTACTS_SERVICE (task_data);
+	g_autoptr(PhotoData) data = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* Input and output */
-	service = g_simple_async_result_get_op_res_gpointer (result);
 	data = g_slice_new0 (PhotoData);
 
 	/* Get the photo */
 	data->data = gdata_contacts_contact_get_photo (contact, service, &(data->length), &(data->content_type), cancellable, &error);
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	/* Replace the service with the photo struct */
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) photo_data_free);
+	if (error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&data), (GDestroyNotify) photo_data_free);
 }
 
 /**
@@ -3291,17 +3289,17 @@ void
 gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContactsService *service, GCancellable *cancellable,
                                         GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (service));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_contacts_contact_get_photo_async);
-	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (service), (GDestroyNotify) g_object_unref);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_photo_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_contacts_contact_get_photo_async);
+	g_task_set_task_data (task, g_object_ref (service), (GDestroyNotify) g_object_unref);
+	g_task_run_in_thread (task, get_photo_thread);
 }
 
 /**
@@ -3325,18 +3323,17 @@ gdata_contacts_contact_get_photo_async (GDataContactsContact *self, GDataContact
 guint8 *
 gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, gsize *length, gchar **content_type, GError **error)
 {
-	PhotoData *data;
-	guint8 *photo_data;
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
+	g_autoptr(PhotoData) data = NULL;
 
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
 	g_return_val_if_fail (length != NULL, NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_contacts_contact_get_photo_async), NULL);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_contacts_contact_get_photo_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE) {
+	data = g_task_propagate_pointer (G_TASK (async_result), error);
+	if (data == NULL) {
 		/* Error */
 		*length = 0;
 
@@ -3348,16 +3345,11 @@ gdata_contacts_contact_get_photo_finish (GDataContactsContact *self, GAsyncResul
 	}
 
 	/* Return the photo (steal the data from the PhotoData struct so we don't have to copy it again) */
-	data = g_simple_async_result_get_op_res_gpointer (result);
-	photo_data = data->data;
 	*length = data->length;
 	if (content_type != NULL)
-		*content_type = data->content_type;
+		*content_type = g_steal_pointer (&data->content_type);
 
-	data->data = NULL;
-	data->content_type = NULL;
-
-	return photo_data;
+	return g_steal_pointer (&data->data);
 }
 
 /**
@@ -3446,25 +3438,17 @@ gdata_contacts_contact_set_photo (GDataContactsContact *self, GDataContactsServi
 }
 
 static void
-set_photo_thread (GSimpleAsyncResult *result, GDataContactsContact *contact, GCancellable *cancellable)
+set_photo_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	PhotoData *data;
-	gboolean success;
-	GError *error = NULL;
-
-	/* Input photo data */
-	data = g_simple_async_result_get_op_res_gpointer (result);
+	GDataContactsContact *contact = GDATA_CONTACTS_CONTACT (source_object);
+	PhotoData *data = task_data;
+	g_autoptr(GError) error = NULL;
 
 	/* Set the photo */
-	success = gdata_contacts_contact_set_photo (contact, data->service, data->data, data->length, data->content_type, cancellable, &error);
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-		return;
-	}
-
-	/* Replace the photo data with the success value */
-	g_simple_async_result_set_op_res_gboolean (result, success);
+	if (!gdata_contacts_contact_set_photo (contact, data->service, data->data, data->length, data->content_type, cancellable, &error))
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -3497,8 +3481,8 @@ void
 gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContactsService *service, const guint8 *data, gsize length,
                                         const gchar *content_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
-	PhotoData *photo_data;
+	g_autoptr(GTask) task = NULL;
+	g_autoptr(PhotoData) photo_data = NULL;
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 	g_return_if_fail (GDATA_IS_CONTACTS_SERVICE (service));
@@ -3512,10 +3496,10 @@ gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContact
 	photo_data->length = length;
 	photo_data->content_type = g_strdup (content_type);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_contacts_contact_set_photo_async);
-	g_simple_async_result_set_op_res_gpointer (result, photo_data, (GDestroyNotify) photo_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) set_photo_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_contacts_contact_set_photo_async);
+	g_task_set_task_data (task, g_steal_pointer (&photo_data), (GDestroyNotify) photo_data_free);
+	g_task_run_in_thread (task, set_photo_thread);
 }
 
 /**
@@ -3535,16 +3519,11 @@ gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContact
 gboolean
 gdata_contacts_contact_set_photo_finish (GDataContactsContact *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result = G_SIMPLE_ASYNC_RESULT (async_result);
-
 	g_return_val_if_fail (GDATA_IS_CONTACTS_CONTACT (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_contacts_contact_set_photo_async), FALSE);
 
-	g_warn_if_fail (g_simple_async_result_get_source_tag (result) == gdata_contacts_contact_set_photo_async);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE)
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (result);
+	return g_task_propagate_boolean (G_TASK (async_result), error);
 }

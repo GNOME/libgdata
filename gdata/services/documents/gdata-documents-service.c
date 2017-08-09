@@ -638,11 +638,12 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	/* Ensure we're authenticated first */
 	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
 	                                               get_documents_authorization_domain ()) == FALSE) {
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
-		                                 _("You must be authenticated to query documents."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_autoptr(GTask) task = NULL;
+
+		task = g_task_new (self, cancellable, callback, user_data);
+		g_task_set_source_tag (task, gdata_service_query_async);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                         _("You must be authenticated to query documents."));
 
 		return;
 	}

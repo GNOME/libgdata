@@ -439,22 +439,24 @@ gdata_picasaweb_service_query_all_albums_async (GDataPicasaWebService *self, GDa
 
 	if (query != NULL && gdata_query_get_q (query) != NULL) {
 		/* Bug #593336 — Query parameter "q=..." isn't valid for album kinds */
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER, "%s",
-		                                 _("Query parameter not allowed for albums."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_autoptr(GTask) task = NULL;
+
+		task = g_task_new (self, cancellable, callback, user_data);
+		g_task_set_source_tag (task, gdata_service_query_async);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER, "%s",
+		                         _("Query parameter not allowed for albums."));
 
 		return;
 	}
 
 	uri = create_uri (self, username, "feed");
 	if (uri == NULL) {
-		GSimpleAsyncResult *result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_service_query_async);
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
-		                                 _("You must specify a username or be authenticated to query all albums."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_autoptr(GTask) task = NULL;
+
+		task = g_task_new (self, cancellable, callback, user_data);
+		g_task_set_source_tag (task, gdata_service_query_async);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                         _("You must specify a username or be authenticated to query all albums."));
 
 		return;
 	}
