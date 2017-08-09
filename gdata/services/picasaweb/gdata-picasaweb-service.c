@@ -259,27 +259,20 @@ gdata_picasaweb_service_get_user (GDataPicasaWebService *self, const gchar *user
 }
 
 static void
-get_user_thread (GSimpleAsyncResult *result, GDataPicasaWebService *service, GCancellable *cancellable)
+get_user_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	GDataPicasaWebUser *user;
-	GError *error = NULL;
+	GDataPicasaWebService *service = GDATA_PICASAWEB_SERVICE (source_object);
+	const gchar *username = task_data;
+	g_autoptr(GDataPicasaWebUser) user = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* Get the user and return */
-	user = gdata_picasaweb_service_get_user (service, g_simple_async_result_get_op_res_gpointer (result), cancellable, &error);
+	user = gdata_picasaweb_service_get_user (service, username, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-
-		if (user != NULL) {
-			g_object_unref (user);
-		}
-
-		return;
-	}
-
-	/* Replace the username with the user object */
-	g_simple_async_result_set_op_res_gpointer (result, g_object_ref (user), (GDestroyNotify) g_object_unref);
+	if (error != NULL)
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (task, g_steal_pointer (&user), g_object_unref);
 }
 
 /**
@@ -303,16 +296,16 @@ void
 gdata_picasaweb_service_get_user_async (GDataPicasaWebService *self, const gchar *username, GCancellable *cancellable,
                                         GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (GDATA_IS_PICASAWEB_SERVICE (self));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (callback != NULL);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_picasaweb_service_get_user_async);
-	g_simple_async_result_set_op_res_gpointer (result, g_strdup (username), (GDestroyNotify) g_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) get_user_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_picasaweb_service_get_user_async);
+	g_task_set_task_data (task, g_strdup (username), (GDestroyNotify) g_free);
+	g_task_run_in_thread (task, get_user_thread);
 }
 
 /**
@@ -330,21 +323,13 @@ gdata_picasaweb_service_get_user_async (GDataPicasaWebService *self, const gchar
 GDataPicasaWebUser *
 gdata_picasaweb_service_get_user_finish (GDataPicasaWebService *self, GAsyncResult *async_result, GError **error)
 {
-	GSimpleAsyncResult *result;
-
 	g_return_val_if_fail (GDATA_IS_PICASAWEB_SERVICE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_picasaweb_service_get_user_async), NULL);
 
-	g_return_val_if_fail (g_simple_async_result_is_valid (async_result, G_OBJECT (self), gdata_picasaweb_service_get_user_async) == TRUE, NULL);
-
-	result = G_SIMPLE_ASYNC_RESULT (async_result);
-
-	if (g_simple_async_result_propagate_error (result, error) == TRUE) {
-		return NULL;
-	}
-
-	return g_simple_async_result_get_op_res_gpointer (result);
+	return g_task_propagate_pointer (G_TASK (async_result), error);
 }
 
 /**
@@ -564,8 +549,7 @@ gdata_picasaweb_service_query_files_async (GDataPicasaWebService *self, GDataPic
 
 	request_uri = get_query_files_uri (album, &child_error);
 	if (request_uri == NULL) {
-		g_simple_async_report_gerror_in_idle (G_OBJECT (self), callback, user_data, child_error);
-		g_error_free (child_error);
+		g_task_report_error (self, callback, user_data, gdata_service_query_async, g_steal_pointer (&child_error));
 		return;
 	}
 
