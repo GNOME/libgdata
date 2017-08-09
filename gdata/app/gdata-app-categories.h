@@ -67,6 +67,7 @@ typedef struct {
 } GDataAPPCategoriesClass;
 
 GType gdata_app_categories_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataAPPCategories, g_object_unref)
 
 GList *gdata_app_categories_get_categories (GDataAPPCategories *self) G_GNUC_PURE;
 gboolean gdata_app_categories_is_fixed (GDataAPPCategories *self) G_GNUC_PURE;
