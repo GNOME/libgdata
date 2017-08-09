@@ -66,6 +66,7 @@ typedef struct {
 } GDataPicasaWebCommentClass;
 
 GType gdata_picasaweb_comment_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataPicasaWebComment, g_object_unref)
 
 GDataPicasaWebComment *gdata_picasaweb_comment_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 

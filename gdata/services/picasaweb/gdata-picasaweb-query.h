@@ -68,6 +68,7 @@ typedef struct {
 } GDataPicasaWebQueryClass;
 
 GType gdata_picasaweb_query_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataPicasaWebQuery, g_object_unref)
 
 GDataPicasaWebQuery *gdata_picasaweb_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataPicasaWebQuery *gdata_picasaweb_query_new_with_limits (const gchar *q,

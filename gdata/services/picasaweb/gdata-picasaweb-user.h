@@ -68,6 +68,7 @@ typedef struct {
 } GDataPicasaWebUserClass;
 
 GType gdata_picasaweb_user_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataPicasaWebUser, g_object_unref)
 
 const gchar *gdata_picasaweb_user_get_user (GDataPicasaWebUser *self) G_GNUC_PURE;
 const gchar *gdata_picasaweb_user_get_nickname (GDataPicasaWebUser *self) G_GNUC_PURE;

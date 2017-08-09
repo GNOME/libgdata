@@ -66,6 +66,7 @@ typedef struct {
 } GDataPicasaWebFeedClass;
 
 GType gdata_picasaweb_feed_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataPicasaWebFeed, g_object_unref)
 
 G_END_DECLS
 

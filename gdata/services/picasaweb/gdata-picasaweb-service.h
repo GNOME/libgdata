@@ -71,6 +71,7 @@ typedef struct {
 } GDataPicasaWebServiceClass;
 
 GType gdata_picasaweb_service_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataPicasaWebService, g_object_unref)
 
 GDataPicasaWebService *gdata_picasaweb_service_new (GDataAuthorizer *authorizer) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
