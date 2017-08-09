@@ -1146,21 +1146,16 @@ request_authorization_async_data_free (RequestAuthorizationAsyncData *data)
 }
 
 static void
-request_authorization_thread (GSimpleAsyncResult *result, GDataOAuth1Authorizer *authorizer, GCancellable *cancellable)
+request_authorization_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
 {
-	RequestAuthorizationAsyncData *data;
-	gboolean success;
-	GError *error = NULL;
+	GDataOAuth1Authorizer *authorizer = GDATA_OAUTH1_AUTHORIZER (source_object);
+	RequestAuthorizationAsyncData *data = task_data;
+	g_autoptr(GError) error = NULL;
 
-	data = g_simple_async_result_get_op_res_gpointer (result);
-
-	success = gdata_oauth1_authorizer_request_authorization (authorizer, data->token, data->token_secret, data->verifier, cancellable, &error);
-	g_simple_async_result_set_op_res_gboolean (result, success);
-
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (!gdata_oauth1_authorizer_request_authorization (authorizer, data->token, data->token_secret, data->verifier, cancellable, &error))
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -1188,7 +1183,7 @@ gdata_oauth1_authorizer_request_authorization_async (GDataOAuth1Authorizer *self
                                                      const gchar *verifier,
                                                      GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	RequestAuthorizationAsyncData *data;
 
 	g_return_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self));
@@ -1202,10 +1197,10 @@ gdata_oauth1_authorizer_request_authorization_async (GDataOAuth1Authorizer *self
 	data->token_secret = _gdata_service_secure_strdup (token_secret);
 	data->verifier = g_strdup (verifier);
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_oauth1_authorizer_request_authorization_async);
-	g_simple_async_result_set_op_res_gpointer (result, data, (GDestroyNotify) request_authorization_async_data_free);
-	g_simple_async_result_run_in_thread (result, (GSimpleAsyncThreadFunc) request_authorization_thread, G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_oauth1_authorizer_request_authorization_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) request_authorization_async_data_free);
+	g_task_run_in_thread (task, request_authorization_thread);
 }
 
 /**
@@ -1226,14 +1221,10 @@ gdata_oauth1_authorizer_request_authorization_finish (GDataOAuth1Authorizer *sel
 	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_oauth1_authorizer_request_authorization_async), FALSE);
 
-	g_warn_if_fail (g_simple_async_result_is_valid (async_result, G_OBJECT (self), gdata_oauth1_authorizer_request_authorization_async));
-
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (async_result), error) == TRUE) {
-		return FALSE;
-	}
-
-	return TRUE;
+	return g_task_propagate_boolean (G_TASK (async_result), error);
 }
 
 /**

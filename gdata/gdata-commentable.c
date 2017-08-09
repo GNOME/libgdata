@@ -186,23 +186,18 @@ gdata_commentable_query_comments (GDataCommentable *self, GDataService *service,
 }
 
 static void
-query_comments_async_cb (GDataService *service, GAsyncResult *service_result, GSimpleAsyncResult *commentable_result)
+query_comments_async_cb (GDataService *service, GAsyncResult *service_result, gpointer user_data)
 {
-	GDataFeed *feed;
-	GError *error = NULL;
+	g_autoptr(GTask) commentable_task = G_TASK (user_data);
+	g_autoptr(GDataFeed) feed = NULL;
+	g_autoptr(GError) error = NULL;
 
 	feed = gdata_service_query_finish (service, service_result, &error);
 
-	if (error != NULL) {
-		/* Error. */
-		g_simple_async_result_take_error (commentable_result, error);
-	} else {
-		g_simple_async_result_set_op_res_gpointer (commentable_result, g_object_ref (feed), (GDestroyNotify) g_object_unref);
-	}
-
-	g_simple_async_result_complete (commentable_result);
-
-	g_object_unref (commentable_result);
+	if (error != NULL)
+		g_task_return_error (commentable_task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (commentable_task, g_steal_pointer (&feed), g_object_unref);
 }
 
 /**
@@ -236,7 +231,7 @@ gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *se
 {
 	GDataCommentableInterface *iface;
 	gchar *uri;
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	GDataAuthorizationDomain *domain = NULL;
 
 	g_return_if_fail (GDATA_IS_COMMENTABLE (self));
@@ -252,16 +247,15 @@ gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *se
 	uri = iface->get_query_comments_uri (self);
 
 	/* Build the async result. */
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_commentable_query_comments_async);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_commentable_query_comments_async);
 
 	/* The URI can be NULL when no comments and thus no feedLink is present in a GDataCommentable */
 	if (uri == NULL) {
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
-		                                 /* Translators: This is an error message for if a user attempts to retrieve comments from an entry
-		                                  * (such as a video) which doesn't support comments. */
-		                                 _("This entry does not support comments."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
+		                         /* Translators: This is an error message for if a user attempts to retrieve comments from an entry
+		                          * (such as a video) which doesn't support comments. */
+		                         _("This entry does not support comments."));
 		return;
 	}
 
@@ -272,7 +266,7 @@ gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *se
 
 	/* Get the comment feed. */
 	gdata_service_query_async (service, domain, uri, query, get_comment_type (iface), cancellable, progress_callback, progress_user_data,
-	                           destroy_progress_user_data, (GAsyncReadyCallback) query_comments_async_cb, result);
+	                           destroy_progress_user_data, (GAsyncReadyCallback) query_comments_async_cb, g_object_ref (task));
 	g_free (uri);
 }
 
@@ -294,15 +288,10 @@ gdata_commentable_query_comments_finish (GDataCommentable *self, GAsyncResult *r
 	g_return_val_if_fail (GDATA_IS_COMMENTABLE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, gdata_commentable_query_comments_async), NULL);
 
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (self), gdata_commentable_query_comments_async) == TRUE, NULL);
-
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error) == TRUE) {
-		/* Error. */
-		return NULL;
-	}
-
-	return GDATA_FEED (g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result)));
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -364,23 +353,18 @@ gdata_commentable_insert_comment (GDataCommentable *self, GDataService *service,
 }
 
 static void
-insert_comment_async_cb (GDataService *service, GAsyncResult *service_result, GSimpleAsyncResult *commentable_result)
+insert_comment_async_cb (GDataService *service, GAsyncResult *service_result, gpointer user_data)
 {
-	GDataEntry *new_comment;
-	GError *error = NULL;
+	g_autoptr(GTask) commentable_task = G_TASK (user_data);
+	g_autoptr(GDataEntry) new_comment = NULL;
+	g_autoptr(GError) error = NULL;
 
 	new_comment = gdata_service_insert_entry_finish (service, service_result, &error);
 
-	if (error != NULL) {
-		/* Error. */
-		g_simple_async_result_take_error (commentable_result, error);
-	} else {
-		g_simple_async_result_set_op_res_gpointer (commentable_result, g_object_ref (new_comment), (GDestroyNotify) g_object_unref);
-	}
-
-	g_simple_async_result_complete (commentable_result);
-
-	g_object_unref (commentable_result);
+	if (error != NULL)
+		g_task_return_error (commentable_task, g_steal_pointer (&error));
+	else
+		g_task_return_pointer (commentable_task, g_steal_pointer (&new_comment), g_object_unref);
 }
 
 /**
@@ -407,8 +391,8 @@ gdata_commentable_insert_comment_async (GDataCommentable *self, GDataService *se
                                         GAsyncReadyCallback callback, gpointer user_data)
 {
 	GDataCommentableInterface *iface;
-	gchar *uri;
-	GSimpleAsyncResult *result;
+	g_autofree gchar *uri = NULL;
+	g_autoptr(GTask) task = NULL;
 	GDataAuthorizationDomain *domain = NULL;
 
 	g_return_if_fail (GDATA_IS_COMMENTABLE (self));
@@ -425,16 +409,15 @@ gdata_commentable_insert_comment_async (GDataCommentable *self, GDataService *se
 	uri = iface->get_insert_comment_uri (self, comment_);
 
 	/* Build the async result. */
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_commentable_insert_comment_async);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_commentable_insert_comment_async);
 
 	/* The URI can be NULL when no comments and thus no feedLink is present in a GDataCommentable */
 	if (uri == NULL) {
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
-		                                 /* Translators: This is an error message for if a user attempts to add a comment to an entry
-		                                  * (such as a video) which doesn't support comments. */
-		                                 _("Comments may not be added to this entry."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
+		                         /* Translators: This is an error message for if a user attempts to add a comment to an entry
+		                          * (such as a video) which doesn't support comments. */
+		                         _("Comments may not be added to this entry."));
 		return;
 	}
 
@@ -445,9 +428,7 @@ gdata_commentable_insert_comment_async (GDataCommentable *self, GDataService *se
 
 	/* Add the comment. */
 	gdata_service_insert_entry_async (service, domain, uri, GDATA_ENTRY (comment_), cancellable, (GAsyncReadyCallback) insert_comment_async_cb,
-	                                  result);
-
-	g_free (uri);
+	                                  g_object_ref (task));
 }
 
 /**
@@ -468,15 +449,10 @@ gdata_commentable_insert_comment_finish (GDataCommentable *self, GAsyncResult *r
 	g_return_val_if_fail (GDATA_IS_COMMENTABLE (self), NULL);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (g_task_is_valid (result, self), NULL);
+	g_return_val_if_fail (g_async_result_is_tagged (result, gdata_commentable_insert_comment_async), NULL);
 
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (self), gdata_commentable_insert_comment_async) == TRUE, NULL);
-
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error) == TRUE) {
-		/* Error. */
-		return NULL;
-	}
-
-	return GDATA_COMMENT (g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result)));
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /**
@@ -529,23 +505,15 @@ gdata_commentable_delete_comment (GDataCommentable *self, GDataService *service,
 }
 
 static void
-delete_comment_async_cb (GDataService *service, GAsyncResult *service_result, GSimpleAsyncResult *commentable_result)
+delete_comment_async_cb (GDataService *service, GAsyncResult *service_result, gpointer user_data)
 {
-	gboolean success;
-	GError *error = NULL;
+	g_autoptr(GTask) commentable_task = G_TASK (user_data);
+	g_autoptr(GError) error = NULL;
 
-	success = gdata_service_delete_entry_finish (service, service_result, &error);
-
-	if (error != NULL) {
-		/* Error. */
-		g_simple_async_result_take_error (commentable_result, error);
-	} else {
-		g_simple_async_result_set_op_res_gboolean (commentable_result, success);
-	}
-
-	g_simple_async_result_complete (commentable_result);
-
-	g_object_unref (commentable_result);
+	if (!gdata_service_delete_entry_finish (service, service_result, &error))
+		g_task_return_error (commentable_task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (commentable_task, TRUE);
 }
 
 /**
@@ -572,7 +540,7 @@ gdata_commentable_delete_comment_async (GDataCommentable *self, GDataService *se
                                         GAsyncReadyCallback callback, gpointer user_data)
 {
 	GDataCommentableInterface *iface;
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 	GDataAuthorizationDomain *domain = NULL;
 
 	g_return_if_fail (GDATA_IS_COMMENTABLE (self));
@@ -585,15 +553,14 @@ gdata_commentable_delete_comment_async (GDataCommentable *self, GDataService *se
 	g_return_if_fail (g_type_is_a (G_OBJECT_TYPE (comment_), get_comment_type (iface)) == TRUE);
 
 	/* Build the async result. */
-	result = g_simple_async_result_new (G_OBJECT (self), callback, user_data, gdata_commentable_delete_comment_async);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_commentable_delete_comment_async);
 
 	g_assert (iface->is_comment_deletable != NULL);
 	if (iface->is_comment_deletable (self, comment_) == FALSE) {
-		g_simple_async_result_set_error (result, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
-		                                 /* Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete. */
-		                                 _("This comment may not be deleted."));
-		g_simple_async_result_complete_in_idle (result);
-		g_object_unref (result);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN,
+		                         /* Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete. */
+		                         _("This comment may not be deleted."));
 		return;
 	}
 
@@ -603,7 +570,7 @@ gdata_commentable_delete_comment_async (GDataCommentable *self, GDataService *se
 	}
 
 	/* Delete the comment. */
-	gdata_service_delete_entry_async (service, domain, GDATA_ENTRY (comment_), cancellable, (GAsyncReadyCallback) delete_comment_async_cb, result);
+	gdata_service_delete_entry_async (service, domain, GDATA_ENTRY (comment_), cancellable, (GAsyncReadyCallback) delete_comment_async_cb, g_object_ref (task));
 }
 
 /**
@@ -624,13 +591,8 @@ gdata_commentable_delete_comment_finish (GDataCommentable *self, GAsyncResult *r
 	g_return_val_if_fail (GDATA_IS_COMMENTABLE (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, gdata_commentable_delete_comment_async), FALSE);
 
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (self), gdata_commentable_delete_comment_async) == TRUE, FALSE);
-
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result), error) == TRUE) {
-		/* Error. */
-		return FALSE;
-	}
-
-	return g_simple_async_result_get_op_res_gboolean (G_SIMPLE_ASYNC_RESULT (result));
+	return g_task_propagate_boolean (G_TASK (result), error);
 }

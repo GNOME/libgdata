@@ -1232,22 +1232,22 @@ gdata_oauth2_authorizer_request_authorization (GDataOAuth2Authorizer *self,
 }
 
 static void
-request_authorization_thread (GSimpleAsyncResult *result,
-                              GDataOAuth2Authorizer *authorizer,
+request_authorization_thread (GTask        *task,
+                              gpointer      source_object,
+                              gpointer      task_data,
                               GCancellable *cancellable)
 {
-	GError *error = NULL;
-	const gchar *authorization_code;
+	GDataOAuth2Authorizer *authorizer = GDATA_OAUTH2_AUTHORIZER (source_object);
+	g_autoptr(GError) error = NULL;
+	const gchar *authorization_code = task_data;
 
-	authorization_code = g_simple_async_result_get_op_res_gpointer (result);
-
-	if (gdata_oauth2_authorizer_request_authorization (authorizer,
-	                                                   authorization_code,
-	                                                   cancellable,
-	                                                   &error) == FALSE) {
-		g_simple_async_result_set_from_error (result, error);
-		g_error_free (error);
-	}
+	if (!gdata_oauth2_authorizer_request_authorization (authorizer,
+	                                                    authorization_code,
+	                                                    cancellable,
+	                                                    &error))
+		g_task_return_error (task, g_steal_pointer (&error));
+	else
+		g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -1269,7 +1269,7 @@ gdata_oauth2_authorizer_request_authorization_async (GDataOAuth2Authorizer *self
                                                      GAsyncReadyCallback callback,
                                                      gpointer user_data)
 {
-	GSimpleAsyncResult *result;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (GDATA_IS_OAUTH2_AUTHORIZER (self));
 	g_return_if_fail (authorization_code != NULL &&
@@ -1277,16 +1277,11 @@ gdata_oauth2_authorizer_request_authorization_async (GDataOAuth2Authorizer *self
 	g_return_if_fail (cancellable == NULL ||
 	                  G_IS_CANCELLABLE (cancellable));
 
-	result = g_simple_async_result_new (G_OBJECT (self), callback,
-	                                    user_data,
-	                                    gdata_oauth2_authorizer_request_authorization_async);
-	g_simple_async_result_set_op_res_gpointer (result,
-	                                           g_strdup (authorization_code),
-	                                           (GDestroyNotify) g_free);
-	g_simple_async_result_run_in_thread (result,
-	                                     (GSimpleAsyncThreadFunc) request_authorization_thread,
-	                                     G_PRIORITY_DEFAULT, cancellable);
-	g_object_unref (result);
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_oauth2_authorizer_request_authorization_async);
+	g_task_set_task_data (task, g_strdup (authorization_code),
+	                      (GDestroyNotify) g_free);
+	g_task_run_in_thread (task, request_authorization_thread);
 }
 
 /**
@@ -1307,23 +1302,13 @@ gdata_oauth2_authorizer_request_authorization_finish (GDataOAuth2Authorizer *sel
                                                       GAsyncResult *async_result,
                                                       GError **error)
 {
-	GSimpleAsyncResult *result;
-
 	g_return_val_if_fail (GDATA_IS_OAUTH2_AUTHORIZER (self), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_oauth2_authorizer_request_authorization_async), FALSE);
 
-	result = G_SIMPLE_ASYNC_RESULT (async_result);
-
-	g_warn_if_fail (g_simple_async_result_is_valid (async_result,
-	                                                G_OBJECT (self),
-	                                                gdata_oauth2_authorizer_request_authorization_async));
-
-	if (g_simple_async_result_propagate_error (result, error)) {
-		return FALSE;
-	}
-
-	return TRUE;
+	return g_task_propagate_boolean (G_TASK (async_result), error);
 }
 
 /**
