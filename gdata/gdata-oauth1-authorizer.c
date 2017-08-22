@@ -889,7 +889,6 @@ request_authentication_uri_thread (GTask *task, gpointer source_object, gpointer
 	GDataOAuth1Authorizer *authorizer = GDATA_OAUTH1_AUTHORIZER (source_object);
 	g_autoptr(RequestAuthenticationUriAsyncData) data = NULL;
 	g_autoptr(GError) error = NULL;
-	g_autofree gchar *authentication_uri = NULL;
 
 	data = g_slice_new0 (RequestAuthenticationUriAsyncData);
 	data->authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (authorizer, &(data->token), &(data->token_secret),
