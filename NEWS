@@ -1,3 +1,28 @@
+Overview of changes from libgdata 0.17.8 to libgdata 0.17.9
+===========================================================
+
+Major changes:
+ • Support reporting quotas for Drive usage (thanks to Michael Terry)
+ • Bump GLib dependency to 2.44 for g_autoptr() support
+ • Add g_autoptr() support for some core classes
+ • Port from GSimpleAsyncResult to GTask
+ • More porting to the Google Drive v2 API
+   (ongoing thanks to Debarshi Ray for working on and maintaining this)
+
+API changes:
+ • Add GDataDocumentsMetadata
+ • Add gdata_documents_service_get_metadata(),
+   gdata_documents_service_get_metadata_async(),
+   gdata_documents_service_get_metadata_finish()
+ • Initial g_autoptr() support for core classes
+
+Bugs fixed:
+ • Bug 783046 — Invalid URIs are generated when q and q_internal properties are set
+ • GitHub PR #1 — added initial .travis.yml
+ • Bug 785885 — Expose information about quota usage
+ • Bug 684920 — Port to Google Drive API v2
+
+
 Overview of changes from libgdata 0.17.7 to libgdata 0.17.8
 ===========================================================
 

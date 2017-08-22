@@ -129,7 +129,7 @@ gdata_documents_utils_get_content_type (GDataDocumentsEntry *entry)
  *
  * Return value: (nullable): ID of @_link, %NULL otherwise
  *
- * Since: UNRELEASED
+ * Since: 0.17.9
  */
 const gchar *
 gdata_documents_utils_get_id_from_link (GDataLink *_link)
