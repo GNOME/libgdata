@@ -288,7 +288,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 		g_string_append (query_uri, "updatedMin=");
-		updated_min = gdata_parser_int64_to_iso8601_numeric_timezone (gdata_query_get_updated_min (GDATA_QUERY (self)));
+		updated_min = gdata_parser_int64_to_iso8601 (gdata_query_get_updated_min (GDATA_QUERY (self)));
 		g_string_append (query_uri, updated_min);
 		g_free (updated_min);
 	}
@@ -298,7 +298,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 		g_string_append (query_uri, "completedMin=");
-		completed_min = gdata_parser_int64_to_iso8601_numeric_timezone (priv->completed_min);
+		completed_min = gdata_parser_int64_to_iso8601 (priv->completed_min);
 		g_string_append (query_uri, completed_min);
 		g_free (completed_min);
 	}
@@ -308,7 +308,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 		g_string_append (query_uri, "completedMax=");
-		completed_max = gdata_parser_int64_to_iso8601_numeric_timezone (priv->completed_max);
+		completed_max = gdata_parser_int64_to_iso8601 (priv->completed_max);
 		g_string_append (query_uri, completed_max);
 		g_free (completed_max);
 	}
@@ -318,7 +318,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 		g_string_append (query_uri, "dueMin=");
-		due_min = gdata_parser_int64_to_iso8601_numeric_timezone (priv->due_min);
+		due_min = gdata_parser_int64_to_iso8601 (priv->due_min);
 		g_string_append (query_uri, due_min);
 		g_free (due_min);
 	}
@@ -328,7 +328,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 		g_string_append (query_uri, "dueMax=");
-		due_max = gdata_parser_int64_to_iso8601_numeric_timezone (priv->due_max);
+		due_max = gdata_parser_int64_to_iso8601 (priv->due_max);
 		g_string_append (query_uri, due_max);
 		g_free (due_max);
 	}

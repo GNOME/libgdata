@@ -46,7 +46,6 @@ gdata_parser_error_from_json_error (JsonReader *reader,
 gboolean gdata_parser_int64_from_date (const gchar *date, gint64 *_time);
 gchar *gdata_parser_date_from_int64 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gchar *gdata_parser_int64_to_iso8601 (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-gchar *gdata_parser_int64_to_iso8601_numeric_timezone (gint64 _time) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 gboolean gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time);
 
 /*
