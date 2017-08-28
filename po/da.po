@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=General\n"
-"POT-Creation-Date: 2017-02-24 23:45+0000\n"
+"Report-Msgid-Bugs-To: "
+"https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2017-03-06 11:45+0000\n"
 "PO-Revision-Date: 2017-03-06 12:34+0100\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -60,7 +60,8 @@ msgstr "Kan ikke forbinde til proxy-serveren."
 #: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
 #: ../gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgid ""
+"Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 "Ugyldig forespørgselsadresse eller -teksthoved, eller uunderstøttet "
 "parameter der ikke er standard: %s"
@@ -253,7 +254,7 @@ msgstr "Et %s-element manglede nødvendigt indhold."
 #: ../gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
-msgstr "Indholdet af et %s-element (\"%s\") var ikke i ISO 8601-formatet."
+msgstr "Indholdet af et %s-element (“%s”) var ikke i ISO 8601-formatet."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
@@ -263,7 +264,7 @@ msgstr "Indholdet af et %s-element (\"%s\") var ikke i ISO 8601-formatet."
 #: ../gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (‘%s’) was unknown."
-msgstr "Værdien på %s-egenskaben af et %s-element (\"%s\") var ukendt."
+msgstr "Værdien på %s-egenskaben af et %s-element (“%s”) var ukendt."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
@@ -273,7 +274,7 @@ msgstr "Værdien på %s-egenskaben af et %s-element (\"%s\") var ukendt."
 #: ../gdata/gdata-parser.c:123
 #, c-format
 msgid "The content of a %s element (‘%s’) was unknown."
-msgstr "Indholdet af et %s-element (\"%s\") var ukendt."
+msgstr "Indholdet af et %s-element (“%s”) var ukendt."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second is the name of an XML property which it should have contained.
@@ -317,7 +318,7 @@ msgstr "Et nødvendigt element (%s) var ikke til stede."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
+#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:305
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Et singleton-element (%s) blev duplikeret."
@@ -326,21 +327,23 @@ msgstr "Et singleton-element (%s) blev duplikeret."
 #. *
 #. * For example:
 #. *  A ‘title’ element was missing required content.
-#: ../gdata/gdata-parser.c:273
+#: ../gdata/gdata-parser.c:291
+#, c-format
 msgid "A ‘%s’ element was missing required content."
-msgstr "Et \"%s\"-element manglede nødvendigt indhold."
+msgstr "Et “%s”-element manglede nødvendigt indhold."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
 #. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:303
+#: ../gdata/gdata-parser.c:321
+#, c-format
 msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
-msgstr "Indholdet af et \"%s\"-element (\"%s\") var ikke i ISO 8601-formatet."
+msgstr "Indholdet af et “%s”-element (“%s”) var ikke i ISO 8601-formatet."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:314
+#: ../gdata/gdata-parser.c:332
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Der blev modtaget ugyldig JSON fra serveren: %s"
@@ -351,10 +354,10 @@ msgstr "Der blev modtaget ugyldig JSON fra serveren: %s"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
-#: ../gdata/gdata-parser.c:1179
+#: ../gdata/gdata-parser.c:1197
 #, c-format
 msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
-msgstr "Indholdet af et %s-element (\"%s\") var ikke i hexadecimal-RGB-format."
+msgstr "Indholdet af et %s-element (“%s”) var ikke i hexadecimal-RGB-format."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
@@ -482,7 +485,7 @@ msgstr "Du skal være godkendt for at hente dokumenter ned."
 #: ../gdata/services/documents/gdata-documents-document.c:401
 #, c-format
 msgid "Unknown or unsupported document export format ‘%s’."
-msgstr "Ukendt eller ikke understøttet dokument eksportformat \"%s\"."
+msgstr "Ukendt eller ikke understøttet dokument eksportformat “%s”."
 
 #: ../gdata/services/documents/gdata-documents-service.c:454
 #: ../gdata/services/documents/gdata-documents-service.c:504
@@ -506,7 +509,7 @@ msgstr "Du skal være godkendt for at opdatere dokumenter."
 msgid ""
 "The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
-"Indholdstypen af det medfølgende dokument (\"%s\") kunne ikke genkendes."
+"Indholdstypen af det medfølgende dokument (“%s”) kunne ikke genkendes."
 
 #: ../gdata/services/documents/gdata-documents-service.c:927
 msgid "You must be authenticated to copy documents."
@@ -526,10 +529,10 @@ msgstr ""
 msgid "You must be authenticated to move documents and folders."
 msgstr "Du skal være godkendt for at flytte dokumenter og mapper."
 
-#: ../gdata/services/freebase/gdata-freebase-service.c:479
+#: ../gdata/services/freebase/gdata-freebase-service.c:497
 #, c-format
 msgid "Property ‘%s’ does not hold an image"
-msgstr "Egenskaben \"%s\" indeholder ikke et billede"
+msgstr "Egenskaben “%s” indeholder ikke et billede"
 
 #: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
@@ -596,8 +599,9 @@ msgid "You must be authenticated to upload a video."
 msgstr "Du skal være godkendt for at lægge en video op."
 
 #~ msgid "A '%s' element was missing required content."
-#~ msgstr "Et \"%s\"-element manglede nødvendigt indhold."
+#~ msgstr "Et “%s”-element manglede nødvendigt indhold."
 
 #~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-#~ msgstr ""
-#~ "Indholdet af et \"%s\"-element (\"%s\") var ikke i ISO 8601-formatet."
+#~ msgstr "Indholdet af et “%s”-element (“%s”) var ikke i ISO 8601-formatet."
+
+
