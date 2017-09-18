@@ -1025,7 +1025,6 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			if (GDATA_PARSABLE_GET_CLASS (self)->parse_json (GDATA_PARSABLE (self), reader, user_data, error) == FALSE) {
 				json_reader_end_element (reader);
-				g_object_unref (parsable);
 				break;
 			}
 
