@@ -1416,6 +1416,24 @@ G_STMT_START {
 		g_object_unref (entry);
 	} else {
 		g_assert (entry == NULL);
+
+		/* Libgdata's cancellation sematics [1] don't match
+		 * the default expectations of GTask. See:
+		 * https://bugzilla.gnome.org/show_bug.cgi?id=786282
+		 *
+		 * The GDATA_ASYNC_* macros will continue running the
+		 * cancellation test until the timeout is long enough
+		 * to avoid a G_IO_ERROR_CANCELLED. However, GTask
+		 * will always return an error regardless of whether
+		 * the operation succeeded on the server or not.
+		 *
+		 * As a short-term workaround, we assume that a
+		 * non-zero timeout is equivalent to late
+		 * cancellation. Clearing the error tricks
+		 * GDATA_ASYNC_* into terminating the test.
+		 * [1] https://developer.gnome.org/gdata/unstable/gdata-overview.html#cancellable-support */
+		if (async_data->cancellation_timeout > 0)
+			g_clear_error (&error);
 	}
 
 	/* Since this code is called for the cancellation tests, we don't know exactly how many requests will be made
