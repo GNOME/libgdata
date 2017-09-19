@@ -3,7 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
- * Copyright (C) Red Hat, Inc. 2015, 2016
+ * Copyright (C) Red Hat, Inc. 2015, 2016, 2017
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1658,58 +1658,105 @@ static void
 test_folder_parser_normal (void)
 {
 	GDataDocumentsFolder *folder;
-	gchar *path;
 	GDataAuthor *author;
+	GDataLink *parent_link;
 	GError *error = NULL;
+	GList *parent_folders_list = NULL;
+	const gchar *parent_uri;
 
-	folder = GDATA_DOCUMENTS_FOLDER (gdata_parsable_new_from_xml (GDATA_TYPE_DOCUMENTS_FOLDER,
-		"<?xml version='1.0' encoding='UTF-8'?>"
-		"<entry xmlns='http://www.w3.org/2005/Atom' xmlns:docs='http://schemas.google.com/docs/2007' "
-		       "xmlns:batch='http://schemas.google.com/gdata/batch' xmlns:gd='http://schemas.google.com/g/2005' "
-		       "gd:etag='&quot;WBYEFh8LRCt7ImBk&quot;'>"
-			"<id>https://docs.google.com/feeds/id/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams</id>"
-			"<published>2012-04-14T09:12:19.418Z</published>"
-			"<updated>2012-04-14T09:12:19.418Z</updated>"
-			"<app:edited xmlns:app='http://www.w3.org/2007/app'>2012-04-14T09:12:20.055Z</app:edited>"
-			"<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/docs/2007#folder' label='folder'/>"
-			"<title>Temporary Folder</title>"
-			"<content type='application/atom+xml;type=feed' "
-			         "src='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams/contents'/>"
-			"<link rel='alternate' type='text/html' href='https://docs.google.com/#folders/folder.0.0BzY2jgHHwMwYalFhbjhVT3dyams'/>"
-			"<link rel='http://schemas.google.com/docs/2007#icon' type='image/png' href='https://ssl.gstatic.com/docs/doclist/images/icon_9_collection_list.png'/>"
-			"<link rel='http://schemas.google.com/g/2005#resumable-create-media' type='application/atom+xml' href='https://docs.google.com/feeds/upload/create-session/default/private/full/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams/contents'/>"
-			"<link rel='http://schemas.google.com/docs/2007#alt-post' type='application/atom+xml' href='https://docs.google.com/feeds/upload/file/default/private/full/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams/contents'/>"
-			"<link rel='self' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams'/>"
-			"<link rel='edit' type='application/atom+xml' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams'/>"
-			"<author>"
-				"<name>libgdata.documents</name>"
-				"<email>libgdata.documents@gmail.com</email>"
-			"</author>"
-			"<gd:resourceId>folder:0BzY2jgHHwMwYalFhbjhVT3dyams</gd:resourceId>"
-			"<gd:lastModifiedBy>"
-				"<name>libgdata.documents</name>"
-				"<email>libgdata.documents@gmail.com</email>"
-			"</gd:lastModifiedBy>"
-			"<gd:quotaBytesUsed>0</gd:quotaBytesUsed>"
-			"<docs:writersCanInvite value='false'/>"
-			"<gd:feedLink rel='http://schemas.google.com/acl/2007#accessControlList' href='https://docs.google.com/feeds/default/private/full/folder%3A0BzY2jgHHwMwYalFhbjhVT3dyams/acl'/>"
-		"</entry>", -1, &error));
+	folder = GDATA_DOCUMENTS_FOLDER (gdata_parsable_new_from_json (GDATA_TYPE_DOCUMENTS_FOLDER,
+		"{"
+			"\"kind\": \"drive#file\","
+			"\"id\": \"0B9J_DkaiBDRFZnZibUY5dFRPN2c\","
+			"\"selfLink\": \"https://www.googleapis.com/drive/v2/files/0B9J_DkaiBDRFZnZibUY5dFRPN2c\","
+			"\"alternateLink\": \"https://drive.google.com/drive/folders/0B9J_DkaiBDRFZnZibUY5dFRPN2c\","
+			"\"embedLink\": \"https://drive.google.com/embeddedfolderview?id=0B9J_DkaiBDRFZnZibUY5dFRPN2c\","
+			"\"iconLink\": \"https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.folder+48\","
+			"\"title\": \"Temporary Folder\","
+			"\"mimeType\": \"application/vnd.google-apps.folder\","
+			"\"labels\": {"
+				"\"starred\": false,"
+				"\"hidden\": false,"
+				"\"trashed\": false,"
+				"\"restricted\": false,"
+				"\"viewed\": true"
+			"},"
+			"\"createdData\": \"2017-09-21T11:28:21.948Z\","
+			"\"modifiedDate\": \"2017-09-21T11:28:21.948Z\","
+			"\"modifiedByMeDate\": \"2017-09-21T11:28:21.948Z\","
+			"\"lastViewedByMeDate\": \"2017-09-21T12:38:31.948Z\","
+			"\"markedViewedByMeDate\": \"1970-01-01T00:00:00.000Z\","
+			"\"version\": \"1\","
+			"\"parents\": ["
+				"{"
+					"\"kind\": \"drive#parentReference\","
+					"\"id\": \"0ANJ_DkaiBDRFUk9PVA\","
+					"\"selfLink\": \"https://www.googleapis.com/drive/v2/files/0B9J_DkaiBDRFZnZibUY5dFRPN2c/parents/0ANJ_DkaiBDRFUk9PVA\","
+					"\"parentLink\": \"https://www.googleapis.com/drive/v2/files/0ANJ_DkaiBDRFUk9PVA\","
+					"\"isRoot\": true"
+				"}"
+			"],"
+			"\"userPermission\": {"
+				"\"kind\": \"drive#permission\","
+				"\"id\": \"me\","
+				"\"selfLink\": \"https://www.googleapis.com/drive/v2/files/0B9J_DkaiBDRFZnZibUY5dFRPN2c/permissions/me\","
+				"\"role\": \"owner\","
+				"\"type\": \"user\""
+			"},"
+			"\"quotaBytesUsed\": \"0\","
+			"\"ownerNames\": ["
+				"\"Rupert\""
+			"],"
+			"\"owners\": ["
+				"{"
+					"\"kind\": \"drive#user\","
+					"\"displayName\": \"Rupert\","
+					"\"isAuthenticatedUser\": true,"
+					"\"emailAddress\": \"rupert@gnome.org\""
+				"}"
+			"],"
+			"\"lastModifyingUserName\": \"Rupert\","
+			"\"lastModifyingUser\": {"
+				"\"kind\": \"drive#user\","
+				"\"displayName\": \"Rupert\","
+				"\"isAuthenticatedUser\": true,"
+				"\"emailAddress\": \"rupert@gnome.org\""
+			"},"
+			"\"capabilities\": {"
+				"\"canCopy\": false,"
+				"\"canEdit\": true"
+			"},"
+			"\"editable\": true,"
+			"\"copyable\": false,"
+			"\"writersCanShare\": true,"
+			"\"shared\": false,"
+			"\"explicitlyTrashed\": false,"
+			"\"appDataContents\": false,"
+			"\"spaces\": ["
+				"\"drive\""
+			"]"
+		"}", -1, &error));
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_DOCUMENTS_FOLDER (folder));
 	gdata_test_compare_kind (GDATA_ENTRY (folder), "http://schemas.google.com/docs/2007#folder", NULL);
 
 	/* Check IDs. */
-	g_assert_cmpstr (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)), ==, "folder:0BzY2jgHHwMwYalFhbjhVT3dyams");
+	g_assert_cmpstr (gdata_entry_get_id (GDATA_ENTRY (folder)), ==, "0B9J_DkaiBDRFZnZibUY5dFRPN2c");
+	g_assert_cmpstr (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (folder)), ==, "folder:0B9J_DkaiBDRFZnZibUY5dFRPN2c");
 
-	path = gdata_documents_entry_get_path (GDATA_DOCUMENTS_ENTRY (folder));
-	g_assert_cmpstr (path, ==, "/0BzY2jgHHwMwYalFhbjhVT3dyams");
-	g_free (path);
+	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (folder), GDATA_LINK_PARENT);
+	g_assert_nonnull (parent_folders_list);
+	g_assert_null (parent_folders_list->next);
+
+	parent_link = GDATA_LINK (parent_folders_list->data);
+	parent_uri = gdata_link_get_uri (parent_link);
+	g_assert_cmpstr (parent_uri, ==, "https://www.googleapis.com/drive/v2/files/0ANJ_DkaiBDRFUk9PVA");
 
 	/* Check dates. */
 	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	g_assert_cmpuint (gdata_documents_entry_get_edited (GDATA_DOCUMENTS_ENTRY (folder)), ==, 1334394740);
+	g_assert_cmpuint (gdata_documents_entry_get_edited (GDATA_DOCUMENTS_ENTRY (folder)), ==, 1505993301);
 	G_GNUC_END_IGNORE_DEPRECATIONS
-	g_assert_cmpuint (gdata_documents_entry_get_last_viewed (GDATA_DOCUMENTS_ENTRY (folder)), ==, -1);
+	g_assert_cmpuint (gdata_documents_entry_get_last_viewed (GDATA_DOCUMENTS_ENTRY (folder)), ==, 1505997511);
 
 	author = gdata_documents_entry_get_last_modified_by (GDATA_DOCUMENTS_ENTRY (folder));
 
@@ -1724,6 +1771,7 @@ test_folder_parser_normal (void)
 	/* Check miscellany. */
 	g_assert (gdata_documents_entry_is_deleted (GDATA_DOCUMENTS_ENTRY (folder)) == FALSE);
 
+	g_list_free (parent_folders_list);
 	g_object_unref (folder);
 }
 
