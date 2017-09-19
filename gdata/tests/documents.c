@@ -191,22 +191,31 @@ static void
 set_up_temp_folder (TempFolderData *data, gconstpointer service)
 {
 	GDataDocumentsFolder *folder;
-	gchar *upload_uri;
+	GDataDocumentsFolder *root;
 
 	gdata_test_mock_server_start_trace (mock_server, "setup-temp-folder");
+
+	root = GDATA_DOCUMENTS_FOLDER (gdata_service_query_single_entry (GDATA_SERVICE (service),
+	                                                                 gdata_documents_service_get_primary_authorization_domain (),
+	                                                                 "root",
+	                                                                 NULL,
+	                                                                 GDATA_TYPE_DOCUMENTS_FOLDER,
+	                                                                 NULL,
+	                                                                 NULL));
 
 	/* Create a folder */
 	folder = gdata_documents_folder_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (folder), "Temporary Folder");
 
 	/* Insert the folder */
-	upload_uri = gdata_documents_service_get_upload_uri (NULL);
-	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_service_insert_entry (GDATA_SERVICE (service),
-	                                                                   gdata_documents_service_get_primary_authorization_domain (),
-	                                                                   upload_uri, GDATA_ENTRY (folder), NULL, NULL));
+	data->folder = GDATA_DOCUMENTS_FOLDER (gdata_documents_service_add_entry_to_folder (GDATA_DOCUMENTS_SERVICE (service),
+	                                                                                    GDATA_DOCUMENTS_ENTRY (folder),
+	                                                                                    root,
+	                                                                                    NULL,
+	                                                                                    NULL));
 	g_assert (GDATA_IS_DOCUMENTS_FOLDER (data->folder));
-	g_free (upload_uri);
 	g_object_unref (folder);
+	g_object_unref (root);
 
 	uhm_server_end_trace (mock_server);
 }
