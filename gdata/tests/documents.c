@@ -221,15 +221,16 @@ _set_up_temp_document (GDataDocumentsEntry *entry, GDataService *service, GFile 
 
 	/* Query for information on the file. */
 	file_info = g_file_query_info (document_file,
-	                               G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
-	                               G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &error);
+	                               G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+	                               G_FILE_QUERY_INFO_NONE, NULL, &error);
 	g_assert_no_error (error);
 
 	/* Prepare the upload stream */
-	upload_stream = gdata_documents_service_upload_document_resumable (GDATA_DOCUMENTS_SERVICE (service), GDATA_DOCUMENTS_DOCUMENT (entry),
-	                                                                   g_file_info_get_display_name (file_info),
-	                                                                   g_file_info_get_content_type (file_info), g_file_info_get_size (file_info),
-	                                                                   NULL, NULL, &error);
+	upload_stream = gdata_documents_service_upload_document (GDATA_DOCUMENTS_SERVICE (service),
+	                                                         GDATA_DOCUMENTS_DOCUMENT (entry),
+	                                                         g_file_info_get_display_name (file_info),
+	                                                         g_file_info_get_content_type (file_info),
+	                                                         NULL, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (GDATA_IS_UPLOAD_STREAM (upload_stream));
 
@@ -2071,6 +2072,11 @@ main (int argc, char *argv[])
 					for (l = 0; l < UPLOAD_DOCUMENT_TYPE_MAX + 1; l++) {
 						UploadDocumentTestParams *test_params;
 						gchar *test_name;
+
+						/* FIXME: Resumable uploads are not implemented. */
+						if (k == UPLOAD_RESUMABLE) {
+							continue;
+						}
 
 						/* Resumable metadata-only uploads don't make sense. */
 						if (i == UPLOAD_METADATA_ONLY && k == UPLOAD_RESUMABLE) {
