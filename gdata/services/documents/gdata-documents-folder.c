@@ -3,7 +3,7 @@
  * GData Client
  * Copyright (C) Thibault Saunier 2009 <saunierthibault@gmail.com>
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
- * Copyright (C) Red Hat, Inc. 2015, 2016
+ * Copyright (C) Red Hat, Inc. 2015, 2016, 2017
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -84,6 +84,7 @@
 #include <libxml/parser.h>
 #include <string.h>
 
+#include "gdata-documents-entry-private.h"
 #include "gdata-documents-folder.h"
 #include "gdata-documents-utils.h"
 #include "gdata-parser.h"
@@ -91,6 +92,7 @@
 #include "gdata-private.h"
 
 static void gdata_documents_folder_constructed (GObject *object);
+static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 
 G_DEFINE_TYPE (GDataDocumentsFolder, gdata_documents_folder, GDATA_TYPE_DOCUMENTS_ENTRY)
 
@@ -98,9 +100,11 @@ static void
 gdata_documents_folder_class_init (GDataDocumentsFolderClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 
 	gobject_class->constructed = gdata_documents_folder_constructed;
+	parsable_class->post_parse_json = post_parse_json;
 	entry_class->kind_term = "http://schemas.google.com/docs/2007#folder";
 }
 
@@ -117,6 +121,23 @@ gdata_documents_folder_constructed (GObject *object)
 
 	if (!_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)))
 		gdata_documents_utils_add_content_type (GDATA_DOCUMENTS_ENTRY (object), "application/vnd.google-apps.folder");
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	const gchar *id;
+	gchar *resource_id;
+
+	id = gdata_entry_get_id (GDATA_ENTRY (parsable));
+
+	/* Since the document-id is identical to GDataEntry:id, which is parsed by the parent class, we can't
+	 * create the resource-id while parsing. */
+	resource_id = g_strconcat ("folder:", id, NULL);
+	_gdata_documents_entry_set_resource_id (GDATA_DOCUMENTS_ENTRY (parsable), resource_id);
+
+	g_free (resource_id);
+	return GDATA_PARSABLE_CLASS (gdata_documents_folder_parent_class)->post_parse_json (parsable, user_data, error);
 }
 
 /**

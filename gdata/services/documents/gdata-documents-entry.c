@@ -815,7 +815,6 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 static gboolean
 post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
 {
-	GDataDocumentsEntryPrivate *priv = GDATA_DOCUMENTS_ENTRY (parsable)->priv;
 	GDataLink *_link;
 	const gchar *id;
 	gchar *uri;
@@ -829,10 +828,6 @@ post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
 	gdata_entry_add_link (GDATA_ENTRY (parsable), _link);
 	g_free (uri);
 	g_object_unref (_link);
-
-	/* Since the document-id is identical to GDataEntry:id, which is parsed by the parent class, we can't
-	 * create the resource-id while parsing. */
-	priv->resource_id = g_strconcat ("document:", id, NULL);
 
 	return TRUE;
 }

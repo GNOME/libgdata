@@ -2,7 +2,7 @@
 /*
  * GData Client
  * Copyright (C) Philip Withnall 2010 <philip@tecnocode.co.uk>
- * Copyright (C) Red Hat, Inc. 2015
+ * Copyright (C) Red Hat, Inc. 2015, 2017
  *
  * GData Client is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -203,6 +203,7 @@
 #include "gdata-documents-document.h"
 #include "gdata-documents-drawing.h"
 #include "gdata-documents-entry.h"
+#include "gdata-documents-entry-private.h"
 #include "gdata-documents-presentation.h"
 #include "gdata-documents-spreadsheet.h"
 #include "gdata-documents-text.h"
@@ -213,6 +214,7 @@
 
 static void gdata_documents_document_finalize (GObject *object);
 static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error);
+static gboolean post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error);
 
 struct _GDataDocumentsDocumentPrivate {
 	GHashTable *export_links; /* owned string → owned string */
@@ -231,6 +233,7 @@ gdata_documents_document_class_init (GDataDocumentsDocumentClass *klass)
 
 	gobject_class->finalize = gdata_documents_document_finalize;
 	parsable_class->parse_json = parse_json;
+	parsable_class->post_parse_json = post_parse_json;
 	entry_class->kind_term = "http://schemas.google.com/docs/2007#file";
 }
 
@@ -310,6 +313,23 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 	}
 
 	return GDATA_PARSABLE_CLASS (gdata_documents_document_parent_class)->parse_json (parsable, reader, user_data, error);
+}
+
+static gboolean
+post_parse_json (GDataParsable *parsable, gpointer user_data, GError **error)
+{
+	const gchar *id;
+	gchar *resource_id;
+
+	id = gdata_entry_get_id (GDATA_ENTRY (parsable));
+
+	/* Since the document-id is identical to GDataEntry:id, which is parsed by the parent class, we can't
+	 * create the resource-id while parsing. */
+	resource_id = g_strconcat ("document:", id, NULL);
+	_gdata_documents_entry_set_resource_id (GDATA_DOCUMENTS_ENTRY (parsable), resource_id);
+
+	g_free (resource_id);
+	return GDATA_PARSABLE_CLASS (gdata_documents_document_parent_class)->post_parse_json (parsable, user_data, error);
 }
 
 /**
