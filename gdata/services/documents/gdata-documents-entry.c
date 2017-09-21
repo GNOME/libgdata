@@ -99,6 +99,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "gdata-documents-entry.h"
+#include "gdata-documents-entry-private.h"
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
@@ -1040,6 +1041,21 @@ gdata_documents_entry_get_resource_id (GDataDocumentsEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 	return self->priv->resource_id;
+}
+
+void
+_gdata_documents_entry_set_resource_id (GDataDocumentsEntry *self, const gchar *resource_id)
+{
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
+	g_return_if_fail (resource_id != NULL && resource_id[0] != '\0');
+
+	if (g_strcmp0 (resource_id, self->priv->resource_id) == 0)
+		return;
+
+	g_free (self->priv->resource_id);
+	self->priv->resource_id = g_strdup (resource_id);
+
+	g_object_notify (G_OBJECT (self), "resource-id");
 }
 
 /**

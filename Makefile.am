@@ -300,7 +300,9 @@ gdata_documents_headers = \
 	gdata/services/documents/gdata-documents-spreadsheet.h	\
 	gdata/services/documents/gdata-documents-upload-query.h	\
 	gdata/services/documents/gdata-documents-access-rule.h
-private_headers += gdata/services/documents/gdata-documents-utils.h
+private_headers += \
+	gdata/services/documents/gdata-documents-entry-private.h	\
+	gdata/services/documents/gdata-documents-utils.h
 gdatadocumentsinclude_HEADERS = \
 	$(gdata_documents_headers)				\
 	gdata/services/documents/gdata-documents-enums.h
