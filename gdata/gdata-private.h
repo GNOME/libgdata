@@ -17,14 +17,14 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef GDATA_PRIVATE_H
+#define GDATA_PRIVATE_H
+
 #include <glib.h>
 #include <libxml/parser.h>
 #include <libsoup/soup.h>
 
 #include <gdata/gdata-service.h>
-
-#ifndef GDATA_PRIVATE_H
-#define GDATA_PRIVATE_H
 
 G_BEGIN_DECLS
 
