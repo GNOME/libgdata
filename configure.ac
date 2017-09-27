@@ -186,10 +186,11 @@ AC_CHECK_HEADERS([netinet/in.h])
 AC_CHECK_HEADERS([sys/socket.h])
 
 # Internationalisation support
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.8])
 GETTEXT_PACKAGE=gdata
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], [Define to the Gettext package name])
 AC_SUBST(GETTEXT_PACKAGE)
-IT_PROG_INTLTOOL([0.40.0])
 
 # Code coverage
 AX_CODE_COVERAGE
