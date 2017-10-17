@@ -2,7 +2,7 @@ SUBDIRS = . po docs gdata/tests
 
 ACLOCAL_AMFLAGS = --install -I m4 ${ACLOCAL_FLAGS}
 
-DISTCHECK_CONFIGURE_FLAGS =
+AM_DISTCHECK_CONFIGURE_FLAGS =
 MAINTAINERCLEANFILES =
 
 CLEANFILES =
@@ -570,7 +570,7 @@ check-headers:
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = --warn-all
 INTROSPECTION_COMPILER_ARGS =
-DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
+AM_DISTCHECK_CONFIGURE_FLAGS += --enable-introspection
 EXTRA_DIST += m4/introspection.m4
 
 if HAVE_INTROSPECTION
@@ -857,7 +857,7 @@ MAINTAINERCLEANFILES += \
 	m4/intltool.m4 \
 	$(NULL)
 
-DISTCHECK_CONFIGURE_FLAGS += --enable-gtk-doc
+AM_DISTCHECK_CONFIGURE_FLAGS += --enable-gtk-doc
 
 # pkgconfig data
 pkgconfigdir = $(libdir)/pkgconfig
