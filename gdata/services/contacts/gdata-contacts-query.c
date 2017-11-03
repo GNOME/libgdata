@@ -182,9 +182,12 @@ gdata_contacts_query_init (GDataContactsQuery *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_QUERY, GDataContactsQueryPrivate);
 
-	/* https://developers.google.com/google-apps/contacts/v3/reference#contacts-query-parameters-reference */
+	/* https://developers.google.com/google-apps/contacts/v3/reference#contacts-query-parameters-reference
+	 * indicates that the Contacts service uses index pagination, but all
+	 * the results include next/previous URIs, so use those instead.
+	 * (We have to — the #GDataService code will use them unconditionally.) */
 	_gdata_query_set_pagination_type (GDATA_QUERY (self),
-	                                  GDATA_QUERY_PAGINATION_INDEXED);
+	                                  GDATA_QUERY_PAGINATION_URI);
 }
 
 static void
