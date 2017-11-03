@@ -187,7 +187,7 @@ gdata_contacts_query_init (GDataContactsQuery *self)
 	 * the results include next/previous URIs, so use those instead.
 	 * (We have to — the #GDataService code will use them unconditionally.) */
 	_gdata_query_set_pagination_type (GDATA_QUERY (self),
-	                                  GDATA_QUERY_PAGINATION_URI);
+	                                  GDATA_QUERY_PAGINATION_URIS);
 }
 
 static void
