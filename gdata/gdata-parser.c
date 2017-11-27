@@ -633,6 +633,9 @@ gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_
 {
 	GDataParsable *parsable, *parent_parsable;
 	GDataParserSetterFunc setter;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (!(options & P_REQUIRED) || !(options & P_IGNORE_ERROR), FALSE);
 
 	/* We're lax on the types so that we don't have to do loads of casting when calling the function, which makes the parsing code more legible */
 	setter = (GDataParserSetterFunc) _setter;
@@ -643,9 +646,20 @@ gdata_parser_object_from_element_setter (xmlNode *element, const gchar *element_
 		return FALSE;
 
 	/* Get the object and check for instantiation failure */
-	parsable = _gdata_parsable_new_from_xml_node (object_type, element->doc, element, NULL, error);
+	parsable = _gdata_parsable_new_from_xml_node (object_type, element->doc, element, NULL, &local_error);
+	g_assert ((parsable == NULL) == (local_error != NULL));
+
 	if (options & P_REQUIRED && parsable == NULL) {
 		/* The error has already been set by _gdata_parsable_new_from_xml_node() */
+		g_propagate_error (error, g_steal_pointer (&local_error));
+		*success = FALSE;
+		return TRUE;
+	} else if ((options & P_IGNORE_ERROR) && parsable == NULL) {
+		g_clear_error (&local_error);
+		*success = TRUE;
+		return TRUE;
+	} else if (local_error != NULL) {
+		g_propagate_error (error, g_steal_pointer (&local_error));
 		*success = FALSE;
 		return TRUE;
 	}

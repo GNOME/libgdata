@@ -57,6 +57,7 @@ gboolean gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time);
  * this only applies to gdata_parser_string_from_element()
  * @P_DEFAULT: if the element content is %NULL or empty, return an empty value instead of erroring (this is mutually exclusive with %P_REQUIRED
  * and %P_NON_EMPTY)
+ * @P_IGNORE_ERROR: ignore any error when the parse fails; can be used to skip empty values (this is mutually exclusive with %P_REQUIRED)
  *
  * Parsing options to be passed in a bitwise fashion to gdata_parser_string_from_element() or gdata_parser_object_from_element().
  * Their names aren't namespaced as they aren't public, and brevity is important, since they're used frequently in the parsing code.
@@ -68,7 +69,8 @@ typedef enum {
 	P_NO_DUPES = 1 << 0,
 	P_REQUIRED = 1 << 1,
 	P_NON_EMPTY = 1 << 2,
-	P_DEFAULT = 1 << 3
+	P_DEFAULT = 1 << 3,
+	P_IGNORE_ERROR = 1 << 4
 } GDataParserOptions;
 
 typedef void (*GDataParserSetterFunc) (GDataParsable *parent_parsable, GDataParsable *parsable);
