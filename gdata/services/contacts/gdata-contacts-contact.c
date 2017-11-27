@@ -895,7 +895,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 		                                             gdata_contacts_contact_add_relation, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "event", P_REQUIRED, GDATA_TYPE_GCONTACT_EVENT,
 		                                             gdata_contacts_contact_add_event, self, &success, error) == TRUE ||
-		    gdata_parser_object_from_element_setter (node, "website", P_REQUIRED, GDATA_TYPE_GCONTACT_WEBSITE,
+		    gdata_parser_object_from_element_setter (node, "website", P_IGNORE_ERROR, GDATA_TYPE_GCONTACT_WEBSITE,
 		                                             gdata_contacts_contact_add_website, self, &success, error) == TRUE ||
 		    gdata_parser_object_from_element_setter (node, "calendarLink", P_REQUIRED, GDATA_TYPE_GCONTACT_CALENDAR,
 		                                             gdata_contacts_contact_add_calendar, self, &success, error) == TRUE ||

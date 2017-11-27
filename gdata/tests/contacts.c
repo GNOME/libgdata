@@ -1435,6 +1435,7 @@ test_contact_parser_normal (void)
 			"<gContact:website href='http://example.com' rel='home-page' label='Home tab #1' primary='true'/>"
 			"<gContact:website href='http://example.com' rel='work'/>"
 			"<gContact:website href='http://bar.com' rel='profile' primary='false'/>"
+			"<gContact:website href='' rel='other'/>" /* empty on purpose; see bgo#790671 */
 			"<gContact:event rel='anniversary'><gd:when startTime='2010-03-04'/></gContact:event>"
 			"<gContact:event label='Foobar'><gd:when startTime='1900-01-01'/></gContact:event>"
 			"<gContact:calendarLink href='http://example.com/' rel='free-busy' primary='true'/>"
@@ -1512,6 +1513,7 @@ test_contact_parser_normal (void)
 	/* Websites */
 	list = gdata_contacts_contact_get_websites (contact);
 	g_assert_cmpuint (g_list_length (list), ==, 3);
+	/* Note the empty website should *not* be present. See bgo#790671. */
 
 	g_assert (GDATA_IS_GCONTACT_WEBSITE (list->data));
 	g_assert_cmpstr (gdata_gcontact_website_get_uri (GDATA_GCONTACT_WEBSITE (list->data)), ==, "http://example.com");
@@ -1725,8 +1727,7 @@ test_contact_parser_error_handling (void)
 	/* gContact:relation */
 	TEST_XML_ERROR_HANDLING ("<gContact:relation/>");
 
-	/* gContact:website */
-	TEST_XML_ERROR_HANDLING ("<gContact:website/>");
+	/* gContact:website errors are ignored (see bgo#790671) */
 
 	/* gContact:event */
 	TEST_XML_ERROR_HANDLING ("<gContact:event/>");
