@@ -1421,6 +1421,12 @@ test_service_network_error (void)
 #endif
 	GError *error = NULL;
 
+	/* Skip this test unless explicitly asked for, so that we don’t do network accesses on build machines by default. */
+	if (!g_test_slow ()) {
+		g_test_skip ("Test requires network access");
+		return;
+	}
+
 	/* This is a little hacky, but it should work */
 	service = g_object_new (GDATA_TYPE_SERVICE, NULL);
 
