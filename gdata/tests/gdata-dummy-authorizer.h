@@ -67,6 +67,7 @@ typedef struct {
 } GDataDummyAuthorizerClass;
 
 GType gdata_dummy_authorizer_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataDummyAuthorizer, g_object_unref)
 
 GDataDummyAuthorizer *gdata_dummy_authorizer_new (GType service_type) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataDummyAuthorizer *gdata_dummy_authorizer_new_for_authorization_domains (GList *authorization_domains) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;

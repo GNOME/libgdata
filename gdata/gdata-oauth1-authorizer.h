@@ -67,6 +67,7 @@ typedef struct {
 } GDataOAuth1AuthorizerClass;
 
 GType gdata_oauth1_authorizer_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataOAuth1Authorizer, g_object_unref)
 
 GDataOAuth1Authorizer *gdata_oauth1_authorizer_new (const gchar *application_name, GType service_type) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataOAuth1Authorizer *gdata_oauth1_authorizer_new_for_authorization_domains (const gchar *application_name,

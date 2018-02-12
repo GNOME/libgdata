@@ -69,6 +69,8 @@ typedef struct {
 } GDataGoaAuthorizerClass;
 
 GType gdata_goa_authorizer_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataGoaAuthorizer, g_object_unref)
+
 GDataGoaAuthorizer *gdata_goa_authorizer_new (GoaObject *goa_object) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GoaObject *gdata_goa_authorizer_get_goa_object (GDataGoaAuthorizer *self) G_GNUC_PURE;
 

@@ -95,6 +95,7 @@ typedef struct {
 } GDataOAuth2AuthorizerClass;
 
 GType gdata_oauth2_authorizer_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataOAuth2Authorizer, g_object_unref)
 
 GDataOAuth2Authorizer *gdata_oauth2_authorizer_new (const gchar *client_id,
                                                     const gchar *client_secret,

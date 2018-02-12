@@ -109,6 +109,7 @@ typedef struct {
 } GDataClientLoginAuthorizerClass;
 
 GType gdata_client_login_authorizer_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataClientLoginAuthorizer, g_object_unref)
 
 GDataClientLoginAuthorizer *gdata_client_login_authorizer_new (const gchar *client_id, GType service_type) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataClientLoginAuthorizer *gdata_client_login_authorizer_new_for_authorization_domains (const gchar *client_id, GList *authorization_domains)

@@ -77,6 +77,7 @@ typedef struct {
 } GDataAuthorizerInterface;
 
 GType gdata_authorizer_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataAuthorizer, g_object_unref)
 
 void gdata_authorizer_process_request (GDataAuthorizer *self, GDataAuthorizationDomain *domain, SoupMessage *message);
 gboolean gdata_authorizer_is_authorized_for_domain (GDataAuthorizer *self, GDataAuthorizationDomain *domain);
