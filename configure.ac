@@ -114,8 +114,16 @@ GDK_PIXBUF_CFLAGS="$GDK_PIXBUF_CFLAGS -DGDK_VERSION_MIN_REQUIRED=$GDK_PIXBUF_MIN
 AC_SUBST(GDK_PIXBUF_CFLAGS)
 AC_SUBST(GDK_PIXBUF_LIBS)
 
-PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_REQS], [have_gtk=yes], [have_gtk=no])
-AM_CONDITIONAL([HAVE_GTK], [test "x$have_gtk" = "xyes"])
+AC_MSG_CHECKING([whether to build examples which use GTK+])
+AC_ARG_ENABLE([gtk], [AS_HELP_STRING([--enable-gtk], [Whether to enable examples which use GTK+ (default: if available)])],, [enable_gtk=maybe])
+AC_MSG_RESULT([$enable_gtk])
+AS_IF([test "$enable_gtk" != "no"],[
+	PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_REQS], [have_gtk=yes], [have_gtk=no])
+])
+AS_IF([test "$enable_gtk" = "yes" && test "$have_gtk" != "yes"],[
+	AC_MSG_ERROR([GTK+ support requested but gtk+-3.0 could not be found])
+])
+AM_CONDITIONAL([ENABLE_GTK], [test "$have_gtk" = "yes" && test "$enable_gtk" != "no"])
 
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
 AC_MSG_CHECKING(whether to build with GNOME support)

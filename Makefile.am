@@ -650,10 +650,11 @@ if ENABLE_GOA
 noinst_PROGRAMS += demos/docs-list/docs-list
 endif
 
-if HAVE_GTK
+if ENABLE_GTK
 noinst_PROGRAMS += 			\
 	demos/scrapbook/scrapbook
 endif
+AM_DISTCHECK_CONFIGURE_FLAGS += --enable-gtk
 
 demos_docs_list_docs_list_SOURCES = \
 	demos/docs-list/docs-list.c \
