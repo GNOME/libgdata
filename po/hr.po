@@ -1,0 +1,580 @@
+# Croatian translation for libgdata.
+# Copyright (C) 2018 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2018-03-10 18:34+0000\n"
+"PO-Revision-Date: 2018-03-16 21:10+0100\n"
+"Language-Team: Croatian <hr@li.org>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: gdata/gdata-batch-operation.c:635
+msgid "Batch operations are unsupported by this service."
+msgstr "Skupne radnje su nepodržane na ovom uređaju."
+
+#: gdata/gdata-client-login-authorizer.c:629
+#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
+#: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
+#: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
+#: gdata/gdata-oauth2-authorizer.c:1087 gdata/gdata-oauth2-authorizer.c:1102
+#: gdata/gdata-oauth2-authorizer.c:1118
+msgid "The server returned a malformed response."
+msgstr "Poslužitelj je vratio pogrešan odgovor."
+
+#: gdata/gdata-client-login-authorizer.c:649 gdata/gdata-service.c:361
+msgid "Cannot connect to the service’s server."
+msgstr "Nemoguće povezivanje s poslužiteljem usluge."
+
+#: gdata/gdata-client-login-authorizer.c:654 gdata/gdata-service.c:366
+msgid "Cannot connect to the proxy server."
+msgstr "Nemoguće povezivanje s proxy poslužiteljem."
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: gdata/gdata-client-login-authorizer.c:660 gdata/gdata-service.c:372
+#: gdata/services/calendar/gdata-calendar-service.c:325
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"Neispravan zahtjev URI-ja ili zaglavalja, ili nepodržani nestandardni "
+"parametar: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:666 gdata/gdata-service.c:378
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Potrebna je ovjera: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:671 gdata/gdata-service.c:383
+#: gdata/services/calendar/gdata-calendar-service.c:313
+#: gdata/services/youtube/gdata-youtube-video.c:1013
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "Zatraženi resurs nije pronađen: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:677 gdata/gdata-service.c:389
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Unos je promijenjen od kada je preuzet: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:689 gdata/gdata-service.c:403
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Kôd greške %u pri ovjeri: %s"
+
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
+#: gdata/gdata-client-login-authorizer.c:788
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "CAPTCHA mora biti ispunjena za prijavu."
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:826
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Račun zahtijeva lozinku određenu aplikacijom. (%s)"
+
+#: gdata/gdata-client-login-authorizer.c:833
+msgid "Your username or password were incorrect."
+msgstr "Vaše korisničko ime ili lozinka su netočni."
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:854
+#, c-format
+msgid "Your account’s e-mail address has not been verified. (%s)"
+msgstr "Adresa e-pošte vašeg računa nije potvrđena. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:859
+#, c-format
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
+msgstr "Niste pristali na uvjete i odredbe usluge. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:865
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Ovaj račun je premješten. Prijavite se putem interneta kako bi primili vaše "
+"novo korisničko ime i lozinku. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:870
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "Ovaj račun je obrisan. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:875
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "Ovaj račun je onemogućen. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:880
+#, c-format
+msgid "This account’s access to this service has been disabled. (%s)"
+msgstr "Pristup računa ovoj usluzi je onemogućen. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:885
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "Usluga trenutno nije dostupna. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:172 gdata/gdata-commentable.c:258
+msgid "This entry does not support comments."
+msgstr "Unos ne podržava komentare."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:338 gdata/gdata-commentable.c:420
+msgid "Comments may not be added to this entry."
+msgstr "Komentari se ne mogu dodati ovom unosu."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: gdata/gdata-commentable.c:494 gdata/gdata-commentable.c:563
+msgid "This comment may not be deleted."
+msgstr "Komentar se možda ne može obrisati."
+
+#. Tried to seek too far
+#: gdata/gdata-download-stream.c:763
+msgid "Invalid seek request"
+msgstr "Neispravan zahtjev traženja"
+
+#: gdata/gdata-oauth1-authorizer.c:815
+msgid "The server rejected the temporary credentials request."
+msgstr "Poslužitelj je odbio zahtjev privremenih vjerodajnica."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/services/calendar/gdata-calendar-service.c:340
+msgid "Access was denied by the user or server."
+msgstr "Pristup je odbijen od strane korisnika ili poslužitelja."
+
+#. Translators: the parameter is an error message
+#: gdata/gdata-parsable.c:352 gdata/gdata-parsable.c:363
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "Greška XML obrade: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: gdata/gdata-parsable.c:365
+msgid "Empty document."
+msgstr "Prazan dokument"
+
+#. Translators: the parameter is an error message
+#: gdata/gdata-parsable.c:483 gdata/gdata-parsable.c:521
+#: gdata/services/documents/gdata-documents-access-rule.c:144
+#: gdata/services/documents/gdata-documents-access-rule.c:154
+#: gdata/services/documents/gdata-documents-document.c:289
+#: gdata/services/documents/gdata-documents-entry.c:478
+#: gdata/services/documents/gdata-documents-entry.c:489
+#: gdata/services/documents/gdata-documents-entry.c:500
+#: gdata/services/documents/gdata-documents-entry.c:547
+#: gdata/services/documents/gdata-documents-entry.c:558
+#: gdata/services/documents/gdata-documents-entry.c:666
+#: gdata/services/documents/gdata-documents-entry.c:701
+#: gdata/services/documents/gdata-documents-entry.c:716
+#: gdata/services/documents/gdata-documents-entry.c:731
+#: gdata/services/documents/gdata-documents-entry.c:761
+#: gdata/services/documents/gdata-documents-entry.c:777
+#: gdata/services/documents/gdata-documents-feed.c:81
+#: gdata/services/documents/gdata-documents-feed.c:92
+#: gdata/services/documents/gdata-documents-feed.c:129
+#: gdata/services/documents/gdata-documents-feed.c:147
+#, c-format
+msgid "Error parsing JSON: %s"
+msgstr "Greška JSON obrade: %s"
+
+#: gdata/gdata-parsable.c:522
+msgid "Outermost JSON node is not an object."
+msgstr "Najudaljeniji JSON čvor nije objekt."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: gdata/gdata-parser.c:69
+#, c-format
+msgid "A %s element was missing required content."
+msgstr "%s elementu nedostaje potreban sadržaj."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:85
+#, c-format
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
+msgstr "Sadržaj %s elementa (‘%s’) nije u ISO 8601 formatu."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
+#: gdata/gdata-parser.c:105
+#, c-format
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
+msgstr "Vrijednost %s svojstva %s elementa (‘%s’) je nepoznata."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
+#: gdata/gdata-parser.c:123
+#, c-format
+msgid "The content of a %s element (‘%s’) was unknown."
+msgstr "Sadržaj %s elementa (‘%s’) je nepoznat."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: gdata/gdata-parser.c:143
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "Potrebno svojstvo %s elementa (%s) nije prisutno."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: gdata/gdata-parser.c:166
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Vrijednosti su bile prisutne za svojstvo %s i %s od %s elementa kada je samo "
+"jedan od dvoje dopušten."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: gdata/gdata-parser.c:185
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "Potrebno element (%s) nije prisutan."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A singleton element (title) was duplicated.
+#: gdata/gdata-parser.c:200 gdata/gdata-parser.c:287
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "Jedan element (%s) je udvostručen."
+
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A ‘title’ element was missing required content.
+#: gdata/gdata-parser.c:273
+#, c-format
+msgid "A ‘%s’ element was missing required content."
+msgstr "‘%s’ elementu nedostaje potreban sadržaj."
+
+#. Translators: the first parameter is the name of an JSON element,
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:303
+#, c-format
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "Sadržaj '%s' elementa (‘%s’) nije u ISO 8601 formatu."
+
+#. Translators: the parameter is an error message.
+#: gdata/gdata-parser.c:314
+#, c-format
+msgid "Invalid JSON was received from the server: %s"
+msgstr "Neispravan JSON je primljen s poslužitelja: %s"
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
+#: gdata/gdata-parser.c:1193
+#, c-format
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
+msgstr "Sadržaj %s elementa (‘%s’) nije u heksadecimalnom RGB formatu."
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:409
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Kôd greške %u pri zahtjevu: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:415
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Kôd greške %u pri umetanju unosa: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:421
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Kôd greške %u pri nadopuni unosa: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:427
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Kôd greške %u pri brisanju unosa: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:433
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Kôd greške %u pri preuzimanju: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:439
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Kôd greške %u pri slanju: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:445
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Kôd greške %u pri pokretanju skupnih radnji: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: gdata/gdata-service.c:739
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "Neispravno preusmjeravanje URI-ja: %s"
+
+#: gdata/gdata-service.c:1432
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: gdata/services/youtube/gdata-youtube-service.c:1022
+msgid "The entry has already been inserted."
+msgstr "Unos je je već umetnut."
+
+#. Resumable upload error.
+#: gdata/gdata-upload-stream.c:794 gdata/gdata-upload-stream.c:876
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr ""
+"Greška je primljena s poslužitelja nakon slanja razumnog dijelića slanja."
+
+#: gdata/gdata-upload-stream.c:942
+msgid "Stream is already closed"
+msgstr "Strujanje je već zatvoreno"
+
+#: gdata/services/calendar/gdata-calendar-service.c:302
+#: gdata/services/tasks/gdata-tasks-service.c:195
+#: gdata/services/youtube/gdata-youtube-service.c:541
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Napravili ste previše API poziva nedavno. Pričekajte nekoliko minuta i "
+"pokušajte ponovno."
+
+#: gdata/services/calendar/gdata-calendar-service.c:334
+#: gdata/services/tasks/gdata-tasks-service.c:204
+#: gdata/services/youtube/gdata-youtube-service.c:557
+msgid "You must be authenticated to do this."
+msgstr "Morate se ovjeriti kako bi ovo mogli učiniti."
+
+#: gdata/services/calendar/gdata-calendar-service.c:465
+#: gdata/services/calendar/gdata-calendar-service.c:519
+msgid "You must be authenticated to query all calendars."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti sve kalendare."
+
+#: gdata/services/calendar/gdata-calendar-service.c:563
+#: gdata/services/calendar/gdata-calendar-service.c:617
+#: gdata/services/calendar/gdata-calendar-service.c:677
+#: gdata/services/calendar/gdata-calendar-service.c:739
+msgid "You must be authenticated to query your own calendars."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti vlastite kalendare."
+
+#: gdata/services/contacts/gdata-contacts-service.c:258
+#: gdata/services/contacts/gdata-contacts-service.c:311
+msgid "You must be authenticated to query contacts."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti kontakte."
+
+#: gdata/services/contacts/gdata-contacts-service.c:425
+#: gdata/services/contacts/gdata-contacts-service.c:478
+msgid "You must be authenticated to query contact groups."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti grupe kontakata."
+
+#: gdata/services/contacts/gdata-contacts-service.c:516
+msgid "The group has already been inserted."
+msgstr "Grupa je već umetnuta."
+
+#: gdata/services/contacts/gdata-contacts-service.c:523
+msgid "You must be authenticated to insert a group."
+msgstr "Morate se ovjeriti kako bi mogli umetnuti grupu."
+
+#: gdata/services/documents/gdata-documents-document.c:412
+msgid "You must be authenticated to download documents."
+msgstr "Morate se ovjeriti kako bi mogli preuzeti dokumente."
+
+#: gdata/services/documents/gdata-documents-document.c:421
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Nepoznat ili nepodržan format izvoza dokumenta ‘%s’."
+
+#: gdata/services/documents/gdata-documents-service.c:580
+#: gdata/services/documents/gdata-documents-service.c:633
+msgid "You must be authenticated to query documents."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti dokumente."
+
+#: gdata/services/documents/gdata-documents-service.c:696
+msgid "You must be authenticated to upload documents."
+msgstr "Morate se ovjeriti kako bi mogli poslati dokumente."
+
+#: gdata/services/documents/gdata-documents-service.c:702
+msgid "The document has already been uploaded."
+msgstr "Dokument je već poslan."
+
+#: gdata/services/documents/gdata-documents-service.c:847
+msgid "You must be authenticated to update documents."
+msgstr "Morate se ovjeriti kako bi mogli nadopuniti dokumente."
+
+#: gdata/services/documents/gdata-documents-service.c:1014
+#, c-format
+msgid ""
+"The content type of the supplied document (‘%s’) could not be recognized."
+msgstr "Vrsta sadržaja isporučenog dokumenta (‘%s’) se ne može prepoznati."
+
+#: gdata/services/documents/gdata-documents-service.c:1054
+msgid "You must be authenticated to copy documents."
+msgstr "Morate se ovjeriti kako bi mogli kopirati dokumente."
+
+#: gdata/services/documents/gdata-documents-service.c:1073
+#: gdata/services/documents/gdata-documents-service.c:1414
+msgid "Parent folder not found"
+msgstr "Sadržajna mapa nije pronađena"
+
+#: gdata/services/documents/gdata-documents-service.c:1206
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Morate se ovjeriti kako bi mogli umetnuti ili premjestiti dokumente ili mape."
+
+#: gdata/services/documents/gdata-documents-service.c:1392
+msgid "You must be authenticated to move documents and folders."
+msgstr "Morate se ovjeriti kako bi mogli premjestiti dokumente ili mape."
+
+#: gdata/services/freebase/gdata-freebase-service.c:497
+#, c-format
+msgid "Property ‘%s’ does not hold an image"
+msgstr "Svojstvo ‘%s’ ne sadrži sliku"
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Morate navesti korisničko ime ili se ovjeriti kako bi mogli zatražiti "
+"korisnika."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:372
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:432
+msgid "Query parameter not allowed for albums."
+msgstr "Parametar zahtjeva nije dopušten za ovaj album."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:379
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"Morate navesti korisničko ime ili se ovjeriti kako bi mogli zatražiti sve "
+"albume."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:463
+msgid "The album did not have a feed link."
+msgstr "Album nije imao povratnu poveznicu."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:619
+msgid "You must be authenticated to upload a file."
+msgstr "Morate se ovjeriti kako bi mogli poslati datoteku."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:695
+msgid "The album has already been inserted."
+msgstr "Album je već umetnut."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:702
+msgid "You must be authenticated to insert an album."
+msgstr "Morate se ovjeriti kako bi mogli umetnuti album."
+
+#: gdata/services/tasks/gdata-tasks-service.c:330
+#: gdata/services/tasks/gdata-tasks-service.c:384
+msgid "You must be authenticated to query all tasklists."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti sve popise zadatka."
+
+#: gdata/services/tasks/gdata-tasks-service.c:431
+#: gdata/services/tasks/gdata-tasks-service.c:491
+msgid "You must be authenticated to query your own tasks."
+msgstr "Morate se ovjeriti kako bi mogli zatražiti vlastite popise zadatka."
+
+#: gdata/services/youtube/gdata-youtube-service.c:548
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr "Premašili ste ulaznu kvotu. Obrišite neke unose i pokušajte ponovno."
+
+#. Translators: the parameter is a URI.
+#: gdata/services/youtube/gdata-youtube-service.c:565
+#, c-format
+msgid ""
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr ""
+"Vaš Google račun mora biti pridružen YouTube kanalu kako bi se ovo učinilo. "
+"Posjetite %s kako bi stvorili jednog."
+
+#: gdata/services/youtube/gdata-youtube-service.c:1031
+msgid "You must be authenticated to upload a video."
+msgstr "Morate se ovjeriti kako bi mogli poslati video snimku."
