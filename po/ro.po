@@ -6,11 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: "
-"http://bugzilla.gnome.org/enter_bug.cgi?product=libgdata&component=general\n"
-"POT-Creation-Date: 2010-12-30 15:37+0000\n"
-"PO-Revision-Date: 2011-03-14 11:19+0200\n"
-"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=libgdata&keywords=I18N+L10N&component=General\n"
+"POT-Creation-Date: 2017-10-30 15:42+0000\n"
+"PO-Revision-Date: 2018-04-06 00:46+0300\n"
+"Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
@@ -18,28 +18,213 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
-"X-Generator: Virtaal 0.6.1\n"
+"X-Generator: Poedit 2.0.6\n"
 
-#: ../gdata/gdata-download-stream.c:571 ../gdata/gdata-upload-stream.c:753
-msgid "Stream is already closed"
-msgstr "Fluxul este deja închis"
+#: gdata/gdata-batch-operation.c:635
+msgid "Batch operations are unsupported by this service."
+msgstr "Operațiile în serie nu sunt suportate de acest serviciu."
+
+#: gdata/gdata-client-login-authorizer.c:629
+#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
+#: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
+#: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
+#: gdata/gdata-oauth2-authorizer.c:1087 gdata/gdata-oauth2-authorizer.c:1102
+#: gdata/gdata-oauth2-authorizer.c:1118
+msgid "The server returned a malformed response."
+msgstr "Serverul a întors un răspuns deteriorat."
+
+#: gdata/gdata-client-login-authorizer.c:649 gdata/gdata-service.c:361
+msgid "Cannot connect to the service’s server."
+msgstr "Nu se poate conecta la serverul serviciului."
+
+#: gdata/gdata-client-login-authorizer.c:654 gdata/gdata-service.c:366
+msgid "Cannot connect to the proxy server."
+msgstr "Nu se poate conecta la serverul proxy."
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: gdata/gdata-client-login-authorizer.c:660 gdata/gdata-service.c:372
+#: gdata/services/calendar/gdata-calendar-service.c:325
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr "URI sau antet cerere nevalid sau parametru non-standard neacceptat: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:666 gdata/gdata-service.c:378
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Autentificare necesară: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:671 gdata/gdata-service.c:383
+#: gdata/services/calendar/gdata-calendar-service.c:313
+#: gdata/services/youtube/gdata-youtube-video.c:1013
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "Resursa cerută nu a fost găsită: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:677 gdata/gdata-service.c:389
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Înregistrarea a fost modificată de când a fost descărcată: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:689 gdata/gdata-service.c:403
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Codul de eroare %u a intervenit în timpul autentificării: %s"
+
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
+#: gdata/gdata-client-login-authorizer.c:788
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "Un CAPTCHA trebuie completat pentru autentificare."
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:826
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Acest cont necesită o parolă specifică de aplicație. (%s)"
+
+#: gdata/gdata-client-login-authorizer.c:833
+msgid "Your username or password were incorrect."
+msgstr "Numele de utilizator sau parola au fost incorecte."
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:854
+#, c-format
+msgid "Your account’s e-mail address has not been verified. (%s)"
+msgstr "Adresa contului de email nu a fost verificată. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:859
+#, c-format
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
+msgstr "Nu ați fost de acord cu termenii și condițiile serviciului. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:865
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Acest cont a fost migrat. Autentificați-vă pentru a primi noul nume de "
+"utilizator și parola. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:870
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "Acest cont a fost șters. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:875
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "Acest cont a fost dezactivat. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:880
+#, c-format
+msgid "This account’s access to this service has been disabled. (%s)"
+msgstr "Accesul acestui cont la acest serviciu a fost dezactivat. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:885
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "Acest serviciu este momentan indisponibil. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:172 gdata/gdata-commentable.c:258
+msgid "This entry does not support comments."
+msgstr "Această intrare nu suportă comentarii."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:338 gdata/gdata-commentable.c:420
+msgid "Comments may not be added to this entry."
+msgstr "Nu se pot adăuga comentarii la această intrare."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: gdata/gdata-commentable.c:494 gdata/gdata-commentable.c:563
+msgid "This comment may not be deleted."
+msgstr "Este posibil ca acest comentariu să nu fie șters."
+
+#. Tried to seek too far
+#: gdata/gdata-download-stream.c:763
+msgid "Invalid seek request"
+msgstr "Cerere de căutare nevalidă"
+
+#: gdata/gdata-oauth1-authorizer.c:815
+msgid "The server rejected the temporary credentials request."
+msgstr "Serverul a respins cererea de autorizări temporare."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/services/calendar/gdata-calendar-service.c:340
+msgid "Access was denied by the user or server."
+msgstr "Accesul a fost respins de către utilizator sau server."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:245 ../gdata/gdata-parsable.c:256
+#: gdata/gdata-parsable.c:352 gdata/gdata-parsable.c:363
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Eroare la parsarea XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:258
+#: gdata/gdata-parsable.c:365
 msgid "Empty document."
 msgstr "Document gol."
+
+#. Translators: the parameter is an error message
+#: gdata/gdata-parsable.c:483 gdata/gdata-parsable.c:521
+#: gdata/services/documents/gdata-documents-access-rule.c:144
+#: gdata/services/documents/gdata-documents-access-rule.c:154
+#: gdata/services/documents/gdata-documents-document.c:286
+#: gdata/services/documents/gdata-documents-entry.c:477
+#: gdata/services/documents/gdata-documents-entry.c:488
+#: gdata/services/documents/gdata-documents-entry.c:499
+#: gdata/services/documents/gdata-documents-entry.c:546
+#: gdata/services/documents/gdata-documents-entry.c:557
+#: gdata/services/documents/gdata-documents-entry.c:665
+#: gdata/services/documents/gdata-documents-entry.c:700
+#: gdata/services/documents/gdata-documents-entry.c:715
+#: gdata/services/documents/gdata-documents-entry.c:730
+#: gdata/services/documents/gdata-documents-entry.c:760
+#: gdata/services/documents/gdata-documents-entry.c:776
+#: gdata/services/documents/gdata-documents-feed.c:81
+#: gdata/services/documents/gdata-documents-feed.c:92
+#: gdata/services/documents/gdata-documents-feed.c:129
+#: gdata/services/documents/gdata-documents-feed.c:147
+#, c-format
+msgid "Error parsing JSON: %s"
+msgstr "Eroare la parsarea JSON: %s"
+
+#: gdata/gdata-parsable.c:522
+msgid "Outermost JSON node is not an object."
+msgstr "Cel mai îndepărtat nod JSON nu este un obiect."
 
 #. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:66
+#: gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Unui element %s îi lipsește conținutul necesar."
@@ -48,30 +233,30 @@ msgstr "Unui element %s îi lipsește conținutul necesar."
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:82
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr "Conținutul unui element %s („%s”) nu a fost în formatul ISO 8601."
 
 #. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:102
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
+#: gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
 msgstr "Valoarea proprietății %s a unui element %s („%s”) a fost necunoscută."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:120
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
+#: gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "Conținutul unui element %s („%s”) a fost necunoscut."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -79,7 +264,7 @@ msgstr "Conținutul unui element %s („%s”) a fost necunoscut."
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:140
+#: gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "O proprietate necesară a unui element %s (%s) nu a fost prezentă."
@@ -90,7 +275,7 @@ msgstr "O proprietate necesară a unui element %s (%s) nu a fost prezentă."
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:163
+#: gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -103,7 +288,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:182
+#: gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Un element necesar (%s) nu a fost prezent."
@@ -112,66 +297,61 @@ msgstr "Un element necesar (%s) nu a fost prezent."
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
-#: ../gdata/gdata-parser.c:197
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A singleton element (title) was duplicated.
+#: gdata/gdata-parser.c:200 gdata/gdata-parser.c:287
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Un element singleton (%s) a fost duplicat."
 
-#: ../gdata/gdata-service.c:430
-msgid "The server returned a malformed response."
-msgstr "Serverul a întors un răspuns deteriorat."
-
-#: ../gdata/gdata-service.c:473
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A ‘title’ element was missing required content.
+#: gdata/gdata-parser.c:273
 #, c-format
-msgid "Cannot connect to the service's server."
-msgstr "Nu se poate conecta la serverul serviciului."
+msgid "A ‘%s’ element was missing required content."
+msgstr "Unui element „%s” îi lipsea conținutul necesar."
 
-#: ../gdata/gdata-service.c:478
+#. Translators: the first parameter is the name of an JSON element,
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:303
 #, c-format
-msgid "Cannot connect to the proxy server."
-msgstr "Nu se poate conecta la serverul proxy."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "Conținutul unui element „%s” („%s”) nu a fost în formatul ISO 8601."
 
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:484
+#. Translators: the parameter is an error message.
+#: gdata/gdata-parser.c:314
 #, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr "URI sau antet cerere nevalid sau parametru non-standard neacceptat: %s"
+msgid "Invalid JSON was received from the server: %s"
+msgstr "S-a primit un JSON nevalid de la serverul: %s"
 
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:490
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
+#: gdata/gdata-parser.c:1179
 #, c-format
-msgid "Authentication required: %s"
-msgstr "Autentificare necesară: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:495
-#, c-format
-msgid "The requested resource was not found: %s"
-msgstr "Resursa cerută nu a fost găsită: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-service.c:501
-#, c-format
-msgid "The entry has been modified since it was downloaded: %s"
-msgstr "Înregistrarea a fost modificată de când a fost descărcată: %s"
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
+msgstr "Conținutul unui element %s („%s”) nu a fost în format RGB hexazecimal."
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:515
-#, c-format
-msgid "Error code %u when authenticating: %s"
-msgstr "Codul de eroare %u a intervenit în timpul autentificării: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:521
+#: gdata/gdata-service.c:409
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Codul de eroare %u a interveni în timpul solicitării: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:527
+#: gdata/gdata-service.c:415
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr ""
@@ -179,7 +359,7 @@ msgstr ""
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:533
+#: gdata/gdata-service.c:421
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr ""
@@ -187,229 +367,59 @@ msgstr ""
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:539
+#: gdata/gdata-service.c:427
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Codul de eroare %u a intervenit în timpul ștergerii înregistrării: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:545
+#: gdata/gdata-service.c:433
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Codul de eroare %u a intervenit în timpul descărcării: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:551
+#: gdata/gdata-service.c:439
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Codul de eroare %u a intervenit în timpul încărcării: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:557
+#: gdata/gdata-service.c:445
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr ""
 "Codul de eroare %u a intervenit în timpul rulării unei operații pe loturi: %s"
 
-#: ../gdata/gdata-service.c:686
-msgid "A CAPTCHA must be filled out to log in."
-msgstr "Un CAPTCHA trebuie completat pentru autentificare."
-
-#: ../gdata/gdata-service.c:710
-msgid "Your username or password were incorrect."
-msgstr "Numele de utilizator sau parola au fost incorecte."
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:729
-#, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
-msgstr "Contul dumneavoastră de email nu a fost verificat. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:734
-#, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
-msgstr "Nu ați fost de acord cu termenii și condițiile serviciului. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:740
-#, c-format
-msgid ""
-"This account has been migrated. Please log in online to receive your new "
-"username and password. (%s)"
-msgstr ""
-"Acest cont a fost migrat. Autentificați-vă pentru a primi noul nume de "
-"utilizator și parola. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:745
-#, c-format
-msgid "This account has been deleted. (%s)"
-msgstr "Acest cont a fost șters. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:750
-#, c-format
-msgid "This account has been disabled. (%s)"
-msgstr "Acest cont a fost dezactivat. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:755
-#, c-format
-msgid "This account's access to this service has been disabled. (%s)"
-msgstr "Accesul acestui cont la acest serviciu a fost dezactivat. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-service.c:760
-#, c-format
-msgid "This service is not available at the moment. (%s)"
-msgstr "Acest serviciu este momentan indisponibil. (%s)"
-
 #. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:1065
+#: gdata/gdata-service.c:739
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "URI de redirecționare nevalid: %s"
 
-#: ../gdata/gdata-service.c:1641
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:490
-#: ../gdata/services/youtube/gdata-youtube-service.c:778
+#: gdata/gdata-service.c:1432
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: gdata/services/youtube/gdata-youtube-service.c:1022
 msgid "The entry has already been inserted."
 msgstr "Înregistrarea a fost deja introdusă."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets
-#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
-#. * RGB format).
-#. *
-#. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:385
-#, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
-msgstr "Conținutul unui element %s („%s”) nu a fost în format RGB hexazecimal."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:281
-#: ../gdata/services/calendar/gdata-calendar-service.c:326
-msgid "You must be authenticated to query all calendars."
-msgstr "Trebuie să fiți autentificat pentru a interoga toate calendarele."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:368
-#: ../gdata/services/calendar/gdata-calendar-service.c:413
-#: ../gdata/services/calendar/gdata-calendar-service.c:454
-#: ../gdata/services/calendar/gdata-calendar-service.c:510
-msgid "You must be authenticated to query your own calendars."
-msgstr "Trebuie să fiți autentificat pentru a interoga propriile calendare."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:519
-msgid "The calendar did not have a content URI."
-msgstr "Calendarul nu a avut un URI către conținut."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:229
-#: ../gdata/services/contacts/gdata-contacts-service.c:275
-msgid "You must be authenticated to query contacts."
-msgstr "Trebuie să fiți autentificat pentru a interoga contactele."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:384
-#: ../gdata/services/contacts/gdata-contacts-service.c:430
-#| msgid "You must be authenticated to query contacts."
-msgid "You must be authenticated to query contact groups."
-msgstr "Trebuie să fiți autentificat pentru a interoga grupurile de contacte."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:466
-#| msgid "The rule has already been inserted."
-msgid "The group has already been inserted."
-msgstr "Grupul a fost deja introdus."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:472
-#| msgid "You must be authenticated to insert an album."
-msgid "You must be authenticated to insert a group."
-msgstr "Trebuie să fiți autentificat pentru a introduce un grup."
-
-#: ../gdata/services/documents/gdata-documents-document.c:274
-#| msgid "You must be authenticated to upload documents."
-msgid "You must be authenticated to download documents."
-msgstr "Trebuie să fiți autentificat pentru a descărca documente."
-
-#: ../gdata/services/documents/gdata-documents-service.c:369
-#: ../gdata/services/documents/gdata-documents-service.c:420
-msgid "You must be authenticated to query documents."
-msgstr "Trebuie să fiți autentificat pentru a interoga documentele."
-
-#: ../gdata/services/documents/gdata-documents-service.c:527
-msgid "You must be authenticated to upload documents."
-msgstr "Trebuie să fiți autentificat pentru a încărca documente."
-
-#: ../gdata/services/documents/gdata-documents-service.c:533
-msgid "The document has already been uploaded."
-msgstr "Documentul a fost deja încărcat."
-
-#: ../gdata/services/documents/gdata-documents-service.c:587
-msgid "You must be authenticated to update documents."
-msgstr "Trebuie să fiți autentificat pentru a actualiza documentele."
-
-#: ../gdata/services/documents/gdata-documents-service.c:650
-#, c-format
-msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
+#. Resumable upload error.
+#: gdata/gdata-upload-stream.c:794 gdata/gdata-upload-stream.c:876
+msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
-"Tipul conținutului documentului furnizat („%s”) nu a putut fi recunoscut."
+"S-a primit o eroare de la server după încărcarea unei bucăți de încărcare "
+"care se poate relua."
 
-#: ../gdata/services/documents/gdata-documents-service.c:698
-#: ../gdata/services/documents/gdata-documents-service.c:882
-#| msgid "You must be authenticated to move documents."
-msgid "You must be authenticated to move documents and folders."
-msgstr "Trebuie să fiți autentificat pentru a muta documente și dosare."
+#: gdata/gdata-upload-stream.c:942
+msgid "Stream is already closed"
+msgstr "Fluxul este deja închis"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:210
-msgid "You must specify a username or be authenticated to query a user."
-msgstr ""
-"Trebuie să specificați un nume de utilizator sau să fiți autentificat pentru "
-"a interoga un utilizator."
-
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:264
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:319
-msgid "Query parameter not allowed for albums."
-msgstr "Parametrul de interogare nu este permis pentru albume."
-
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:271
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:327
-msgid "You must specify a username or be authenticated to query all albums."
-msgstr ""
-"Trebuie să specificați un nume de utilizator sau să fiți autentificat pentru "
-"a interoga toate albumele."
-
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:345
-msgid "The album did not have a feed link."
-msgstr "Albumul nu a avut o legătură către un flux."
-
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:496
-msgid "You must be authenticated to upload a file."
-msgstr "Trebuie să fiți autentificat pentru a încărca un fișier."
-
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:573
-msgid "The album has already been inserted."
-msgstr "Albumul a fost deja introdus."
-
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:579
-msgid "You must be authenticated to insert an album."
-msgstr "Trebuie să fiți autentificat pentru a introduce un album."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:416
-#, c-format
-msgid "This service is not available at the moment."
-msgstr "Acest serviciu este momentan indisponibil."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:421
-#, c-format
-msgid "You must be authenticated to do this."
-msgstr "Trebuie să fiți autentificat pentru a face asta."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:426
-#, c-format
+#: gdata/services/calendar/gdata-calendar-service.c:302
+#: gdata/services/tasks/gdata-tasks-service.c:195
+#: gdata/services/youtube/gdata-youtube-service.c:541
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
@@ -417,39 +427,178 @@ msgstr ""
 "Recent ați apelat de prea multe ori interfața API. Așteptați câteva minute "
 "și încercați din nou."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:429
+#: gdata/services/calendar/gdata-calendar-service.c:334
+#: gdata/services/tasks/gdata-tasks-service.c:204
+#: gdata/services/youtube/gdata-youtube-service.c:557
+msgid "You must be authenticated to do this."
+msgstr "Trebuie să fiți autentificat pentru a face asta."
+
+#: gdata/services/calendar/gdata-calendar-service.c:465
+#: gdata/services/calendar/gdata-calendar-service.c:519
+msgid "You must be authenticated to query all calendars."
+msgstr "Trebuie să fiți autentificat pentru a interoga toate calendarele."
+
+#: gdata/services/calendar/gdata-calendar-service.c:563
+#: gdata/services/calendar/gdata-calendar-service.c:617
+#: gdata/services/calendar/gdata-calendar-service.c:677
+#: gdata/services/calendar/gdata-calendar-service.c:739
+msgid "You must be authenticated to query your own calendars."
+msgstr "Trebuie să fiți autentificat pentru a interoga propriile calendare."
+
+#: gdata/services/contacts/gdata-contacts-service.c:258
+#: gdata/services/contacts/gdata-contacts-service.c:311
+msgid "You must be authenticated to query contacts."
+msgstr "Trebuie să fiți autentificat pentru a interoga contactele."
+
+#: gdata/services/contacts/gdata-contacts-service.c:425
+#: gdata/services/contacts/gdata-contacts-service.c:478
+msgid "You must be authenticated to query contact groups."
+msgstr "Trebuie să fiți autentificat pentru a interoga grupurile de contacte."
+
+#: gdata/services/contacts/gdata-contacts-service.c:516
+msgid "The group has already been inserted."
+msgstr "Grupul a fost deja introdus."
+
+#: gdata/services/contacts/gdata-contacts-service.c:523
+msgid "You must be authenticated to insert a group."
+msgstr "Trebuie să fiți autentificat pentru a introduce un grup."
+
+#: gdata/services/documents/gdata-documents-document.c:392
+msgid "You must be authenticated to download documents."
+msgstr "Trebuie să fiți autentificat pentru a descărca documente."
+
+#: gdata/services/documents/gdata-documents-document.c:401
 #, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Format de exportare de document necunoscut sau nesuportat „%s”."
+
+#: gdata/services/documents/gdata-documents-service.c:580
+#: gdata/services/documents/gdata-documents-service.c:633
+msgid "You must be authenticated to query documents."
+msgstr "Trebuie să fiți autentificat pentru a interoga documentele."
+
+#: gdata/services/documents/gdata-documents-service.c:696
+msgid "You must be authenticated to upload documents."
+msgstr "Trebuie să fiți autentificat pentru a încărca documente."
+
+#: gdata/services/documents/gdata-documents-service.c:702
+msgid "The document has already been uploaded."
+msgstr "Documentul a fost deja încărcat."
+
+#: gdata/services/documents/gdata-documents-service.c:847
+msgid "You must be authenticated to update documents."
+msgstr "Trebuie să fiți autentificat pentru a actualiza documentele."
+
+#: gdata/services/documents/gdata-documents-service.c:1014
+#, c-format
+msgid ""
+"The content type of the supplied document (‘%s’) could not be recognized."
+msgstr ""
+"Tipul de conținut al documentului furnizat („%s”) nu a putut fi recunoscut."
+
+#: gdata/services/documents/gdata-documents-service.c:1054
+msgid "You must be authenticated to copy documents."
+msgstr "Trebuie să fiți autentificat pentru a copia documente."
+
+#: gdata/services/documents/gdata-documents-service.c:1073
+#: gdata/services/documents/gdata-documents-service.c:1414
+msgid "Parent folder not found"
+msgstr "Nu s-a găsit dosarul superior"
+
+#: gdata/services/documents/gdata-documents-service.c:1206
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Trebuie să fiți autentificat pentru a introduce sau muta documente și dosare."
+
+#: gdata/services/documents/gdata-documents-service.c:1392
+msgid "You must be authenticated to move documents and folders."
+msgstr "Trebuie să fiți autentificat pentru a muta documente și dosare."
+
+#: gdata/services/freebase/gdata-freebase-service.c:497
+#, c-format
+msgid "Property ‘%s’ does not hold an image"
+msgstr "Proprietatea „%s” nu ține o imagine"
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Trebuie să specificați un nume de utilizator sau să fiți autentificat pentru "
+"a interoga un utilizator."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:372
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:432
+msgid "Query parameter not allowed for albums."
+msgstr "Parametrul de interogare nu este permis pentru albume."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:379
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"Trebuie să specificați un nume de utilizator sau să fiți autentificat pentru "
+"a interoga toate albumele."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:463
+msgid "The album did not have a feed link."
+msgstr "Albumul nu a avut o legătură către un flux."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:619
+msgid "You must be authenticated to upload a file."
+msgstr "Trebuie să fiți autentificat pentru a încărca un fișier."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:695
+msgid "The album has already been inserted."
+msgstr "Albumul a fost deja introdus."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:702
+msgid "You must be authenticated to insert an album."
+msgstr "Trebuie să fiți autentificat pentru a introduce un album."
+
+#: gdata/services/tasks/gdata-tasks-service.c:330
+#: gdata/services/tasks/gdata-tasks-service.c:384
+msgid "You must be authenticated to query all tasklists."
+msgstr "Trebuie să fiți autentificat pentru a interoga listele de activități."
+
+#: gdata/services/tasks/gdata-tasks-service.c:431
+#: gdata/services/tasks/gdata-tasks-service.c:491
+msgid "You must be authenticated to query your own tasks."
+msgstr "Trebuie să fiți autentificat pentru a interoga propriile activități."
+
+#: gdata/services/youtube/gdata-youtube-service.c:548
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
 "Ați depășit cota de intrări. Ștergeți unele intrări și încercați din nou."
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:436
-#: ../gdata/services/youtube/gdata-youtube-service.c:442
+#. Translators: the parameter is a URI.
+#: gdata/services/youtube/gdata-youtube-service.c:565
 #, c-format
 msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr "Cod de eroare necunoscut „%s” în domeniul „%s” primit la adresa „%s”."
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr ""
+"Contul Google trebuie să fie asociat cu un canal Youtube pentru a face asta. "
+"Vizitați %s pentru a crea unul."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:460
-#, c-format
-msgid "Unknown and unparsable error received."
-msgstr "S-a primit o eroare necunoscută sau care nu poate fi prelucrată."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:682
-#: ../gdata/services/youtube/gdata-youtube-service.c:729
-msgid "The video did not have a related videos <link>."
-msgstr "Acest film nu are un <link> către filme asemănătoare."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:784
+#: gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Trebuie să fiți autentificat pentru a încărca un film."
 
-#~ msgid "The owner's rule may not be deleted."
-#~ msgstr "Regula deținătorului nu poate fi ștearsă."
+#~ msgid "The calendar did not have a content URI."
+#~ msgstr "Calendarul nu a avut un URI către conținut."
+
+#~ msgid "This service is not available at the moment."
+#~ msgstr "Acest serviciu este momentan indisponibil."
+
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgstr ""
+#~ "Cod de eroare necunoscut „%s” în domeniul „%s” primit la adresa „%s”."
+
+#~ msgid "Unknown and unparsable error received."
+#~ msgstr "S-a primit o eroare necunoscută sau care nu poate fi prelucrată."
+
+#~ msgid "The video did not have a related videos <link>."
+#~ msgstr "Acest film nu are un <link> către filme asemănătoare."
 
 #~ msgid "The supplied document had an invalid content type."
 #~ msgstr "Documentul furnizat a avut un tip de conținut nevalid."
