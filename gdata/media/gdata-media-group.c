@@ -106,16 +106,10 @@ gdata_media_group_dispose (GObject *object)
 		g_object_unref (priv->credit);
 	priv->credit = NULL;
 
-	if (priv->contents != NULL) {
-		g_list_foreach (priv->contents, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->contents);
-	}
+	g_list_free_full (priv->contents, g_object_unref);
 	priv->contents = NULL;
 
-	if (priv->thumbnails != NULL) {
-		g_list_foreach (priv->thumbnails, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->thumbnails);
-	}
+	g_list_free_full (priv->thumbnails, g_object_unref);
 	priv->thumbnails = NULL;
 
 	/* Chain up to the parent class */
