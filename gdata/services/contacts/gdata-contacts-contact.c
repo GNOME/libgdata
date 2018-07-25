@@ -644,10 +644,7 @@ gdata_contacts_contact_finalize (GObject *object)
 	g_free (priv->short_name);
 	g_free (priv->subject);
 
-	if (priv->hobbies != NULL) {
-		g_list_foreach (priv->hobbies, (GFunc) g_free, NULL);
-		g_list_free (priv->hobbies);
-	}
+	g_list_free_full (priv->hobbies, g_free);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_contacts_contact_parent_class)->finalize (object);
@@ -1966,10 +1963,7 @@ gdata_contacts_contact_remove_all_email_addresses (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->email_addresses != NULL) {
-		g_list_foreach (priv->email_addresses, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->email_addresses);
-	}
+	g_list_free_full (priv->email_addresses, g_object_unref);
 	priv->email_addresses = NULL;
 }
 
@@ -2055,10 +2049,7 @@ gdata_contacts_contact_remove_all_im_addresses (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->im_addresses != NULL) {
-		g_list_foreach (priv->im_addresses, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->im_addresses);
-	}
+	g_list_free_full (priv->im_addresses, g_object_unref);
 	priv->im_addresses = NULL;
 }
 
@@ -2144,10 +2135,7 @@ gdata_contacts_contact_remove_all_phone_numbers (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->phone_numbers != NULL) {
-		g_list_foreach (priv->phone_numbers, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->phone_numbers);
-	}
+	g_list_free_full (priv->phone_numbers, g_object_unref);
 	priv->phone_numbers = NULL;
 }
 
@@ -2233,10 +2221,7 @@ gdata_contacts_contact_remove_all_postal_addresses (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->postal_addresses != NULL) {
-		g_list_foreach (priv->postal_addresses, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->postal_addresses);
-	}
+	g_list_free_full (priv->postal_addresses, g_object_unref);
 	priv->postal_addresses = NULL;
 }
 
@@ -2322,10 +2307,7 @@ gdata_contacts_contact_remove_all_organizations (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->organizations != NULL) {
-		g_list_foreach (priv->organizations, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->organizations);
-	}
+	g_list_free_full (priv->organizations, g_object_unref);
 	priv->organizations = NULL;
 }
 
@@ -2381,10 +2363,7 @@ gdata_contacts_contact_remove_all_jots (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->jots != NULL) {
-		g_list_foreach (priv->jots, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->jots);
-	}
+	g_list_free_full (priv->jots, g_object_unref);
 	priv->jots = NULL;
 }
 
@@ -2441,10 +2420,7 @@ gdata_contacts_contact_remove_all_relations (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->relations != NULL) {
-		g_list_foreach (priv->relations, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->relations);
-	}
+	g_list_free_full (priv->relations, g_object_unref);
 	priv->relations = NULL;
 }
 
@@ -2527,10 +2503,7 @@ gdata_contacts_contact_remove_all_websites (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->websites != NULL) {
-		g_list_foreach (priv->websites, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->websites);
-	}
+	g_list_free_full (priv->websites, g_object_unref);
 	priv->websites = NULL;
 }
 
@@ -2587,10 +2560,7 @@ gdata_contacts_contact_remove_all_events (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->events != NULL) {
-		g_list_foreach (priv->events, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->events);
-	}
+	g_list_free_full (priv->events, g_object_unref);
 	priv->events = NULL;
 }
 
@@ -2673,10 +2643,7 @@ gdata_contacts_contact_remove_all_calendars (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->calendars != NULL) {
-		g_list_foreach (priv->calendars, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->calendars);
-	}
+	g_list_free_full (priv->calendars, g_object_unref);
 	priv->calendars = NULL;
 }
 
@@ -2733,10 +2700,7 @@ gdata_contacts_contact_remove_all_external_ids (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->external_ids != NULL) {
-		g_list_foreach (priv->external_ids, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->external_ids);
-	}
+	g_list_free_full (priv->external_ids, g_object_unref);
 	priv->external_ids = NULL;
 }
 
@@ -2793,10 +2757,7 @@ gdata_contacts_contact_remove_all_hobbies (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->hobbies != NULL) {
-		g_list_foreach (priv->hobbies, (GFunc) g_free, NULL);
-		g_list_free (priv->hobbies);
-	}
+	g_list_free_full (priv->hobbies, g_free);
 	priv->hobbies = NULL;
 }
 
@@ -2853,10 +2814,7 @@ gdata_contacts_contact_remove_all_languages (GDataContactsContact *self)
 
 	g_return_if_fail (GDATA_IS_CONTACTS_CONTACT (self));
 
-	if (priv->languages != NULL) {
-		g_list_foreach (priv->languages, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->languages);
-	}
+	g_list_free_full (priv->languages, g_object_unref);
 	priv->languages = NULL;
 }
 

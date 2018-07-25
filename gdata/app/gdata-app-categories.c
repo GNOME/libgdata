@@ -106,10 +106,7 @@ gdata_app_categories_dispose (GObject *object)
 {
 	GDataAPPCategoriesPrivate *priv = GDATA_APP_CATEGORIES (object)->priv;
 
-	if (priv->categories != NULL) {
-		g_list_foreach (priv->categories, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->categories);
-	}
+	g_list_free_full (priv->categories, g_object_unref);
 	priv->categories = NULL;
 
 	/* Chain up to the parent class */

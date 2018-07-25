@@ -301,22 +301,13 @@ gdata_entry_dispose (GObject *object)
 {
 	GDataEntryPrivate *priv = GDATA_ENTRY (object)->priv;
 
-	if (priv->categories != NULL) {
-		g_list_foreach (priv->categories, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->categories);
-	}
+	g_list_free_full (priv->categories, g_object_unref);
 	priv->categories = NULL;
 
-	if (priv->links != NULL) {
-		g_list_foreach (priv->links, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->links);
-	}
+	g_list_free_full (priv->links, g_object_unref);
 	priv->links = NULL;
 
-	if (priv->authors != NULL) {
-		g_list_foreach (priv->authors, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->authors);
-	}
+	g_list_free_full (priv->authors, g_object_unref);
 	priv->authors = NULL;
 
 	/* Chain up to the parent class */
