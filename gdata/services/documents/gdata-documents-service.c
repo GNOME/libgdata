@@ -1551,3 +1551,130 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 	/* Upload URI: https://developers.google.com/drive/web/manage-uploads */
 	return g_strdup ("https://www.googleapis.com/upload/drive/v2/files");
 }
+
+gboolean
+gdata_documents_service_insert_entry_into_folder (GDataDocumentsService  *self,
+					          GDataDocumentsEntry    *entry,
+					          GDataDocumentsFolder   *folder,
+                                                  GCancellable           *cancellable,
+					          GError                **error)
+{
+	GDataEntry *local_entry;
+	const gchar *uri_prefix = "https://www.googleapis.com/drive/v2/files";
+	gchar *upload_data;
+	gchar *uri;
+	SoupMessage *message;
+	guint status;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), FALSE);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), FALSE);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to insert or move documents and folders."));
+		return FALSE;
+	}
+
+ 	if (gdata_entry_is_inserted (GDATA_ENTRY (entry)) != TRUE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND,
+				     _("To move a document it must be already uploaded first"));
+		return FALSE;
+	}
+
+	uri = g_strconcat (uri_prefix, "/", gdata_entry_get_id (GDATA_ENTRY (folder)), "/children", NULL);
+
+	local_entry = gdata_entry_new (gdata_entry_get_id (GDATA_ENTRY (entry)));
+	upload_data = gdata_parsable_get_json (GDATA_PARSABLE (local_entry));
+
+	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, FALSE);
+	soup_message_set_request (message, "application/json", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+	g_free (uri);
+	g_object_unref (local_entry);
+
+	/* Send the message */
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
+		g_object_unref (message);
+		return FALSE;
+	} else if (status != SOUP_STATUS_OK) {
+		/* Error */
+		GDataServiceClass *klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (klass->parse_error_response != NULL);
+		klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_INSERTION, status, message->reason_phrase, message->response_body->data,
+					     message->response_body->length, error);
+		g_object_unref (message);
+		return FALSE;
+	}
+
+	g_assert (message->response_body->data != NULL);
+	g_object_unref (message);
+
+	return TRUE;
+}
+
+typedef struct {
+	GDataDocumentsEntry  *entry;
+	GDataDocumentsFolder *folder;
+} MoveDocumentsThreadData;
+
+static void move_documents_thread_data_free (MoveDocumentsThreadData *data) {
+	if (data == NULL)
+		return;
+	g_object_unref (data->entry);
+	g_object_unref (data->folder);
+	g_free (data);
+}
+
+static void
+move_document_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
+{
+	GDataDocumentsService *service = GDATA_DOCUMENTS_SERVICE (source_object);
+	MoveDocumentsThreadData *targets = task_data;
+	GError *error = NULL;
+	gboolean ret = gdata_documents_service_insert_entry_into_folder (service, targets->entry, targets->folder, cancellable, &error);
+
+	if (error != NULL)
+		g_task_return_error (task, error);
+	else
+		g_task_return_boolean (task, ret);
+}
+
+void
+gdata_documents_service_insert_entry_into_folder_async (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
+                                                        GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	g_autoptr(GTask) task = NULL;
+	MoveDocumentsThreadData *data;
+
+	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry));
+	g_return_if_fail (GDATA_IS_DOCUMENTS_FOLDER (folder));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	data = g_slice_new (MoveDocumentsThreadData);
+	data->entry = g_object_ref (entry);
+	data->folder = g_object_ref (folder);
+
+	task = g_task_new (self, cancellable, callback, user_data);
+	g_task_set_source_tag (task, gdata_documents_service_insert_entry_into_folder_async);
+	g_task_set_task_data (task, g_steal_pointer (&data), (GDestroyNotify) move_documents_thread_data_free);
+	g_task_run_in_thread (task, move_document_thread);
+}
+
+gboolean
+gdata_documents_service_insert_entry_into_folder_finish (GDataDocumentsService *self, GAsyncResult *async_result, GError **error)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (async_result), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (async_result, self), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (async_result, gdata_documents_service_insert_entry_into_folder_async), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (async_result), error);
+}
