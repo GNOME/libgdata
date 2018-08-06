@@ -193,10 +193,7 @@ gdata_gd_when_dispose (GObject *object)
 {
 	GDataGDWhenPrivate *priv = GDATA_GD_WHEN (object)->priv;
 
-	if (priv->reminders != NULL) {
-		g_list_foreach (priv->reminders, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->reminders);
-	}
+	g_list_free_full (priv->reminders, g_object_unref);
 	priv->reminders = NULL;
 
 	/* Chain up to the parent class */

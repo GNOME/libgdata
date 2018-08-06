@@ -392,22 +392,13 @@ gdata_calendar_event_dispose (GObject *object)
 {
 	GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (object)->priv;
 
-	if (priv->times != NULL) {
-		g_list_foreach (priv->times, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->times);
-	}
+	g_list_free_full(priv->times, g_object_unref);
 	priv->times = NULL;
 
-	if (priv->people != NULL) {
-		g_list_foreach (priv->people, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->people);
-	}
+	g_list_free_full (priv->people, g_object_unref);
 	priv->people = NULL;
 
-	if (priv->places != NULL) {
-		g_list_foreach (priv->places, (GFunc) g_object_unref, NULL);
-		g_list_free (priv->places);
-	}
+	g_list_free_full (priv->places, g_object_unref);
 	priv->places = NULL;
 
 	/* Chain up to the parent class */
