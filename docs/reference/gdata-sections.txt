@@ -2553,7 +2553,9 @@ GDataTasksTask
 GDataTasksTaskClass
 gdata_tasks_task_new
 gdata_tasks_task_get_parent
+gdata_tasks_task_set_parent
 gdata_tasks_task_get_position
+gdata_tasks_task_set_position
 gdata_tasks_task_get_notes
 gdata_tasks_task_set_notes
 gdata_tasks_task_get_status
