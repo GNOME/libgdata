@@ -99,7 +99,9 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	/**
 	 * GDataTasksTask:parent:
 	 *
-	 * Parent task identifier. This field is omitted if it is a top-level task. This field is read-only.
+	 * Parent task identifier. This field is omitted if it is a top-level task.
+	 *
+	 * Since 0.17.11, this property is writable.
 	 *
 	 * Since: 0.15.0
 	 */
@@ -107,7 +109,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	                                 g_param_spec_string ("parent",
 	                                 "Parent of task", "Identifier of parent task.",
 	                                 NULL,
-	                                 G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataTasksTask:position:
@@ -115,7 +117,9 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	 * String indicating the position of the task among its sibling tasks under the same parent task
 	 * or at the top level. If this string is greater than another task's corresponding position string
 	 * according to lexicographical ordering, the task is positioned after the other task under the same
-	 * parent task (or at the top level). This field is read-only.
+	 * parent task (or at the top level).
+	 *
+	 * Since 0.17.11, this property is writable.
 	 *
 	 * Since: 0.15.0
 	 */
@@ -123,7 +127,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	                                 g_param_spec_string ("position",
 	                                 "Position of task", "Position of the task among sibling tasks using lexicographical order.",
 	                                 NULL,
-	                                 G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+	                                 G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataTasksTask:notes:
@@ -296,7 +300,11 @@ gdata_tasks_task_set_property (GObject *object, guint property_id, const GValue 
 			gdata_tasks_task_set_is_deleted (self, g_value_get_boolean (value));
 			break;
 		case PROP_PARENT:
+			gdata_tasks_task_set_parent (self, g_value_get_string (value));
+			break;
 		case PROP_POSITION:
+			gdata_tasks_task_set_position (self, g_value_get_string (value));
+			break;
 		case PROP_HIDDEN:
 		/* Read-only */
 		default:
@@ -417,6 +425,27 @@ gdata_tasks_task_get_parent (GDataTasksTask *self)
 }
 
 /**
+ * gdata_tasks_task_set_parent:
+ * @self: a #GDataTasksTask
+ * @parent: (nullable): parent of the task
+ *
+ * Sets the #GDataTasksTask:parent property.
+ *
+ * Since: 0.17.11
+ */
+void
+gdata_tasks_task_set_parent (GDataTasksTask *self, const gchar *parent)
+{
+	gchar *local_parent;
+	g_return_if_fail (GDATA_IS_TASKS_TASK (self));
+
+	local_parent = self->priv->parent;
+	self->priv->parent = g_strdup (parent);
+	g_free (local_parent);
+	g_object_notify (G_OBJECT (self), "parent");
+}
+
+/**
  * gdata_tasks_task_get_position:
  * @self: a #GDataTasksTask
  *
@@ -431,6 +460,27 @@ gdata_tasks_task_get_position (GDataTasksTask *self)
 {
 	g_return_val_if_fail (GDATA_IS_TASKS_TASK (self), NULL);
 	return self->priv->position;
+}
+
+/**
+ * gdata_tasks_task_set_position:
+ * @self: a #GDataTasksTask
+ * @position: position of the task in the list
+ *
+ * Sets the #GDataTasksTask:position property.
+ *
+ * Since: 0.17.11
+ */
+void
+gdata_tasks_task_set_position (GDataTasksTask *self, const gchar *position)
+{
+	gchar *local_position;
+	g_return_if_fail (GDATA_IS_TASKS_TASK (self));
+
+	local_position = self->priv->position;
+	self->priv->position = g_strdup (position);
+	g_free (local_position);
+	g_object_notify (G_OBJECT (self), "position");
 }
 
 /**
