@@ -98,7 +98,9 @@ GType gdata_tasks_task_get_type (void) G_GNUC_CONST;
 GDataTasksTask *gdata_tasks_task_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_tasks_task_get_parent (GDataTasksTask *self) G_GNUC_PURE;
+void gdata_tasks_task_set_parent (GDataTasksTask *self, const gchar *parent);
 const gchar *gdata_tasks_task_get_position (GDataTasksTask *self) G_GNUC_PURE;
+void gdata_tasks_task_set_position (GDataTasksTask *self, const gchar *position);
 const gchar *gdata_tasks_task_get_notes (GDataTasksTask *self) G_GNUC_PURE;
 void gdata_tasks_task_set_notes (GDataTasksTask *self, const gchar *notes);
 const gchar *gdata_tasks_task_get_status (GDataTasksTask *self) G_GNUC_PURE;

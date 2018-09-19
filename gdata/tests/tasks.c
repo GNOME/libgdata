@@ -256,6 +256,8 @@ test_task_properties (void)
 	gdata_tasks_task_set_due (task, 1409419209);
 	gdata_tasks_task_set_completed (task, 1409419200);  /* 9 seconds to spare! */
 	gdata_tasks_task_set_is_deleted (task, FALSE);
+	gdata_tasks_task_set_position (task, "0");
+	gdata_tasks_task_set_parent (task, NULL);
 
 	/* Check the properties of the object */
 	g_object_get (G_OBJECT (task),
@@ -278,7 +280,7 @@ test_task_properties (void)
 	g_assert_cmpstr (title, ==, "some-title");
 	g_assert_cmpint (updated, ==, -1);
 	g_assert_cmpstr (parent, ==, NULL);
-	g_assert_cmpstr (position, ==, NULL);
+	g_assert_cmpstr (position, ==, "0");
 	g_assert_cmpstr (notes, ==, "some-notes");
 	g_assert_cmpstr (status, ==, GDATA_TASKS_STATUS_NEEDS_ACTION);
 	g_assert_cmpint (due, ==, 1409419209);
@@ -302,11 +304,13 @@ test_task_properties (void)
 	              "due", (gint64) 1409419200,
 	              "completed", (gint64) 1409419200,  /* no time to spare! */
 	              "is-deleted", TRUE,
+		      "parent", "parent-uid",
+		      "position", "1",
 	              NULL);
 
 	/* Check the properties using the getters. */
-	g_assert_cmpstr (gdata_tasks_task_get_parent (task), ==, NULL);
-	g_assert_cmpstr (gdata_tasks_task_get_position (task), ==, NULL);
+	g_assert_cmpstr (gdata_tasks_task_get_parent (task), ==, "parent-uid");
+	g_assert_cmpstr (gdata_tasks_task_get_position (task), ==, "1");
 	g_assert_cmpstr (gdata_tasks_task_get_notes (task), ==, "more-notes");
 	g_assert_cmpstr (gdata_tasks_task_get_status (task), ==,
 	                 GDATA_TASKS_STATUS_COMPLETED);
@@ -325,6 +329,8 @@ test_task_properties (void)
 			"\"due\": \"2014-08-30T17:20:00Z\","
 			"\"completed\": \"2014-08-30T17:20:00Z\","
 			"\"deleted\": true,"
+			"\"position\": \"1\","
+			"\"parent\": \"parent-uid\","
 			"\"hidden\": false"
 		"}");
 
@@ -340,6 +346,8 @@ test_task_properties (void)
 			"\"due\": \"2014-08-30T17:20:00Z\","
 			"\"completed\": \"2014-08-30T17:20:00Z\","
 			"\"deleted\": false,"
+			"\"position\": \"1\","
+			"\"parent\": \"parent-uid\","
 			"\"hidden\": false"
 		"}");
 
