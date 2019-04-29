@@ -1312,6 +1312,7 @@ void
 gdata_documents_service_add_entry_to_folder_async (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsFolder *folder,
                                                    GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
+
 	g_autoptr(GTask) task = NULL;
 	AddEntryToFolderData *data;
 
@@ -1378,7 +1379,14 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	const gchar *folder_id;
 	GList *i;
 	GList *parent_folders_list;
-	GDataLink *folder_link = NULL;
+	GDataLink *folder_link = NULL, *file_link = NULL;
+  GDataParsableClass *klass;
+  GDataAuthorizationDomain *domain;
+  gchar *fixed_uri;
+  guint status;
+  gboolean req_status = TRUE;
+  SoupMessage *message;
+  
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
@@ -1392,8 +1400,12 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 		                     _("You must be authenticated to move documents and folders."));
 		return NULL;
 	}
+  domain = gdata_documents_service_get_primary_authorization_domain(); 
+  g_debug("Scope = %s, service_value = %s\n", gdata_authorization_domain_get_scope(domain),
+      gdata_authorization_domain_get_service_name(domain));
 
 	folder_id = gdata_entry_get_id (GDATA_ENTRY (folder));
+	g_debug("%s, Folder ID = %s\n", __func__, folder_id);
 	g_assert (folder_id != NULL);
 
 	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (entry), GDATA_LINK_PARENT);
@@ -1415,10 +1427,53 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 		return NULL;
 	}
 
-	gdata_entry_remove_link (GDATA_ENTRY (entry), folder_link);
+  klass = GDATA_PARSABLE_GET_CLASS (entry);
 
-	return GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (self), get_documents_authorization_domain (), GDATA_ENTRY (entry),
-	                                                          cancellable, error));
+	g_assert (klass->get_content_type != NULL);
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		file_link = gdata_entry_look_up_link (GDATA_ENTRY (entry), GDATA_LINK_SELF);
+	} else {
+		file_link = gdata_entry_look_up_link (GDATA_ENTRY (entry), GDATA_LINK_EDIT);
+	}
+	g_debug("Link = %s\n", gdata_link_get_uri(file_link));
+	g_assert (file_link != NULL);
+
+	fixed_uri = g_strconcat (_gdata_service_fix_uri_scheme (gdata_link_get_uri (file_link)),
+        "/parents/",
+        folder_id,
+        NULL
+	    );
+
+  message = _gdata_service_build_message (GDATA_SERVICE (self), domain, SOUP_METHOD_DELETE, fixed_uri, gdata_entry_get_etag (GDATA_ENTRY (entry)), TRUE);
+	g_free (fixed_uri);
+
+	/* Send the message */
+  status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+  if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+    /* Redirect error or cancelled */
+
+    /* TODO: Error Handling for this case? */
+    req_status = FALSE;
+  } else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
+    /* Error */
+    GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+    g_assert (service_klass->parse_error_response != NULL);
+    service_klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,
+                                         message->response_body->length, error);
+    req_status = FALSE;
+  }
+
+  g_object_unref (message);
+
+  if (req_status) {
+    /* Remove parent link from File's Data Entry */
+    gdata_entry_remove_link (GDATA_ENTRY (entry), folder_link);
+    return entry;
+  } else {
+    /* TODO: What to return in the below scenario? */
+    return entry;
+  }
 }
 
 typedef struct {
