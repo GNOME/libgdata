@@ -1378,7 +1378,13 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	const gchar *folder_id;
 	GList *i;
 	GList *parent_folders_list;
-	GDataLink *folder_link = NULL;
+	GDataLink *folder_link = NULL, *file_link = NULL;
+  GDataParsableClass *klass;
+  GDataAuthorizationDomain *domain;
+  gchar *fixed_uri, *modified_uri;
+  guint status;
+  gboolean req_status = TRUE;
+  SoupMessage *message;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
@@ -1392,8 +1398,10 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 		                     _("You must be authenticated to move documents and folders."));
 		return NULL;
 	}
+  domain = gdata_documents_service_get_primary_authorization_domain();
 
 	folder_id = gdata_entry_get_id (GDATA_ENTRY (folder));
+	g_debug("%s, Folder ID = %s\n", __func__, folder_id);
 	g_assert (folder_id != NULL);
 
 	parent_folders_list = gdata_entry_look_up_links (GDATA_ENTRY (entry), GDATA_LINK_PARENT);
@@ -1411,14 +1419,61 @@ gdata_documents_service_remove_entry_from_folder (GDataDocumentsService *self, G
 	g_list_free (parent_folders_list);
 
 	if (folder_link == NULL) {
-		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_NOT_FOUND, _("Parent folder not found"));
+		g_set_error_literal (error,
+		                     GDATA_SERVICE_ERROR,
+		                     GDATA_SERVICE_ERROR_NOT_FOUND,
+		                     _("Parent folder not found"));
 		return NULL;
 	}
 
-	gdata_entry_remove_link (GDATA_ENTRY (entry), folder_link);
+  klass = GDATA_PARSABLE_GET_CLASS (entry);
 
-	return GDATA_DOCUMENTS_ENTRY (gdata_service_update_entry (GDATA_SERVICE (self), get_documents_authorization_domain (), GDATA_ENTRY (entry),
-	                                                          cancellable, error));
+  g_assert (klass->get_content_type != NULL);
+	if (g_strcmp0 (klass->get_content_type (), "application/json") == 0) {
+		file_link = gdata_entry_look_up_link (GDATA_ENTRY (entry), GDATA_LINK_SELF);
+	} else {
+		file_link = gdata_entry_look_up_link (GDATA_ENTRY (entry), GDATA_LINK_EDIT);
+	}
+	g_debug ("Link = %s", gdata_link_get_uri(file_link));
+	g_assert (file_link != NULL);
+
+  fixed_uri = _gdata_service_fix_uri_scheme (gdata_link_get_uri (file_link));
+  modified_uri = g_strconcat (fixed_uri, "/parents/", folder_id, NULL);
+
+  message = _gdata_service_build_message (GDATA_SERVICE (self),
+                                          domain,
+                                          SOUP_METHOD_DELETE,
+                                          modified_uri,
+                                          gdata_entry_get_etag (GDATA_ENTRY (entry)),
+                                          TRUE);
+	g_free (fixed_uri);
+	g_free (modified_uri);
+
+	/* Send the message */
+  status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+  if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+    /* Redirect error or cancelled */
+    g_object_unref (message);
+    return NULL;
+  } else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
+    /* Error */
+    GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+    g_assert (service_klass->parse_error_response != NULL);
+    service_klass->parse_error_response (GDATA_SERVICE (self), GDATA_OPERATION_DELETION, status, message->reason_phrase, message->response_body->data,
+                                         message->response_body->length, error);
+    req_status = FALSE;
+  }
+
+  g_object_unref (message);
+
+  if (req_status) {
+    /* Remove parent link from File's Data Entry */
+    gdata_entry_remove_link (GDATA_ENTRY (entry), folder_link);
+    return entry;
+  } else {
+    return NULL;
+  }
 }
 
 typedef struct {
