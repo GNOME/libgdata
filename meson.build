@@ -34,26 +34,28 @@ gdata_lt_version = 25:0:3
 # Configuration begins #
 ########################
 
+config_h = configuration_data()
 gdata_conf = configuration_data()
 
-gdata_conf.set('GDATA_VERSION_MAJOR', gdata_version_major)
-gdata_conf.set('GDATA_VERSION_MINOR', gdata_version_minor)
-gdata_conf.set('GDATA_VERSION_MICRO', gdata_version_micro)
-gdata_conf.set('GDATA_API_VERSION', '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor))
-gdata_conf.set('GDATA_API_VERSION_MAJOR', gdata_api_version_major)
-gdata_conf.set('GDATA_API_VERSION_MINOR', gdata_api_version_minor)
+# REVIEW: Not sure which configuration file this should go to (AC_SUBST shouldn't be going anywhere)
+config_h.set('GDATA_VERSION_MAJOR', gdata_version_major)
+config_h.set('GDATA_VERSION_MINOR', gdata_version_minor)
+config_h.set('GDATA_VERSION_MICRO', gdata_version_micro)
+config_h.set('GDATA_API_VERSION', '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor))
+config_h.set('GDATA_API_VERSION_MAJOR', gdata_api_version_major)
+config_h.set('GDATA_API_VERSION_MINOR', gdata_api_version_minor)
 
-gdata_conf.set_quoted('GETTEXT_PACKAGE', 'gdata')
-gdata_conf.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/libgdata/issues/')
-gdata_conf.set_quoted('PACKAGE_NAME', 'libgdata')
-gdata_conf.set_quoted('PACKAGE_STRING', 'libgdata @0@'.format(meson.project_version()))
-gdata_conf.set_quoted('PACKAGE_TARNAME', 'libgdata')
-gdata_conf.set_quoted('PACKAGE_URL', '')
-gdata_conf.set_quoted('PACKAGE_VERSION', meson.project_version())
+config_h.set_quoted('GETTEXT_PACKAGE', 'gdata')
+config_h.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/libgdata/issues/')
+config_h.set_quoted('PACKAGE_NAME', 'libgdata')
+config_h.set_quoted('PACKAGE_STRING', 'libgdata @0@'.format(meson.project_version()))
+config_h.set_quoted('PACKAGE_TARNAME', 'libgdata')
+config_h.set_quoted('PACKAGE_URL', '')
+config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
 
 # REVIEW: How to check if _GNU_SOURCE extensions are actually present?
 # Globally define _GNU_SOURCE and therefore enable the GNU extensions
-gdata_conf.set('_GNU_SOURCE', true)
+config_h.set('_GNU_SOURCE', true)
 #gdata_debug = get_option('buildtype').contains('debug')
 
 gnome = import('gnome')
@@ -69,13 +71,13 @@ top_inc = include_directories('.')
 cc = meson.get_compiler('c')
 
 # defines
-set_defines = [
-  # package
-  ['PACKAGE_STRING', '@0@ @1@'.format(gdata_name, gdata_version)],
-  ['VERSION', gdata_version],
-  # i18n
-  ['GETTEXT_PACKAGE', gdata_name],
-]
+# set_defines = [
+#   # package
+#   ['PACKAGE_STRING', '@0@ @1@'.format(gdata_name, gdata_version)],
+#   ['VERSION', gdata_version],
+#   # i18n
+#   ['GETTEXT_PACKAGE', gdata_name],
+# ]
 
 # Requirements
 gobject_dep = dependency('gobject-2.0')
@@ -90,6 +92,19 @@ liboauth_dep = dependency('liboauth', version: '>= 0.9.4')
 
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
-
 have_libsoup_2_55_90 = dependency('libsoup-2.4', version: '>= 2.55.90')
 
+if have_libsoup_2_55_90
+  config_h.set10('HAVE_LIBSOUP_2_55_90', true, description: 'Define if the new SoupServer API is available')
+
+# Optional dependencies
+have_gdk_pixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
+if have_gdk_pixbuf 
+  config_h.set10('HAVE_GDK_PIXBUF,', true, description: 'Defined if gdk-pixbuf is installed')
+
+# Minimum and maximum requirements for gdk-pixbuf
+GDK_PIXBUF_CFLAGS="$GDK_PIXBUF_CFLAGS -DGDK_VERSION_MIN_REQUIRED=$GDK_PIXBUF_MIN_REQUIRED -DGDK_VERSION_MAX_ALLOWED=$GDK_PIXBUF_MAX_ALLOWED"
+
+# Create the `config.h` file from the `config_h` data
+configure_file(output : 'config.h',
+  configuration : config_h)
