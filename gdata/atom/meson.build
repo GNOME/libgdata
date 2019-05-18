@@ -1,0 +1,11 @@
+gdata_atom_headers = [
+  'gdata-author.h',
+  'gdata-category.h',
+  'gdata-generator.h',
+  'gdata-link.h',
+]
+
+install_headers(
+  gdata_atom_headers,
+  install_dir: join_paths(gdata_includedir, 'gdata/atom')
+)

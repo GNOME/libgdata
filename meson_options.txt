@@ -1,10 +1,8 @@
-option('gtk', type: 'boolean', value: false, description: 'enable gtk+-3.0 support')
-option('gnome', type: 'boolean', value: true, description: 'enable GNOME support')
-option('goa', type: 'boolean', value: true, description: 'enable Gnome Online Accounts (goa) support')
+option('gtk', type: 'feature', value: 'auto', description: 'enable gtk+-3.0 support')
+option('gnome', type: 'feature', value: 'enabled', description: 'enable GNOME support')
+option('goa', type: 'feature', value: 'enabled', description: 'enable Gnome Online Accounts (goa) support')
 
 # Enable always building tests (default: yes)
 option('always_build_tests', type: 'boolean', value: true, description: 'Enable always building tests (default: yes)')
 option('installed_tests', type: 'boolean', value: false, description: 'Install test programs (default: no)')
 option('man', type: 'boolean', value: false, description: 'generate man pages')
-
-option('nls', type: 'boolean', value: true, description: 'Support for translation to user\'s native language')
