@@ -1,14 +1,15 @@
 gdata_path = 'gdata'
+gdata_include_path = join_paths(gdata_includedir, gdata_path)
 
 subdir('app')
-# subdir('atom')
-# subdir('exif')
-# subdir('gcontact')
-# subdir('gd')
-# subdir('georss')
+subdir('atom')
+# TODO: subdir('exif')
+subdir('gcontact')
+subdir('gd')
+# TODO: subdir('georss')
 subdir('media')
 subdir('services')
-# subdir('tests')
+# TODO: subdir('tests')
 
 gdata_marshal_files = gnome.genmarshal('gdata-marshal',
   sources: 'gdata-marshal.list')
@@ -45,29 +46,25 @@ gdata_headers = [
   'gdata-client-login-authorizer.h',
   'gdata-oauth1-authorizer.h',
   'gdata-oauth2-authorizer.h',
-]
-
-if enable_goa
-  gdata_headers += ['gdata-goa-authorizer.h']
-endif
-
-gdata_enums = gnome.mkenums('gdata-enums',
-  sources : gdata_headers,
-  h_template : 'gdata-enums.h.template',
-  c_template : 'gdata-enums.c.template',
-  install_header : true,
-  install_dir : includedir)
-
-gdata_headers += [
-  'gdata-enums.h',
+# TODO: Ask if these two have to be separately handled
   'gdata-types.h',
   'gdata-version.h',
 ]
 
-foreach headers_file:gdata_headers
-   gdata_include_headers += join_paths(gdata_path, headers_file)
-endforeach
+if enable_goa.enabled()
+  gdata_headers += ['gdata-goa-authorizer.h']
+endif
 
-foreach headers_file:gdata_private_headers
-   gdata_private_headers += join_paths(gdata_path, headers_file)
+gdata_enums = gnome.mkenums_simple('gdata-enums',
+  sources : gdata_headers,
+  install_header : true,
+  install_dir : gdata_include_path)
+
+install_headers(gdata_headers, install_dir: gdata_include_path)
+
+# Add the enum header after install_header(), since enum headers are generated at compile time
+gdata_headers += ['gdata-enums.h']
+
+foreach header_file:gdata_private_headers
+   gdata_private_headers += join_paths(gdata_path, header_file)
 endforeach
