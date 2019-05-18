@@ -38,24 +38,46 @@ config_h = configuration_data()
 gdata_conf = configuration_data()
 
 # REVIEW: Not sure which configuration file this should go to (AC_SUBST shouldn't be going anywhere)
-config_h.set('GDATA_VERSION_MAJOR', gdata_version_major)
-config_h.set('GDATA_VERSION_MINOR', gdata_version_minor)
-config_h.set('GDATA_VERSION_MICRO', gdata_version_micro)
-config_h.set('GDATA_API_VERSION', '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor))
-config_h.set('GDATA_API_VERSION_MAJOR', gdata_api_version_major)
-config_h.set('GDATA_API_VERSION_MINOR', gdata_api_version_minor)
+#config_h.set('GDATA_VERSION_MAJOR', gdata_version_major)
+#config_h.set('GDATA_VERSION_MINOR', gdata_version_minor)
+#config_h.set('GDATA_VERSION_MICRO', gdata_version_micro)
+#config_h.set('GDATA_API_VERSION', '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor))
+#config_h.set('GDATA_API_VERSION_MAJOR', gdata_api_version_major)
+#config_h.set('GDATA_API_VERSION_MINOR', gdata_api_version_minor)
 
-config_h.set_quoted('GETTEXT_PACKAGE', 'gdata')
-config_h.set_quoted('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/libgdata/issues/')
-config_h.set_quoted('PACKAGE_NAME', 'libgdata')
-config_h.set_quoted('PACKAGE_STRING', 'libgdata @0@'.format(meson.project_version()))
-config_h.set_quoted('PACKAGE_TARNAME', 'libgdata')
-config_h.set_quoted('PACKAGE_URL', '')
-config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
+config_h.set_quoted('VERSION',
+  meson.project_version(),
+  description: 'Version number of package.')
+config_h.set_quoted('PACKAGE',
+  meson.project_name(),
+  description: 'Name of package')
+config_h.set_quoted('GETTEXT_PACKAGE',
+  'gdata',
+  description: 'Define to the Gettext package name')
+config_h.set_quoted('PACKAGE_BUGREPORT',
+  'https://gitlab.gnome.org/GNOME/libgdata/issues/',
+  description: 'Define to the address where bug reports for this package should be sent.')
+config_h.set_quoted('PACKAGE_NAME',
+  'libgdata',
+  description: 'Define to the full name of this package.')
+config_h.set_quoted('PACKAGE_STRING',
+  'libgdata @0@'.format(meson.project_version()),
+  description: 'Define to the full name and version of this package.')
+config_h.set_quoted('PACKAGE_TARNAME',
+  'libgdata',
+  description: 'Define to the one symbol short name of this package.')
+config_h.set_quoted('PACKAGE_URL',
+  'https://wiki.gnome.org/Projects/libgdata',
+  description: 'Define to the home page for this package.')
+config_h.set_quoted('PACKAGE_VERSION',
+    meson.project_version(),
+    description: 'Define to the version of this package.')
 
 # REVIEW: How to check if _GNU_SOURCE extensions are actually present?
 # Globally define _GNU_SOURCE and therefore enable the GNU extensions
-config_h.set('_GNU_SOURCE', true)
+config_h.set('_GNU_SOURCE',
+  true,
+  description: 'Enable GNU extensions on systems that have them.')
 #gdata_debug = get_option('buildtype').contains('debug')
 
 gnome = import('gnome')
@@ -100,17 +122,11 @@ libjson_glib_dep = dependency('json-glib-1.0', version: '>= 0.15')
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
 have_libsoup_2_55_90 = dependency('libsoup-2.4', version: '>= 2.55.90')
-
-if have_libsoup_2_55_90.found()
-  config_h.set10('HAVE_LIBSOUP_2_55_90', true, description: 'Define if the new SoupServer API is available')
-endif
+config_h.set10('HAVE_LIBSOUP_2_55_90', have_libsoup_2_55_90.found(), description: 'Define if the new SoupServer API is available')
 
 # Optional dependencies
 have_gdk_pixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
-if have_gdk_pixbuf.found()
-  config_h.set10('HAVE_GDK_PIXBUF,', true, description: 'Defined if gdk-pixbuf is installed')
-endif
-
+config_h.set10('HAVE_GDK_PIXBUF', have_gdk_pixbuf.found(), description: 'Defined if gdk-pixbuf is installed')
 
 # TODO: How to handle the CFLAGS?
 
@@ -125,49 +141,37 @@ if enable_gtk
   endif
 endif
 
-# *** Check for GNOME ***
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
-
-# REVIEW: How to check if GNOME is actually installed?
-#enable_gnome = get_option('gnome')
-#if enable_gnome
-  #gnome_dep = dependency('gnome', version: '>= 2.91.2')
-  #if not gnome_dep.found()
-    #error('GNOME support requested but GNOME could not be found')
-    #endif
-#endif
+enable_gnome = get_option('gnome')
 
 # *** Check for goa ***
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
 # Pulls in gdata/gdata-goa-authorizer.[ch]
-enable_goa = get_option('goa')
 
-#if enable_gnome
-  ## Each of the below is an array of arrays, which has the first member as the
-  ## package and the second (optional) as the package version
-  ## REVIEW: Useless?
-  #gnome_packages_public = []
-  #gnome_packages_private = [
-    #['gcr-base-3'],
-    #['libxml-2.0'],
-  #]
-  #if enable_goa
-    #gnome_packages_public += []
-    #gnome_packages_private += [['goa-1.0', '3.8']]
-    #config_h.set10('HAVE_GOA,', true, description: 'Define if GOA support is enabled')
-    #gnome_packages = gnome_packages_public + gnome_packages_private
-    #foreach pkg: gnome_packages
-      #if (pkg.length() == 1)
-	#dependency(pkg[0])
-      #elif (pkg.length() == 2)
-	#dependency(pkg[0], version: pkg[1])
-      #else
-	#error('''Messed up meson.build file. Please check the meson.build and
-	  #restart.''')
-      #endif
-    #endforeach
-  #endif
-#endif
+enable_goa = get_option('goa')
+if enable_gnome
+
+  # pkg-config package, version string (optional)
+  gnome_packages = [
+    ['gcr-base-3'],
+    ['libxml-2.0'],
+    ['goa-1.0', '>= 3.8']
+  ]
+  # REVIEW: Shouldn't we check existence of dependency first and then set HAVE_GOA?
+  if enable_goa
+    config_h.set10('HAVE_GOA,', true, description: 'Define if GOA support is enabled.')
+    foreach pkg: gnome_packages
+      if (pkg.length() == 1)
+        dependency(pkg[0])
+      elif (pkg.length() == 2)
+        dependency(pkg[0], version: pkg[1])
+      else
+        error('''Messed up meson.build file. Please check the meson.build and
+          restart.''')
+      endif
+    endforeach
+  endif
+endif
 
 # Enable always building tests (default: yes)
 enable_always_build_tests = get_option('always_build_tests')
@@ -180,14 +184,42 @@ endif
 
 # Various necessary functions
 check_functions = [
-  'memset',
-  'setlocale',
-  'strchr',
-  'strstr',
+  ['memset'],
+  ['setlocale'],
+  ['strchr'],
+  ['strstr'],
+
+  # REVIEW:   The description in config.h generated by Autotools also mentions
+  #           that iconv needs to be checked if it works or not.
+  #           Is it correct to check if it works using cc.has_function()?
+  ['iconv', 'Define if you have the iconv() function and it works.']
+]
+
+# REVIEW: Should the below additions be done this way?
+# Reference: https://github.com/GNOME/dconf-editor/blob/master/meson.build#L93
+
+check_functions += [
+  ['CFLocaleCopyCurrent', '''Define to 1 if you have the Mac OS X function
+    CFLocaleCopyCurrent in the CoreFoundation framework.'''],
+  ['CFPreferencesCopyAppValue', '''Define to 1 if you have the Mac OS X function
+    CFPreferencesCopyAppValue in the CoreFoundation framework.''']
 ]
 
 foreach func: check_functions
-  config_h.set('HAVE_' + func.to_upper(), cc.has_function(func))
+  if (func.length() == 1)
+    config_h.set10('HAVE_' + func[0].to_upper(),
+      cc.has_function(func[0]),
+      description: 'Define to 1 if you have the `@0@` function.'.format(func[0])
+    )
+  elif (func.length() == 2)
+    config_h.set10('HAVE_' + func[0].to_upper(),
+      cc.has_function(func[0]),
+      description: func[1]
+    )
+  else
+    error('''Messed up meson.build file. Please check the meson.build and
+      restart.''')
+  endif
 endforeach
 
 check_headers = [
@@ -196,25 +228,57 @@ check_headers = [
   'locale.h',
   'netinet/in.h',
   'sys/socket.h',
+  'sys/stat.h',
+  'sys/types.h',
+  'stdlib.h',
+  'stdint.h',
+  'string.h',
+  'strings.h',
+  'unistd.h',
+  'memory.h',
+  # REVIEW: What's the use of this?
+  'dlfcn.h',
+  'inttypes.h',
 ]
 
 foreach header: check_headers
   has_header = cc.has_header(header)
-  config_h.set10('HAVE_' + header.underscorify().to_upper(), has_header)
+  config_h.set10('HAVE_' + header.underscorify().to_upper(),
+    has_header,
+    description: 'Define to 1 if you have the <@0@> header file.'.format(header))
 endforeach
 
 # Internationalisation support
 
-#i18n = import('i18n')
+i18n = import('i18n')
+add_project_arguments('-DGETTEXT_PACKAGE="intltest"', language: 'c')
+i18n.gettext('gdata', args: '--directory=' + meson.source_root())
 
-#gettext_package = 'gdata'
-#add_project_arguments('-DGETTEXT_PACKAGE=' + gettext_package, language: 'c')
-#config_h.set_quoted('GETTEXT_PACKAGE', 'gdata', description: 'Define to the Gettext package name')
+# Check NLS
+enable_nls = get_option('nls')
+if cc.has_header('libintl.h')
+  enable_nls = (true and enable_nls)
+elif enable_nls
+  error('NLS requested (default) but libintl.h not found.')
+endif
+config_h.set10('ENABLE_NLS', enable_nls, description: '''Define to 1 if translation of program messages to the user's native
+  language is requested.''')
+
+# Check dcgettext()
+has_dcgettext = cc.has_function('dcgettext')
+config_h.set10('HAVE_DCGETTEXT', has_dcgettext, description: 'Define if the GNU dcgettext() function is already present or preinstalled.')
+
+# Check gettext()
+has_gettext = cc.has_function('gettext')
+config_h.set10('HAVE_GETTEXT', has_gettext, description: 'Define if the GNU gettext() function is already present or preinstalled.')
+
+# Create the build sub-directories
+#subdir('demos')
+#subdir('docs')
+subdir('gdata')
 #subdir('po')
 
 # TODO: Remove this **TO THE END**
 # Create the `config.h` file from the `config_h` data
 configure_file(output : 'config.h',
   configuration : config_h)
-
-
