@@ -7,4 +7,4 @@ install_headers(
   subdir: 'gdata/app',
 )
 
-gdata_sources += ['gdata-app-categories.c']
+# gdata_sources += ['gdata-app-categories.c']
