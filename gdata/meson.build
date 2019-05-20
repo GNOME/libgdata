@@ -9,19 +9,22 @@ subdir('app')
 # subdir('services')
 # subdir('tests')
 
+gdata_marshal_files = gnome.genmarshal('gdata-marshal',
+  sources: 'gdata-marshal.list')
+
 gdata_enum_files = [
-  'gdata/gdata-enums.c',
-  'gdata/gdata-enums.h',
-  'gdata/media/gdata-media-enums.c',
-  'gdata/media/gdata-media-enums.h',
-  'gdata/services/documents/gdata-documents-enums.c',
-  'gdata/services/documents/gdata-documents-enums.h',
-  'gdata/services/freebase/gdata-freebase-enums.c',
-  'gdata/services/freebase/gdata-freebase-enums.h',
-  'gdata/services/picasaweb/gdata-picasaweb-enums.c',
-  'gdata/services/picasaweb/gdata-picasaweb-enums.h',
-  'gdata/services/youtube/gdata-youtube-enums.c',
-  'gdata/services/youtube/gdata-youtube-enums.h',
+  'gdata-enums.c',
+  'gdata-enums.h',
+  'media/gdata-media-enums.c',
+  'media/gdata-media-enums.h',
+  'services/documents/gdata-documents-enums.c',
+  'services/documents/gdata-documents-enums.h',
+  'services/freebase/gdata-freebase-enums.c',
+  'services/freebase/gdata-freebase-enums.h',
+  'services/picasaweb/gdata-picasaweb-enums.c',
+  'services/picasaweb/gdata-picasaweb-enums.h',
+  'services/youtube/gdata-youtube-enums.c',
+  'services/youtube/gdata-youtube-enums.h',
 ]
 
 gdata_sources = [
