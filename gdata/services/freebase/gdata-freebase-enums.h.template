@@ -1,38 +1,33 @@
 /*** BEGIN file-header ***/
-#include "gdata-freebase-service.h"
-#include "gdata-freebase-search-query.h"
-#include "gdata-freebase-result.h"
-#include "gdata-freebase-enums.h"
+#ifndef GDATA_FREEBASE_ENUMS_H
+#define GDATA_FREEBASE_ENUMS_H
+
+#include <glib-object.h>
+
+G_BEGIN_DECLS
+
 /*** END file-header ***/
 
 /*** BEGIN file-production ***/
+/* enumerations from "@basename@" */
 
-/* enumerations from "@filename@" */
 /*** END file-production ***/
 
 /*** BEGIN value-header ***/
-GType
-@enum_name@_get_type (void)
-{
-  static GType etype = 0;
-  if (etype == 0) {
-    static const G@Type@Value values[] = {
+GType @enum_name@_get_type (void) G_GNUC_CONST;
+#define GDATA_TYPE_@ENUMSHORT@ (@enum_name@_get_type())
+
 /*** END value-header ***/
 
 /*** BEGIN value-production ***/
-      { @VALUENAME@, "@VALUENAME@", "@valuenick@" },
 /*** END value-production ***/
 
 /*** BEGIN value-tail ***/
-      { 0, NULL, NULL }
-    };
-    etype = g_@type@_register_static ("@EnumName@", values);
-  }
-  return etype;
-}
-
 /*** END value-tail ***/
 
 /*** BEGIN file-tail ***/
+G_END_DECLS
+
+#endif /* !GDATA_FREEBASE_ENUMS_H */
 /*** END file-tail ***/
 

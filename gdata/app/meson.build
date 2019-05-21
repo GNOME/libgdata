@@ -1,10 +1,8 @@
-common_inc = include_directories('.')
+gdata_app_path = join_paths('gdata', 'app')
 
-headers = files('gdata-app-categories.h')
+gdata_app_headers = ['gdata-app-categories.h']
 
-install_headers(
-  headers,
-  subdir: 'gdata/app',
-)
+foreach headers_file:gdata_app_headers
+   gdata_app_include_headers += join_paths(gdata_app_path, headers_file)
+endforeach
 
-# gdata_sources += ['gdata-app-categories.c']

@@ -18,6 +18,27 @@ gdata_version_micro = ver_arr[2]
 gdata_api_version_major = 0
 gdata_api_version_minor = 0
 
+# Define the install directories
+includedir = join_paths(get_option('includedir'), meson.project_name(), 'gdata')
+
+# Define the arrays holding headers to be installed
+gdata_include_headers = []
+gdata_atom_include_headers = []
+gdata_app_include_headers = []
+gdata_gd_include_headers = []
+gdata_gcontact_include_headers = []
+gdata_media_include_headers = []
+gdata_calendar_include_headers = []
+gdata_contacts_include_headers = []
+gdata_documents_include_headers = []
+gdata_picasaweb_include_headers = []
+gdata_youtube_include_headers = []
+gdata_tasks_include_headers = []
+gdata_freebase_include_headers = []
+
+# The following array contains private headers, and shouldn't be installed
+gdata_private_headers = []
+
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
 #
 #  1. If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
@@ -255,6 +276,38 @@ config_h.set10('HAVE_GETTEXT', has_gettext, description: 'Define if the GNU gett
 subdir('gdata')
 #subdir('po')
 
+gdata_installable_headers = gdata_include_headers + \
+  gdata_atom_include_headers + \
+  gdata_app_include_headers + \
+  gdata_gd_include_headers + \
+  gdata_gcontact_include_headers + \
+  gdata_media_include_headers + \
+  gdata_calendar_include_headers + \
+  gdata_contacts_include_headers + \
+  gdata_documents_include_headers + \
+  gdata_picasaweb_include_headers + \
+  gdata_youtube_include_headers + \
+  gdata_tasks_include_headers + \
+  gdata_freebase_include_headers
+
+# Install all the headers
+foreach header: gdata_installable_headers
+  # `header` here is the path from root directory to the header,
+  # so we split it and take the first n-1 elements in the split array
+  install_subdirectory = ''
+  temp_arr = header.split('/')
+
+  foreach elem: temp_arr
+    if elem == temp_arr[-1]
+      break
+    else
+      install_subdirectory = join_paths(install_subdirectory, elem)
+    endif
+  endforeach
+  install_headers(header, subdir: join_paths(meson.project_name(), install_subdirectory))
+endforeach
+
 # Create the `config.h` file from the `config_h` data
 configure_file(output : 'config.h',
   configuration : config_h)
+

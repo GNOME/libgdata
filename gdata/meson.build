@@ -1,57 +1,73 @@
+gdata_path = 'gdata'
+
 subdir('app')
-# TODO: Finish the below
 # subdir('atom')
 # subdir('exif')
 # subdir('gcontact')
 # subdir('gd')
 # subdir('georss')
-# subdir('media')
-# subdir('services')
+subdir('media')
+subdir('services')
 # subdir('tests')
 
 gdata_marshal_files = gnome.genmarshal('gdata-marshal',
   sources: 'gdata-marshal.list')
 
-gdata_enum_files = [
-  'gdata-enums.c',
+gdata_private_headers += [
+  'gdata-private.h',
+  'gdata-batch-private.h',
+  'gdata-batch-feed.h',
+  'gdata-parser.h',
+  'gdata-buffer.h',
+  'gd/gdata-gd-feed-link.h',
+  'exif/gdata-exif-tags.h',
+  'georss/gdata-georss-where.h',
+]
+
+gdata_headers = [
+  'gdata.h',
+  'gdata-entry.h',
+  'gdata-feed.h',
+  'gdata-service.h',
+  'gdata-query.h',
+  'gdata-commentable.h',
+  'gdata-comment.h',
+  'gdata-access-handler.h',
+  'gdata-access-rule.h',
+  'gdata-parsable.h',
+  'gdata-download-stream.h',
+  'gdata-upload-stream.h',
+  'gdata-comparable.h',
+  'gdata-batch-operation.h',
+  'gdata-batchable.h',
+  'gdata-authorizer.h',
+  'gdata-authorization-domain.h',
+  'gdata-client-login-authorizer.h',
+  'gdata-oauth1-authorizer.h',
+  'gdata-oauth2-authorizer.h',
+]
+
+if enable_goa
+  gdata_headers += ['gdata-goa-authorizer.h']
+endif
+
+gdata_enums = gnome.mkenums('gdata-enums',
+  sources : gdata_headers,
+  h_template : 'gdata-enums.h.template',
+  c_template : 'gdata-enums.c.template',
+  install_header : true,
+  install_dir : includedir)
+
+gdata_headers += [
   'gdata-enums.h',
-  'media/gdata-media-enums.c',
-  'media/gdata-media-enums.h',
-  'services/documents/gdata-documents-enums.c',
-  'services/documents/gdata-documents-enums.h',
-  'services/freebase/gdata-freebase-enums.c',
-  'services/freebase/gdata-freebase-enums.h',
-  'services/picasaweb/gdata-picasaweb-enums.c',
-  'services/picasaweb/gdata-picasaweb-enums.h',
-  'services/youtube/gdata-youtube-enums.c',
-  'services/youtube/gdata-youtube-enums.h',
+  'gdata-types.h',
+  'gdata-version.h',
 ]
 
-gdata_sources = [
-  'gdata-access-handler.c',
-  'gdata-access-rule.c',
-  'gdata-authorization-domain.c',
-  'gdata-authorizer.c',
-  'gdata-batchable.c',
-  'gdata-batch-feed.c',
-  'gdata-batch-operation.c',
-  'gdata-buffer.c',
-  'gdata-client-login-authorizer.c',
-  'gdata-commentable.c',
-  'gdata-comment.c',
-  'gdata-comparable.c',
-  'gdata-download-stream.c',
-  'gdata-entry.c',
-  'gdata-feed.c',
-  'gdata-goa-authorizer.c',
-  'gdata-oauth1-authorizer.c',
-  'gdata-oauth2-authorizer.c',
-  'gdata-parsable.c',
-  'gdata-parser.c',
-  'gdata-query.c',
-  'gdata-service.c',
-  'gdata-types.c',
-  'gdata-upload-stream.c',
-]
+foreach headers_file:gdata_headers
+   gdata_include_headers += join_paths(gdata_path, headers_file)
+endforeach
 
-
+foreach headers_file:gdata_private_headers
+   gdata_private_headers += join_paths(gdata_path, headers_file)
+endforeach
