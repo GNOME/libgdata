@@ -12,14 +12,13 @@
 #                       For eg:
 #                       If you want to generate 'gdata-enums.h' file which resides in
 #                       'gdata/' directory from source code root, the argument should be
-#                       'gdata/gdata-enums.h'. The script converts this relative path into
-#                       absolute one and does its job.
+#                       'gdata-enums.h'. The script uses the $MESON_SUBDIR and $MESON_SOURCE_ROOT
+#                       environment variables to get the absolute paths of the header files.
 #
 #               $2 (required):
 #                       This argument is varargs in nature, meaning that if you give n
 #                       arguments to this script, the last n-1 will be used as the sources
-#                       for glib-mkenums. These paths also need to be relative from the root
-#                       of the source code.
+#                       for glib-mkenums. These are also header-files just like $1.
 #
 #               -s [Sed Expression] (optional):
 #                       This argument is optional and corresponds to the sed expression which
@@ -37,12 +36,12 @@ function usage() {
                             OUTPUT_HEADER_FILE
                             SOURCES_FOR_GLIB_MKENUMS...
 positional arguments:
-                            First argument is the relative path
+                            First argument is the name of the
                             of enum header file to be generated.
 
                             Subsequent arguments should also be
-                            relative paths and will be provided
-                            to glib-mkenums as sources
+                            names of source header files and
+                            will be provided to glib-mkenums as sources
 optional arguments:
     -s                      sed expression string
     -h                      show this help message and exit
@@ -52,6 +51,12 @@ optional arguments:
 if [ $# -eq 0 ]
 then
     usage
+    exit -1
+fi
+
+if [[ -z "${MESON_SOURCE_ROOT}" || -z "${MESON_SUBDIR}" ]]
+then
+    echo "The environment variables $MESON_SOURCE_ROOT and $MESON_SUBDIR must be set."
     exit -1
 fi
 
@@ -90,7 +95,7 @@ do
     NUM_ARGS=$(($NUM_ARGS - 2))
 done
 
-HEADER_FILE="$DIR/../""${1}"
+HEADER_FILE="$MESON_SOURCE_ROOT/$MESON_SUBDIR/""${1}"
 
 # Remove the HEADER_FILE from the list of positional arguments
 shift 1
@@ -98,7 +103,7 @@ shift 1
 # Compute the absolute paths of the sources provided
 for i in "${@}"
 do
-    SOURCES+=("$DIR/../""${i}")
+    SOURCES+=("$MESON_SOURCE_ROOT/$MESON_SUBDIR/""${i}")
 done
 
 fhead=""

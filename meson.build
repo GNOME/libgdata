@@ -93,11 +93,12 @@ config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found(), description: 'Defined 
 #GDK_PIXBUF_CFLAGS="$GDK_PIXBUF_CFLAGS -DGDK_VERSION_MIN_REQUIRED=$GDK_PIXBUF_MIN_REQUIRED -DGDK_VERSION_MAX_ALLOWED=$GDK_PIXBUF_MAX_ALLOWED"
 
 # *** Check for gtk ***
+gtk_dep_req_version = '>= 2.91.2'
 enable_gtk = get_option('gtk')
 if enable_gtk.enabled()
   gtk_dep = dependency('gtk+-3.0',
-    version: '>= 2.91.2',
-    not_found_message: 'GTK+ support requested but gtk+-3.0 >= 2.91.2 could not be found')
+    version: gtk_dep_req_version,
+    not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found')
 endif
 
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory

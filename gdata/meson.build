@@ -46,26 +46,41 @@ gdata_headers = [
   'gdata-client-login-authorizer.h',
   'gdata-oauth1-authorizer.h',
   'gdata-oauth2-authorizer.h',
-# TODO: Ask if these two have to be separately handled
-  'gdata-types.h',
-  'gdata-version.h',
 ]
+
+# TODO: Handle these separately later
+# 'gdata-types.h',
+# 'gdata-version.h'
 
 if enable_goa.enabled()
   gdata_headers += ['gdata-goa-authorizer.h']
 endif
 
-gdata_enums = gnome.mkenums_simple(
-  'gdata-enums',
-  sources : gdata_headers,
-  install_header : true,
-  install_dir : gdata_include_path
-)
+enum_header_file = 'gdata-enums.h'
+enum_source_file = 'gdata-enums.c'
 
-install_headers(gdata_headers, install_dir: gdata_include_path)
+# Generate the enum header file in the source code directory
+r = run_command([
+  join_paths(meson.source_root(), 'scripts/generate_enum_header.sh'),
+  '-s', 's/g_data/gdata/',
+  enum_header_file] + gdata_headers)
 
-# Add the enum header after install_header(), since enum headers are generated at compile time
-gdata_headers += ['gdata-enums.h']
+if r.returncode() != 0
+  error('Couldn\'t generate header file - ' + enum_header_file)
+endif
+
+gdata_headers += [enum_header_file]
+install_headers(files(gdata_headers), install_dir: gdata_include_path)
+
+# Generate the enum source file in the source code directory
+r = run_command([
+  join_paths(meson.source_root(), 'scripts/generate_enum_source.sh'),
+  '-s', 's/g_data/gdata/',
+  enum_source_file] + gdata_headers)
+
+if r.returncode() != 0
+  error('Couldn\'t generate source file - ' + enum_header_file)
+endif
 
 foreach header_file:gdata_private_headers
    gdata_private_headers += join_paths(gdata_path, header_file)

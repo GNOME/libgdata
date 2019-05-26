@@ -23,17 +23,31 @@ gdata_documents_private_headers = [
   'gdata-documents-utils.h',
 ]
 
-gdata_documents_enums = gnome.mkenums_simple(
-  'gdata-documents-enums',
-  sources : gdata_documents_headers,
-  install_header : true,
-  install_dir : gdata_documents_include_path
-)
+enum_header_file = 'gdata-documents-enums.h'
+enum_source_file = 'gdata-documents-enums.c'
 
-install_headers(gdata_documents_headers, install_dir: gdata_documents_include_path)
+# Generate the enum header file in the source code directory
+r = run_command([
+  join_paths(meson.source_root(), 'scripts/generate_enum_header.sh'),
+  '-s', 's/g_data/gdata/',
+  enum_header_file] + gdata_documents_headers)
 
-# Add the enum header after install_header(), since enum headers are generated at compile time
-gdata_documents_headers += ['gdata-documents-enums.h']
+if r.returncode() != 0
+  error('Couldn\'t generate header file - ' + enum_header_file)
+endif
+
+gdata_documents_headers += [enum_header_file]
+install_headers(files(gdata_documents_headers), install_dir: gdata_documents_include_path)
+
+# Generate the enum source file in the source code directory
+r = run_command([
+  join_paths(meson.source_root(), 'scripts/generate_enum_source.sh'),
+  '-s', 's/g_data/gdata/',
+  enum_source_file] + gdata_documents_headers)
+
+if r.returncode() != 0
+  error('Couldn\'t generate source file - ' + enum_source_file)
+endif
 
 foreach header_file:gdata_documents_private_headers
    gdata_private_headers += join_paths(gdata_documents_path, header_file)

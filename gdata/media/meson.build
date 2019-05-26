@@ -10,17 +10,32 @@ gdata_media_headers = [
 
 gdata_media_private_headers = ['gdata-media-group.h']
 
-gdata_media_enums = gnome.mkenums_simple(
-  'gdata-media-enums',
-  sources : gdata_media_headers,
-  install_header : true,
-  install_dir : gdata_media_include_path
-)
+enum_header_file = 'gdata-media-enums.h'
+enum_source_file = 'gdata-media-enums.c'
 
-install_headers(gdata_media_headers, install_dir: gdata_media_include_path)
+# Generate the enum header file in the source code directory
+r = run_command([
+  join_paths(meson.source_root(), 'scripts/generate_enum_header.sh'),
+  '-s', 's/g_data/gdata/',
+  '-s', 's/GDATA_TYPE_DATA/GDATA_TYPE/',
+  enum_header_file] + gdata_media_headers)
 
-# Add the enum header after install_header(), since enum headers are generated at compile time
-gdata_media_headers += ['gdata-media-enums.h']
+if r.returncode() != 0
+  error('Couldn\'t generate header file - ' + enum_header_file)
+endif
+
+gdata_media_headers += [enum_header_file]
+install_headers(files(gdata_media_headers), install_dir: gdata_media_include_path)
+
+# Generate the enum source file in the source code directory
+r = run_command([
+  join_paths(meson.source_root(), 'scripts/generate_enum_source.sh'),
+  '-s', 's/g_data/gdata/',
+  enum_source_file] + gdata_media_headers)
+
+if r.returncode() != 0
+  error('Couldn\'t generate source file - ' + enum_source_file)
+endif
 
 foreach header_file:gdata_media_private_headers
    gdata_private_headers += join_paths(gdata_media_path, header_file)
