@@ -258,6 +258,7 @@
 #include <libsoup/soup.h>
 #include <string.h>
 
+#include "gdata-property.h"
 #include "gdata-documents-service.h"
 #include "gdata-documents-utils.h"
 #include "gdata-batchable.h"
@@ -1611,4 +1612,198 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 
 	/* Upload URI: https://developers.google.com/drive/web/manage-uploads */
 	return g_strdup ("https://www.googleapis.com/upload/drive/v2/files");
+}
+
+GDataProperty *
+gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, const gboolean is_public_property, GCancellable *cancellable, GError **error)
+{
+	gchar *uri;
+	guint status;
+	SoupMessage *message;
+	GDataAuthorizationDomain *domain = NULL;
+	GDataProperty *property = NULL;
+	const gchar *id;
+
+	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	id = gdata_entry_get_id (GDATA_ENTRY (entry));
+	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX,
+			   id, "/properties/",
+			   key, "?visibility=",
+			   (is_public_property) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
+			   NULL);
+
+	domain = gdata_documents_service_get_primary_authorization_domain ();
+	message = _gdata_service_build_message (GDATA_SERVICE (self),
+						domain,
+						SOUP_METHOD_GET,
+						uri,
+						NULL,
+						TRUE);
+
+	g_free (uri);
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
+		g_object_unref (message);
+		return NULL;
+	} else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
+		/* Error */
+		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (service_klass->parse_error_response != NULL);
+		service_klass->parse_error_response (GDATA_SERVICE (self),
+						     GDATA_OPERATION_QUERY,
+						     status,
+						     message->reason_phrase,
+						     message->response_body->data,
+						     message->response_body->length,
+						     error);
+		g_object_unref (message);
+		return NULL;
+	}
+
+	/* Parse the JSON; and update the entry */
+	g_assert (message->response_body->data != NULL);
+	property = GDATA_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_PROPERTY, message->response_body->data, message->response_body->length,
+								 error));
+
+	g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
+		 gdata_property_get_key (GDATA_PROPERTY (property)),
+		 gdata_property_get_value (GDATA_PROPERTY (property)),
+		 gdata_property_get_is_publicly_visible (GDATA_PROPERTY (property)),
+		 gdata_property_get_etag (GDATA_PROPERTY (property)));
+
+	g_object_unref (message);
+	return property;
+}
+
+gboolean
+gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error)
+{
+	gchar *uri;
+	guint status;
+	SoupMessage *message;
+	GDataAuthorizationDomain *domain = NULL;
+	const gchar *id;
+	gchar *upload_data;
+	GDataProperty *ret_property;
+
+	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), FALSE);
+	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	id = gdata_entry_get_id (GDATA_ENTRY (entry));
+	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, "/properties", NULL);
+	domain = gdata_documents_service_get_primary_authorization_domain ();
+
+	message = _gdata_service_build_message (GDATA_SERVICE (self),
+						domain,
+						SOUP_METHOD_POST,
+						uri,
+						NULL,
+						TRUE);
+
+	upload_data = gdata_parsable_get_json (GDATA_PARSABLE (property));
+	soup_message_set_request (message, "application/json", SOUP_MEMORY_TAKE, upload_data, strlen (upload_data));
+
+	g_free (uri);
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
+		g_object_unref (message);
+		return TRUE;
+	} else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
+		/* Error */
+		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (service_klass->parse_error_response != NULL);
+		service_klass->parse_error_response (GDATA_SERVICE (self),
+						     GDATA_OPERATION_QUERY,
+						     status,
+						     message->reason_phrase,
+						     message->response_body->data,
+						     message->response_body->length,
+						     error);
+		g_object_unref (message);
+		return TRUE;
+	}
+
+	/* Parse the JSON; and update the entry */
+	g_assert (message->response_body->data != NULL);
+	ret_property = GDATA_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_PROPERTY, message->response_body->data, message->response_body->length,
+								     error));
+
+	if (ret_property != NULL) {
+		g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
+			 gdata_property_get_key (GDATA_PROPERTY (ret_property)),
+			 gdata_property_get_value (GDATA_PROPERTY (ret_property)),
+			 gdata_property_get_is_publicly_visible (GDATA_PROPERTY (ret_property)),
+			 gdata_property_get_etag (GDATA_PROPERTY (ret_property)));
+		g_object_unref (ret_property);
+	}
+
+	g_object_unref (message);
+	return TRUE;
+}
+
+gboolean
+gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error)
+{
+	gchar *uri;
+	guint status;
+	SoupMessage *message;
+	GDataAuthorizationDomain *domain = NULL;
+	const gchar *id;
+
+	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), FALSE);
+	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	id = gdata_entry_get_id (GDATA_ENTRY (entry));
+	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, "/properties/",
+			   gdata_property_get_key(property), "?visibility=",
+			   gdata_property_get_is_publicly_visible (property) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
+			   NULL);
+	domain = gdata_documents_service_get_primary_authorization_domain ();
+
+	message = _gdata_service_build_message (GDATA_SERVICE (self),
+						domain,
+						SOUP_METHOD_DELETE,
+						uri,
+						NULL,
+						TRUE);
+
+	g_free (uri);
+	status = _gdata_service_send_message (GDATA_SERVICE (self), message, cancellable, error);
+
+	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
+		/* Redirect error or cancelled */
+		g_object_unref (message);
+		return FALSE;
+	} else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
+		/* Error */
+		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
+		g_assert (service_klass->parse_error_response != NULL);
+		service_klass->parse_error_response (GDATA_SERVICE (self),
+						     GDATA_OPERATION_QUERY,
+						     status,
+						     message->reason_phrase,
+						     message->response_body->data,
+						     message->response_body->length,
+						     error);
+		g_object_unref (message);
+		return FALSE;
+	}
+
+	g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
+		 gdata_property_get_key (GDATA_PROPERTY (property)),
+		 gdata_property_get_value (GDATA_PROPERTY (property)),
+		 gdata_property_get_is_publicly_visible (GDATA_PROPERTY (property)),
+		 gdata_property_get_etag (GDATA_PROPERTY (property)));
+
+	g_object_unref (message);
+	return TRUE;
 }
