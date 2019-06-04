@@ -24,6 +24,102 @@
 #include "common.h"
 
 static void
+test_property_parse_json (void)
+{
+	GDataProperty *property;
+	GError *error = NULL;
+
+	/* Create an entry from JSON with unhandled nodes. */
+	property = GDATA_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_PROPERTY,
+									 "{"
+									 "\"key\":\"foobar\","
+									 "\"etag\":\"some-etag\","
+									 "\"value\":\"some foobar value\","
+									 "\"visibility\":\"PUBLIC\","
+									 "\"unhandled-boolean\":false,"
+									 "\"unhandled-string\":\"this-is-a-string---sometimes\","
+									 "\"unhandled-int\":15,"
+									 "\"unhandled-double\":42.42,"
+									 "\"unhandled-object\":{"
+									 "\"a\":true,"
+									 "\"b\":true"
+									 "},"
+									 "\"unhandled-array\":["
+									 "1,"
+									 "2,"
+									 "3"
+									 "],"
+									 "\"unhandled-null\":null"
+									 "}", -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PROPERTY (property));
+
+	/* Now check the outputted JSON from the property still has the unhandled nodes. */
+	gdata_test_assert_json (property,
+				"{"
+				"\"key\":\"foobar\","
+				"\"etag\":\"some-etag\","
+				"\"value\":\"some foobar value\","
+				"\"visibility\":\"PUBLIC\","
+				"\"unhandled-boolean\":false,"
+				"\"unhandled-string\":\"this-is-a-string---sometimes\","
+				"\"unhandled-int\":15,"
+				"\"unhandled-double\":42.42,"
+				"\"unhandled-object\":{"
+				"\"a\":true,"
+				"\"b\":true"
+				"},"
+				"\"unhandled-array\":["
+				"1,"
+				"2,"
+				"3"
+				"],"
+				"\"unhandled-null\":null"
+				"}");
+	g_object_unref (property);
+}
+
+static void
+test_property_get_json (void)
+{
+	GDataProperty *property1, *property2;
+	gchar *json;
+	GError *error = NULL;
+
+	property1 = gdata_property_new ("Testing key & \"escaping\"");
+
+	/* Set the properties more conventionally */
+	gdata_property_set_etag (property1, "Testing etag & \"escaping\"");
+	gdata_property_set_value (property1, "Testing value & \"escaping\"");
+	gdata_property_set_is_publicly_visible (property1, FALSE);
+
+	/* Check the generated JSON's OK */
+	gdata_test_assert_json (property1,
+				"{"
+				"\"key\":\"Testing key & \\\"escaping\\\"\","
+				"\"etag\":\"Testing etag & \\\"escaping\\\"\","
+				"\"value\":\"Testing value & \\\"escaping\\\"\","
+				"\"visibility\":\"PRIVATE\""
+				"}");
+
+	/* Check again by re-parsing the JSON to a GDataEntry. */
+	json = gdata_parsable_get_json (GDATA_PARSABLE (property1));
+	property2 = GDATA_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_PROPERTY, json, -1, &error));
+	g_assert_no_error (error);
+	g_assert (GDATA_IS_PROPERTY (property2));
+	g_clear_error (&error);
+	g_free (json);
+
+	g_assert_cmpstr (gdata_property_get_key (property1), ==, gdata_property_get_key (property2));
+	g_assert_cmpstr (gdata_property_get_etag (property1), ==, gdata_property_get_etag (property2));
+	g_assert_cmpstr (gdata_property_get_value (property1), ==, gdata_property_get_value (property2));
+	g_assert_cmpint (gdata_property_get_is_publicly_visible (property1), ==, gdata_property_get_is_publicly_visible (property2)); /* should both be FALSE */
+
+	g_object_unref (property1);
+	g_object_unref (property2);
+}
+
+static void
 test_xml_comparison (void)
 {
 	GDataAccessRule *rule;
@@ -4791,6 +4887,9 @@ main (int argc, char *argv[])
 	gdata_test_init (argc, argv);
 
 	g_test_add_func ("/tests/xml_comparison", test_xml_comparison);
+
+	g_test_add_func ("/property/parse_json", test_property_parse_json);
+	g_test_add_func ("/property/get_json", test_property_get_json);
 
 	g_test_add_func ("/service/network_error", test_service_network_error);
 	g_test_add_func ("/service/locale", test_service_locale);
