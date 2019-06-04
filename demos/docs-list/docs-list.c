@@ -98,9 +98,46 @@ main (void)
 		for (l = entries; l != NULL; l = l->next) {
 			GDataEntry *entry = GDATA_ENTRY (l->data);
 			const gchar *title;
+			const gchar *property_key = "Foobar";
+			GDataProperty *property = NULL;
+			gboolean success = FALSE;
 
 			title = gdata_entry_get_title (entry);
-			g_message ("%s", title);
+			g_message ("%s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
+
+			property = gdata_property_new (property_key);
+			gdata_property_set_value (property, "Some temporary value");
+			gdata_property_set_is_publicly_visible (property, TRUE);
+
+			success = gdata_documents_service_set_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
+
+			if (!success) {
+				g_warning ("Setting property failed!");
+			} else {
+				g_message ("Successfully set the property %s", property_key);
+			}
+
+			g_object_unref (property);
+
+			property = gdata_documents_service_get_property (service, GDATA_DOCUMENTS_ENTRY (entry), property_key, TRUE, NULL, NULL);
+			if (property != NULL) {
+				g_message ("key = %s, value = %s, public = %d",
+					   gdata_property_get_key (GDATA_PROPERTY (property)),
+					   gdata_property_get_value (GDATA_PROPERTY (property)),
+					   gdata_property_get_is_publicly_visible (GDATA_PROPERTY (property))
+				);
+				g_message ("etag = %s", gdata_property_get_etag (GDATA_PROPERTY (property)));
+
+			}
+
+			/* Now remove the added GDataProperty on the file object */
+			success = gdata_documents_service_remove_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
+
+			if (!success) {
+				g_warning ("Removing property failed!");
+			} else {
+				g_message ("Successfully removed the property %s!", property_key);
+			}
 		}
 
 		gdata_query_next_page (GDATA_QUERY (query));
