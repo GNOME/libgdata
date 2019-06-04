@@ -1,6 +1,15 @@
 gdata_color_get_type
 gdata_color_from_hexadecimal
 gdata_color_to_hexadecimal
+gdata_property_get_type
+gdata_property_new
+gdata_property_get_key
+gdata_property_get_etag
+gdata_property_set_etag
+gdata_property_get_value
+gdata_property_set_value
+gdata_property_get_is_publicly_visible
+gdata_property_set_is_publicly_visible
 gdata_entry_get_type
 gdata_entry_new
 gdata_entry_get_title

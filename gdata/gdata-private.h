@@ -120,7 +120,12 @@ G_GNUC_INTERNAL void _gdata_feed_call_progress_callback (GDataFeed *self, gpoint
 G_GNUC_INTERNAL void
 _gdata_feed_set_page_info (GDataFeed *self, guint total_results,
                            guint items_per_page);
-
+/*
+ * TODO: Add the below as private functions
+ *#include "gdata-property.h"
+ *G_GNUC_INTERNAL void _gdata_property_set_key (GDataProperty *self, const gchar *key);
+ *G_GNUC_INTERNAL void _gdata_property_set_etag (GDataProperty *self, const gchar *etag);
+ **/
 #include "gdata-entry.h"
 #include "gdata-batch-operation.h"
 G_GNUC_INTERNAL void _gdata_entry_set_updated (GDataEntry *self, gint64 updated);

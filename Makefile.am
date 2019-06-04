@@ -179,6 +179,7 @@ lib_LTLIBRARIES = gdata/libgdata.la
 gdataincludedir = $(pkgincludedir)/gdata
 gdata_headers = \
 	gdata/gdata.h			\
+	gdata/gdata-property.h	\
 	gdata/gdata-entry.h		\
 	gdata/gdata-feed.h		\
 	gdata/gdata-service.h		\
@@ -356,6 +357,7 @@ gdatafreebaseinclude_HEADERS = 						\
 	gdata/services/freebase/gdata-freebase-enums.h
 
 gdata_sources = \
+	gdata/gdata-property.c	\
 	gdata/gdata-entry.c		\
 	gdata/gdata-feed.c		\
 	gdata/gdata-service.c		\
