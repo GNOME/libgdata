@@ -23,6 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>
+#include <gdata/gdata-property.h>
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-upload-stream.h>
 #include <gdata/services/documents/gdata-documents-query.h>
@@ -158,6 +159,16 @@ GDataDocumentsEntry *gdata_documents_service_remove_entry_from_folder_finish (GD
                                                                               GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 gchar *gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataProperty, g_object_unref)
+GDataProperty *
+gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, gboolean is_public_property, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+
+gboolean
+gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
+
+gboolean
+gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 #endif /* !GDATA_DOCUMENTS_SERVICE_H */
