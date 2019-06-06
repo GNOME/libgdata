@@ -12,32 +12,68 @@ gdata_youtube_headers = [
   'gdata-youtube-video.h',
 ]
 
+install_headers(
+  files(gdata_youtube_headers),
+  install_dir: gdata_youtube_include_path
+)
+
 enum_header_file = 'gdata-youtube-enums.h'
 enum_source_file = 'gdata-youtube-enums.c'
 
-# Generate the enum header file in the source code directory
-r = run_command([
-  join_paths(meson.source_root(), 'scripts/generate_enum_header.sh'),
-  '-s', 's/g_data_you_tube/gdata_youtube/',
-  '-s', 's/GDATA_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/',
-  enum_header_file] + gdata_youtube_headers)
-
-if r.returncode() != 0
-  error('Couldn\'t generate header file - ' + enum_header_file)
-endif
-
-gdata_youtube_headers += [enum_header_file]
-install_headers(files(gdata_youtube_headers), install_dir: gdata_youtube_include_path)
+# Generate the enum source file in the source code and build directories
+gdata_youtube_enum_header = custom_target(
+  enum_header_file,
+  command: [
+    python_prog,
+    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_header.py'),
+    enum_header_file,
+    '--replace', 'g_data_you_tube', 'gdata_youtube',
+    '--replace', 'GDATA_TYPE_DATA_YOU_TUBE', 'GDATA_TYPE_YOUTUBE',
+    '--source-dir', meson.current_source_dir(),
+    '--out-dir', meson.current_build_dir(),
+    '--sources'
+    ] + gdata_youtube_headers,
+  install: true,
+  install_dir: gdata_youtube_include_path,
+  output: [enum_header_file],
+  console: true
+)
 
 # Generate the enum source file in the source code directory
-r = run_command([
-  join_paths(meson.source_root(), 'scripts/generate_enum_source.sh'),
-  '-s', 's/g_data_you_tube/gdata_youtube/',
-  enum_source_file] + gdata_youtube_headers)
+gdata_youtube_enum_source = custom_target(
+  enum_source_file,
+  command: [
+    python_prog,
+    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_source.py'),
+    enum_source_file,
+    '--replace', 'g_data_you_tube', 'gdata_youtube',
+    '--source-dir', meson.current_source_dir(),
+    '--out-dir', meson.current_build_dir(),
+    '--sources'
+    ] + gdata_youtube_headers,
+  output: [enum_source_file],
+  console: true
+)
 
-if r.returncode() != 0
-  error('Couldn\'t generate source file - ' + enum_source_file)
-endif
+# Copy all the header files required to compile the enum_source_file
+r = run_command(
+  cp_prog,
+  ['-r'] + gdata_youtube_headers + [meson.current_build_dir()],
+  check: true
+)
 
-# Add the enum header after install_header(), since enum headers are generated at compile time
-gdata_youtube_headers += ['gdata-youtube-enums.h']
+sources += files([
+  'gdata-youtube-service.c',
+  'gdata-youtube-video.c',
+  'gdata-youtube-content.c',
+  'gdata-youtube-credit.c',
+  'gdata-youtube-query.c',
+  'gdata-youtube-state.c',
+  'gdata-youtube-category.c',
+  'gdata-youtube-comment.c',
+  'gdata-youtube-feed.c'
+])
+
+headers += files(gdata_youtube_headers)
+generated_enum_headers += gdata_youtube_enum_header
+generated_enum_sources += gdata_youtube_enum_source

@@ -10,29 +10,67 @@ gdata_freebase_headers = [
   'gdata-freebase-topic-result.h',
 ]
 
+install_headers(
+  files(gdata_freebase_headers),
+  install_dir: gdata_freebase_include_path
+)
+
 enum_header_file = 'gdata-freebase-enums.h'
 enum_source_file = 'gdata-freebase-enums.c'
 
-# Generate the enum header file in the source code directory
-r = run_command([
-  join_paths(meson.source_root(), 'scripts/generate_enum_header.sh'),
-  '-s', 's/g_data_freebase/gdata_freebase/',
-  '-s', 's/GDATA_TYPE_DATA_FREEBASE/GDATA_TYPE_FREEBASE/',
-  enum_header_file] + gdata_freebase_headers)
-
-if r.returncode() != 0
-  error('Couldn\'t generate header file - ' + enum_header_file)
-endif
-
-gdata_freebase_headers += [enum_header_file]
-install_headers(files(gdata_freebase_headers), install_dir: gdata_freebase_include_path)
+# Generate the enum source file in the source code and build directories
+gdata_freebase_enum_header = custom_target(
+  enum_header_file,
+  command: [
+    python_prog,
+    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_header.py'),
+    enum_header_file,
+    '--replace', 'g_data_freebase', 'gdata_freebase',
+    '--replace', 'GDATA_TYPE_DATA_FREEBASE', 'GDATA_TYPE_FREEBASE',
+    '--source-dir', meson.current_source_dir(),
+    '--out-dir', meson.current_build_dir(),
+    '--sources'
+    ] + gdata_freebase_headers,
+  install: true,
+  install_dir: gdata_freebase_include_path,
+  output: [enum_header_file],
+  console: true
+)
 
 # Generate the enum source file in the source code directory
-r = run_command([
-  join_paths(meson.source_root(), 'scripts/generate_enum_source.sh'),
-  '-s', 's/g_data_freebase/gdata_freebase/',
-  enum_source_file] + gdata_freebase_headers)
+gdata_freebase_enum_source = custom_target(
+  enum_source_file,
+  command: [
+    python_prog,
+    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_source.py'),
+    enum_source_file,
+    '--replace', 'g_data_freebase', 'gdata_freebase',
+    '--source-dir', meson.current_source_dir(),
+    '--out-dir', meson.current_build_dir(),
+    '--sources'
+    ] + gdata_freebase_headers,
+  input: [gdata_freebase_enum_header],
+  output: [enum_source_file],
+  console: true
+)
 
-if r.returncode() != 0
-  error('Couldn\'t generate source file - ' + enum_source_file)
-endif
+# Copy all the header files required to compile the enum_source_file
+r = run_command(
+  cp_prog,
+  ['-r'] + gdata_freebase_headers + [meson.current_build_dir()],
+  check: true
+)
+
+sources += files([
+  'gdata-freebase-service.c',
+  'gdata-freebase-result.c',
+  'gdata-freebase-search-query.c',
+  'gdata-freebase-search-result.c',
+  'gdata-freebase-topic-query.c',
+  'gdata-freebase-topic-result.c',
+  'gdata-freebase-query.c'
+])
+
+headers += files(gdata_freebase_headers)
+generated_enum_headers += gdata_freebase_enum_header
+generated_enum_sources += gdata_freebase_enum_source

@@ -40,7 +40,9 @@ gdata_private_headers = []
 current = 25
 revision = 0
 age = 3
-gdata_libversion = '@0@.@1@.@2@'.format(current - age, age, revision)
+gdata_soversion = '@0@.@1@.@2@'.format(current - age, age, revision)
+
+top_inc = include_directories('.')
 
 ########################
 # Configuration begins #
@@ -73,10 +75,20 @@ glib_dep = dependency('glib-2.0', version: '>= 2.44.0')
 gio_dep = dependency('gio-2.0', version: '>= 2.44.0')
 gio_unix_dep = dependency('gio-unix-2.0')
 libxml_dep = dependency('libxml-2.0')
-
 libsoup_dep = dependency('libsoup-2.4', version: ['>= 2.42.0'])
 libjson_glib_dep = dependency('json-glib-1.0', version: '>= 0.15')
 liboauth_dep = dependency('oauth', version: '>= 0.9.4')
+
+gdata_deps = [
+  gobject_dep,
+  glib_dep,
+  gio_dep,
+  gio_unix_dep,
+  libxml_dep,
+  libsoup_dep,
+  libjson_glib_dep,
+  liboauth_dep
+]
 
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
@@ -87,18 +99,18 @@ config_h.set10('HAVE_LIBSOUP_2_55_90',
 # Optional dependencies
 gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
 config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found(), description: 'Defined if gdk-pixbuf is installed')
-
-# TODO: Handle the below CFLAGS
-# Minimum and maximum requirements for gdk-pixbuf
-#GDK_PIXBUF_CFLAGS="$GDK_PIXBUF_CFLAGS -DGDK_VERSION_MIN_REQUIRED=$GDK_PIXBUF_MIN_REQUIRED -DGDK_VERSION_MAX_ALLOWED=$GDK_PIXBUF_MAX_ALLOWED"
+gdata_deps += gdk_pixbuf_dep
 
 # *** Check for gtk ***
 gtk_dep_req_version = '>= 2.91.2'
 enable_gtk = get_option('gtk')
 if enable_gtk.enabled()
-  gtk_dep = dependency('gtk+-3.0',
+  gtk_dep = dependency(
+    'gtk+-3.0',
     version: gtk_dep_req_version,
-    not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found')
+    not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found'
+  )
+  gdata_deps += gtk_dep
 endif
 
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
@@ -113,16 +125,17 @@ if enable_gnome.enabled()
   dependency('gcr-base-3')
   dependency('libxml-2.0')
   goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
-  config_h.set10('HAVE_GOA,', goa_dep.found(), description: 'Define if GOA support is enabled.')
+  config_h.set10('HAVE_GOA', goa_dep.found(), description: 'Define if GOA support is enabled.')
+  gdata_deps += goa_dep
 endif
 
-# Enable always building tests (default: yes)
-enable_always_build_tests = get_option('always_build_tests')
-
+# Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
 # Install test programs (default: no)
+enable_always_build_tests = get_option('always_build_tests')
 enable_installed_tests = get_option('installed_tests')
 if enable_always_build_tests or enable_installed_tests
-  dependency('libuhttpmock-0.0', version: '>= 0.5.0')
+  libuhttpmock_dep = dependency('libuhttpmock-0.0', version: '>= 0.5.0')
+  gdata_deps += libuhttpmock_dep
 endif
 
 check_functions = [
@@ -132,7 +145,6 @@ check_functions = [
   'strstr',
 ]
 
-# TODO: Do I need to check for macOS ('darwin') here?
 check_functions += [
   'CFLocaleCopyCurrent',
   'CFPreferencesCopyAppValue',
@@ -166,6 +178,17 @@ i18n = import('i18n')
 add_project_arguments('-DGETTEXT_PACKAGE="intltest"', language: 'c')
 i18n.gettext('gdata', args: '--directory=' + meson.source_root())
 
+# TODO: Ask how to export selective symbols (and GOA symbols too)
+# add_project_link_arguments('--just-symbols=' + meson.current_source_dir() + '/gdata/gdata-core.symbols', language: 'c')
+cp_prog = find_program('cp', '/usr/bin/cp')
+python_prog = import('python').find_installation('python3')
+
+sources = []
+headers = []
+generated_enum_headers = []
+generated_enum_sources = []
+marshal_files = []
+
 # Create the build sub-directories
 #subdir('demos')
 #subdir('docs')
@@ -175,4 +198,3 @@ subdir('gdata')
 # Create the `config.h` file from the `config_h` data
 configure_file(output : 'config.h',
   configuration : config_h)
-
