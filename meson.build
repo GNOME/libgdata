@@ -61,13 +61,18 @@ config_h.set('_GNU_SOURCE',
 #gdata_debug = get_option('buildtype').contains('debug')
 
 gnome = import('gnome')
-pkg = import('pkgconfig')
-
-po_dir = meson.current_source_dir() / 'po'
+pkgconfig = import('pkgconfig')
+python_prog = import('python').find_installation('python3')
+cp_prog = find_program('cp', '/usr/bin/cp')
 
 top_inc = include_directories('.')
 
+po_dir = meson.current_source_dir() / 'po'
+
 cc = meson.get_compiler('c')
+
+symbol_map = join_paths(meson.current_source_dir(), 'gdata/symbol.map')
+ldflags = cc.get_supported_link_arguments('-Wl,--version-script,@0@'.format(symbol_map))
 
 # Requirements
 gobject_dep = dependency('gobject-2.0')
@@ -78,6 +83,7 @@ libxml_dep = dependency('libxml-2.0')
 libsoup_dep = dependency('libsoup-2.4', version: ['>= 2.42.0'])
 libjson_glib_dep = dependency('json-glib-1.0', version: '>= 0.15')
 liboauth_dep = dependency('oauth', version: '>= 0.9.4')
+libgthread_dep = dependency('gthread-2.0')
 
 gdata_deps = [
   gobject_dep,
@@ -86,8 +92,13 @@ gdata_deps = [
   gio_unix_dep,
   libxml_dep,
   libsoup_dep,
-  libjson_glib_dep,
-  liboauth_dep
+  libjson_glib_dep
+]
+
+# Private dependencies for libgdata (specifically used for pkgconfig)
+gdata_private_deps = [
+  liboauth_dep,
+  libgthread_dep
 ]
 
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
@@ -99,9 +110,11 @@ config_h.set10('HAVE_LIBSOUP_2_55_90',
 # Optional dependencies
 gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
 config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found(), description: 'Defined if gdk-pixbuf is installed')
-gdata_deps += gdk_pixbuf_dep
+if gdk_pixbuf_dep.found()
+  gdata_deps += gdk_pixbuf_dep
+endif
 
-# *** Check for gtk ***
+# Check for gtk
 gtk_dep_req_version = '>= 2.91.2'
 enable_gtk = get_option('gtk')
 if enable_gtk.enabled()
@@ -116,17 +129,15 @@ endif
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
 enable_gnome = get_option('gnome')
 
-# *** Check for goa ***
+# Check for goa
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
 # Pulls in gdata/gdata-goa-authorizer.[ch]
-
 enable_goa = get_option('goa')
 if enable_gnome.enabled()
-  dependency('gcr-base-3')
-  dependency('libxml-2.0')
+  gdata_private_deps += dependency('gcr-base-3')
   goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
   config_h.set10('HAVE_GOA', goa_dep.found(), description: 'Define if GOA support is enabled.')
-  gdata_deps += goa_dep
+  gdata_private_deps += goa_dep
 endif
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
@@ -156,21 +167,21 @@ foreach func: check_functions
 endforeach
 
 check_headers = [
-  'sys/time.h',
   'arpa/inet.h',
-  'locale.h',
-  'netinet/in.h',
-  'sys/socket.h',
-  'sys/stat.h',
-  'sys/types.h',
-  'stdlib.h',
-  'stdint.h',
-  'string.h',
-  'strings.h',
-  'unistd.h',
-  'memory.h',
   'dlfcn.h',
   'inttypes.h',
+  'locale.h',
+  'memory.h',
+  'netinet/in.h',
+  'stdint.h',
+  'stdlib.h',
+  'string.h',
+  'strings.h',
+  'sys/socket.h',
+  'sys/stat.h',
+  'sys/time.h',
+  'sys/types.h',
+  'unistd.h',
 ]
 
 # Internationalisation support
@@ -180,8 +191,6 @@ i18n.gettext('gdata', args: '--directory=' + meson.source_root())
 
 # TODO: Ask how to export selective symbols (and GOA symbols too)
 # add_project_link_arguments('--just-symbols=' + meson.current_source_dir() + '/gdata/gdata-core.symbols', language: 'c')
-cp_prog = find_program('cp', '/usr/bin/cp')
-python_prog = import('python').find_installation('python3')
 
 sources = []
 headers = []
@@ -196,5 +205,4 @@ subdir('gdata')
 #subdir('po')
 
 # Create the `config.h` file from the `config_h` data
-configure_file(output : 'config.h',
-  configuration : config_h)
+configure_file(output : 'config.h', configuration : config_h)

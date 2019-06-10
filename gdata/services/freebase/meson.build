@@ -62,13 +62,13 @@ r = run_command(
 )
 
 sources += files([
-  'gdata-freebase-service.c',
+  'gdata-freebase-query.c',
   'gdata-freebase-result.c',
   'gdata-freebase-search-query.c',
   'gdata-freebase-search-result.c',
+  'gdata-freebase-service.c',
   'gdata-freebase-topic-query.c',
   'gdata-freebase-topic-result.c',
-  'gdata-freebase-query.c'
 ])
 
 headers += files(gdata_freebase_headers)

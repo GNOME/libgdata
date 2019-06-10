@@ -73,20 +73,20 @@ r = run_command(
 )
 
 sources += files([
-  'gdata-documents-service.c',
-  'gdata-documents-metadata.c',
-  'gdata-documents-feed.c',
-  'gdata-documents-entry.c',
-  'gdata-documents-document.c',
-  'gdata-documents-text.c',
-  'gdata-documents-presentation.c',
-  'gdata-documents-spreadsheet.c',
-  'gdata-documents-folder.c',
-  'gdata-documents-drawing.c',
-  'gdata-documents-pdf.c',
-  'gdata-documents-query.c',
-  'gdata-documents-upload-query.c',
   'gdata-documents-access-rule.c',
+  'gdata-documents-document.c',
+  'gdata-documents-drawing.c',
+  'gdata-documents-entry.c',
+  'gdata-documents-feed.c',
+  'gdata-documents-folder.c',
+  'gdata-documents-metadata.c',
+  'gdata-documents-pdf.c',
+  'gdata-documents-presentation.c',
+  'gdata-documents-query.c',
+  'gdata-documents-service.c',
+  'gdata-documents-spreadsheet.c',
+  'gdata-documents-text.c',
+  'gdata-documents-upload-query.c',
   'gdata-documents-utils.c'
 ])
 

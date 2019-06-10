@@ -13,12 +13,12 @@ install_headers(
 )
 
 sources += files([
-  'gdata-calendar-service.c',
+  'gdata-calendar-access-rule.c',
   'gdata-calendar-calendar.c',
   'gdata-calendar-event.c',
-  'gdata-calendar-query.c',
   'gdata-calendar-feed.c',
-  'gdata-calendar-access-rule.c'
+  'gdata-calendar-query.c',
+  'gdata-calendar-service.c',
 ])
 
 headers += gdata_calendar_headers

@@ -1,5 +1,6 @@
 gdata_path = 'gdata'
 gdata_include_path = join_paths(gdata_includedir, gdata_path)
+gdata_inc_dir = include_directories('.')
 
 subdir('app')
 subdir('atom')
@@ -9,42 +10,54 @@ subdir('gd')
 subdir('georss')
 subdir('media')
 subdir('services')
-# TODO: subdir('tests')
 
 gdata_private_headers += files([
-  'gdata-private.h',
-  'gdata-batch-private.h',
   'gdata-batch-feed.h',
-  'gdata-parser.h',
+  'gdata-batch-private.h',
   'gdata-buffer.h',
+  'gdata-parser.h',
+  'gdata-private.h',
 ])
 
 gdata_headers = [
   'gdata.h',
-  'gdata-entry.h',
-  'gdata-feed.h',
-  'gdata-service.h',
-  'gdata-query.h',
-  'gdata-commentable.h',
-  'gdata-comment.h',
   'gdata-access-handler.h',
   'gdata-access-rule.h',
-  'gdata-parsable.h',
-  'gdata-download-stream.h',
-  'gdata-upload-stream.h',
-  'gdata-comparable.h',
+  'gdata-authorization-domain.h',
+  'gdata-authorizer.h',
   'gdata-batch-operation.h',
   'gdata-batchable.h',
-  'gdata-authorizer.h',
-  'gdata-authorization-domain.h',
   'gdata-client-login-authorizer.h',
+  'gdata-comment.h',
+  'gdata-commentable.h',
+  'gdata-comparable.h',
+  'gdata-download-stream.h',
+  'gdata-entry.h',
+  'gdata-feed.h',
   'gdata-oauth1-authorizer.h',
   'gdata-oauth2-authorizer.h',
+  'gdata-parsable.h',
+  'gdata-query.h',
+  'gdata-service.h',
+  'gdata-types.h',
+  'gdata-upload-stream.h',
 ]
 
-# TODO: Handle these separately later
-# 'gdata-types.h',
-# 'gdata-version.h'
+version_conf = configuration_data()
+
+version_conf.set('GDATA_VERSION_MAJOR', gdata_version_major)
+version_conf.set('GDATA_VERSION_MINOR', gdata_version_minor)
+version_conf.set('GDATA_VERSION_MICRO', gdata_version_micro)
+
+version_header_name = 'gdata-version.h'
+
+version_header = configure_file(
+  input: version_header_name + '.in',
+  output: version_header_name,
+  configuration: version_conf,
+  install: true,
+  install_dir: gdata_include_path,
+)
 
 if enable_goa.enabled()
   gdata_headers += ['gdata-goa-authorizer.h']
@@ -104,29 +117,29 @@ r = run_command(
 )
 
 sources += files([
-  'gdata-entry.c',
-  'gdata-feed.c',
-  'gdata-service.c',
-  'gdata-types.c',
-  'gdata-query.c',
-  'gdata-parser.c',
-  'gdata-commentable.c',
-  'gdata-comment.c',
   'gdata-access-handler.c',
   'gdata-access-rule.c',
-  'gdata-parsable.c',
-  'gdata-download-stream.c',
-  'gdata-upload-stream.c',
-  'gdata-buffer.c',
-  'gdata-comparable.c',
+  'gdata-authorization-domain.c',
+  'gdata-authorizer.c',
+  'gdata-batch-feed.c',
   'gdata-batch-operation.c',
   'gdata-batchable.c',
-  'gdata-batch-feed.c',
-  'gdata-authorizer.c',
-  'gdata-authorization-domain.c',
+  'gdata-buffer.c',
   'gdata-client-login-authorizer.c',
+  'gdata-comment.c',
+  'gdata-commentable.c',
+  'gdata-comparable.c',
+  'gdata-download-stream.c',
+  'gdata-entry.c',
+  'gdata-feed.c',
   'gdata-oauth1-authorizer.c',
-  'gdata-oauth2-authorizer.c'
+  'gdata-oauth2-authorizer.c',
+  'gdata-parsable.c',
+  'gdata-parser.c',
+  'gdata-query.c',
+  'gdata-service.c',
+  'gdata-types.c',
+  'gdata-upload-stream.c',
 ])
 
 headers += files(gdata_headers)
@@ -134,13 +147,30 @@ generated_enum_headers += gdata_enum_header
 generated_enum_sources += gdata_enum_source
 marshal_files += gdata_marshal_files
 
-libgdata = shared_library(
+libgdata_lib = shared_library(
   'gdata',
   include_directories: top_inc,
   sources: sources + headers + generated_enum_headers +
-    generated_enum_sources + marshal_files,
-  dependencies: gdata_deps,
+    generated_enum_sources + marshal_files + [version_header] + gdata_private_headers,
+  dependencies: gdata_deps + gdata_private_deps,
+  link_args: ldflags,
+  link_depends: symbol_map,
   install: true,
   soversion: gdata_soversion,
   gnu_symbol_visibility: 'default'
 )
+
+pkgconfig.generate(
+  name: 'libgdata',
+  description: 'GData client library',
+  subdirs : ['libgdata'],
+  libraries: [libgdata_lib],
+  requires: gdata_deps,
+  requires_private: gdata_private_deps,
+  filebase : 'libgdata',
+  version: gdata_version,
+  variables : ['exec_prefix=${prefix}',
+               'goa_enabled=' + (goa_dep.found() ? 'true': 'false')],
+)
+
+subdir('tests')

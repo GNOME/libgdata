@@ -61,8 +61,8 @@ sources += files([
   'gdata-media-category.c',
   'gdata-media-content.c',
   'gdata-media-credit.c',
+  'gdata-media-group.c',
   'gdata-media-thumbnail.c',
-  'gdata-media-group.c'
 ])
 
 headers += files(gdata_media_headers)

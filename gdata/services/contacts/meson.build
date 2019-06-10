@@ -11,10 +11,10 @@ install_headers(
 )
 
 sources += files([
-  'gdata-contacts-service.c',
   'gdata-contacts-contact.c',
   'gdata-contacts-group.c',
-  'gdata-contacts-query.c'
+  'gdata-contacts-query.c',
+  'gdata-contacts-service.c',
 ])
 
 headers += gdata_contacts_headers

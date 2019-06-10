@@ -63,15 +63,15 @@ r = run_command(
 )
 
 sources += files([
-  'gdata-youtube-service.c',
-  'gdata-youtube-video.c',
-  'gdata-youtube-content.c',
-  'gdata-youtube-credit.c',
-  'gdata-youtube-query.c',
-  'gdata-youtube-state.c',
   'gdata-youtube-category.c',
   'gdata-youtube-comment.c',
-  'gdata-youtube-feed.c'
+  'gdata-youtube-content.c',
+  'gdata-youtube-credit.c',
+  'gdata-youtube-feed.c',
+  'gdata-youtube-query.c',
+  'gdata-youtube-service.c',
+  'gdata-youtube-state.c',
+  'gdata-youtube-video.c',
 ])
 
 headers += files(gdata_youtube_headers)

@@ -88,8 +88,8 @@ def get_template_sections(args):
         fhead += '#include "{}"\n'.format(s)
 
     fhead += '''
-        #define C_ENUM(v) ((gint) v)
-        #define C_FLAGS(v) ((gint) v)
+    #define C_ENUM(v) ((gint) v)
+    #define C_FLAGS(v) ((gint) v)
     '''
 
     # File-production section
@@ -97,30 +97,28 @@ def get_template_sections(args):
 
     # Value-header section
     vhead='''
-        GType
-        @enum_name@_get_type (void)
-            {
-                static GType etype = 0;
-                if (etype == 0) {
-                    static const G@Type@Value values[] = {
+    GType
+    @enum_name@_get_type (void)
+    {
+        static GType etype = 0;
+        if (etype == 0) {
+            static const G@Type@Value values[] = {
     '''
 
     # Value-production section
-    vprod += '\n{ @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" },\n'
+    vprod += '''
+                { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" },
+    '''
 
     # Value-tail section
     vtail += '''
-            { 0, NULL, NULL }
+                { 0, NULL, NULL }
         };
         etype = g_@type@_register_static ("@EnumName@", values);
-      }
-      return etype;
+    }
+        return etype;
     }
     '''
-
-    # File-tail section
-    ftail='{}G_END_DECLS'.format(ftail)
-
     return fhead, fprod, ftail, vhead, vprod, vtail
 
 def write_enum_source_file(args, output):

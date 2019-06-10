@@ -5,8 +5,6 @@ install_headers(
   install_dir: join_paths(gdata_includedir, 'gdata/app')
 )
 
-sources += files([
-  'gdata-app-categories.c'
-])
+sources += files(['gdata-app-categories.c'])
 
 headers += gdata_app_headers

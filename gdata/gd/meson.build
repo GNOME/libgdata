@@ -20,6 +20,7 @@ sources += files([
   'gdata-gd-email-address.c',
   'gdata-gd-feed-link.c',
   'gdata-gd-im-address.c',
+  'gdata-gd-name.c',
   'gdata-gd-organization.c',
   'gdata-gd-phone-number.c',
   'gdata-gd-postal-address.c',
@@ -27,7 +28,6 @@ sources += files([
   'gdata-gd-when.c',
   'gdata-gd-where.c',
   'gdata-gd-who.c',
-  'gdata-gd-name.c'
 ])
 
 headers += gdata_gd_headers

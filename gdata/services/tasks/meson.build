@@ -11,10 +11,10 @@ install_headers(
 )
 
 sources += files([
+  'gdata-tasks-query.c',
   'gdata-tasks-service.c',
-  'gdata-tasks-tasklist.c',
   'gdata-tasks-task.c',
-  'gdata-tasks-query.c'
+  'gdata-tasks-tasklist.c',
 ])
 
 headers += gdata_tasks_headers

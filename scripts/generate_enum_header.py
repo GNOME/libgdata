@@ -89,11 +89,13 @@ def get_template_sections(args):
         #pragma once
         #include <glib-object.h>
 
-        G_BEGIN_DECLS
+    G_BEGIN_DECLS
     '''.format(fhead)
 
     # File-production section
-    fprod = '{}\n/* enumerations from "@basename@" */\n'.format(fprod)
+    fprod = '''
+        {}\n/* enumerations from "@basename@" */\n
+    '''.format(fprod)
 
     # Value-header section
     vhead='''
@@ -103,7 +105,9 @@ def get_template_sections(args):
     '''.format(vhead)
 
     # File-tail section
-    ftail='{}\nG_END_DECLS'.format(ftail)
+    ftail='''{}
+    G_END_DECLS
+    '''.format(ftail)
 
     return fhead, fprod, ftail, vhead, vprod, vtail
 

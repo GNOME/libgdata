@@ -62,12 +62,12 @@ r = run_command(
 
 sources += files([
   'gdata-picasaweb-album.c',
-  'gdata-picasaweb-query.c',
+  'gdata-picasaweb-comment.c',
+  'gdata-picasaweb-feed.c',
   'gdata-picasaweb-file.c',
+  'gdata-picasaweb-query.c',
   'gdata-picasaweb-service.c',
   'gdata-picasaweb-user.c',
-  'gdata-picasaweb-feed.c',
-  'gdata-picasaweb-comment.c'
 ])
 
 headers += files(gdata_picasaweb_headers)
