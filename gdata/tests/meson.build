@@ -1,10 +1,6 @@
-installed_testdir = join_paths(get_option('libexecdir'), 'installed-tests', gdata_name)
-installed_test_metadir = join_paths(get_option('datadir'), 'installed-tests', gdata_name)
+install_testdir = join_paths(get_option('libexecdir'), 'installed-tests', gdata_name)
 
-# TODO: Remove this later if we don't need it
-tests_inc_dir = include_directories('.')
-
-gdata_traces = [
+gdata_sample_test_files = [
   'photo.jpg',
   'sample.ogg',
   'test.doc',
@@ -355,9 +351,16 @@ gdata_youtube_traces = [
   'traces/youtube/upload-simple',
 ]
 
-required_test_files = files(gdata_traces) + files(gdata_calendar_traces) + files(gdata_contacts_traces) + files(gdata_documents_traces) + files(gdata_oauth1_traces) + files(gdata_oauth2_traces) + files(gdata_picasaweb_traces) + files(gdata_tasks_traces) + files(gdata_youtube_traces)
+required_test_files = files(gdata_sample_test_files +
+                            gdata_calendar_traces +
+                            gdata_contacts_traces +
+                            gdata_documents_traces +
+                            gdata_oauth1_traces +
+                            gdata_oauth2_traces +
+                            gdata_picasaweb_traces +
+                            gdata_tasks_traces +
+                            gdata_youtube_traces)
 
-# TODO: Add proper testing here
 tests_sources = files([
   'common.c',
   'gdata-dummy-authorizer.c',
@@ -368,6 +371,8 @@ tests_headers = files([
   'gdata-dummy-authorizer.h',
 ])
 
+# The empty objects may be used in future for keeping custom
+# arguments for each test
 tests = {
   'authorization': {},
   'buffer': {},
@@ -384,27 +389,35 @@ tests = {
   'youtube': {},
 }
 
-test_env = environment()
-test_deps = [gdata_deps + gdata_private_deps]
 tests_cargs = ['-DG_LOG_DOMAIN="libgdata"']
 
-# TODO: Change the dependencies
-foreach test_name, extra_args: tests
-  exe = executable(
-    test_name,
-    test_name + '.c',
-    c_args: tests_cargs,
-    include_directories: [top_inc, gdata_inc_dir],
-    dependencies: gdata_deps + gdata_private_deps,
-    link_with: libgdata_lib,
-    sources: tests_sources + tests_headers + headers + generated_enum_headers +
-     [marshal_files[1]] + [version_header] + gdata_private_headers
+if always_build_tests
+  foreach test_name, extra_args: tests
+    exe = executable(
+      test_name,
+      test_name + '.c',
+      c_args: tests_cargs,
+      include_directories: [top_inc_dir, gdata_inc_dir],
+      link_with: libgdata_lib,
+      dependencies: gdata_deps + gdata_private_deps,
+      sources: tests_sources +
+               tests_headers +
+               headers +
+               generated_enum_headers +
+	             gdata_private_headers,
+      install: install_tests,
+      install_dir: install_testdir
+    )
+
+    test(test_name, exe)
+  endforeach
+endif
+
+if always_build_tests and install_tests
+  install_subdir(
+    'traces',
+    install_dir: install_testdir
   )
 
-  test(test_name, exe, env : test_env)
-endforeach
-
-install_data(
-  required_test_files,
-  install_dir: installed_testdir
-)
+  install_data(gdata_sample_test_files, install_dir: install_testdir)
+endif
