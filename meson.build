@@ -42,7 +42,7 @@ revision = 0
 age = 3
 gdata_soversion = '@0@.@1@.@2@'.format(current - age, age, revision)
 
-top_inc = include_directories('.')
+top_inc_dir = include_directories('.')
 
 ########################
 # Configuration begins #
@@ -65,7 +65,7 @@ pkgconfig = import('pkgconfig')
 python_prog = import('python').find_installation('python3')
 cp_prog = find_program('cp', '/usr/bin/cp')
 
-top_inc = include_directories('.')
+top_inc_dir = include_directories('.')
 
 po_dir = meson.current_source_dir() / 'po'
 
@@ -142,9 +142,10 @@ endif
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
 # Install test programs (default: no)
-enable_always_build_tests = get_option('always_build_tests')
-enable_installed_tests = get_option('installed_tests')
-if enable_always_build_tests or enable_installed_tests
+always_build_tests = get_option('always_build_tests')
+install_tests = get_option('installed_tests')
+
+if always_build_tests or install_tests
   libuhttpmock_dep = dependency('libuhttpmock-0.0', version: '>= 0.5.0')
   gdata_deps += libuhttpmock_dep
 endif
@@ -187,22 +188,21 @@ check_headers = [
 # Internationalisation support
 i18n = import('i18n')
 add_project_arguments('-DGETTEXT_PACKAGE="intltest"', language: 'c')
-i18n.gettext('gdata', args: '--directory=' + meson.source_root())
-
-# TODO: Ask how to export selective symbols (and GOA symbols too)
-# add_project_link_arguments('--just-symbols=' + meson.current_source_dir() + '/gdata/gdata-core.symbols', language: 'c')
 
 sources = []
 headers = []
 generated_enum_headers = []
 generated_enum_sources = []
-marshal_files = []
+
+# TODO: We just need this to store libgdata_lib which is compiled in gdata subdir
+#       This is because we need libgdata_lib in docs/reference folder as well.
+compiled_libs = []
 
 # Create the build sub-directories
-#subdir('demos')
-#subdir('docs')
 subdir('gdata')
-#subdir('po')
+subdir('demos')
+subdir('po')
+#subdir('docs/reference')
 
 # Create the `config.h` file from the `config_h` data
 configure_file(output : 'config.h', configuration : config_h)

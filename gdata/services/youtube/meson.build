@@ -13,7 +13,7 @@ gdata_youtube_headers = [
 ]
 
 install_headers(
-  files(gdata_youtube_headers),
+  gdata_youtube_headers,
   install_dir: gdata_youtube_include_path
 )
 

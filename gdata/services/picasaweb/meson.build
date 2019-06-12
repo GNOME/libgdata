@@ -11,7 +11,7 @@ gdata_picasaweb_headers = [
 ]
 
 install_headers(
-  files(gdata_picasaweb_headers),
+  gdata_picasaweb_headers,
   install_dir: gdata_picasaweb_include_path
 )
 

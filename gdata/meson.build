@@ -51,7 +51,7 @@ version_conf.set('GDATA_VERSION_MICRO', gdata_version_micro)
 
 version_header_name = 'gdata-version.h'
 
-version_header = configure_file(
+headers += configure_file(
   input: version_header_name + '.in',
   output: version_header_name,
   configuration: version_conf,
@@ -64,7 +64,7 @@ if enable_goa.enabled()
   sources += files(['gdata-goa-authorizer.c'])
 endif
 
-install_headers(files(gdata_headers), install_dir: gdata_include_path)
+install_headers(gdata_headers, install_dir: gdata_include_path)
 
 enum_header_file = 'gdata-enums.h'
 enum_source_file = 'gdata-enums.c'
@@ -108,6 +108,8 @@ gdata_marshal_files = gnome.genmarshal(
   sources: 'gdata-marshal.list',
   prefix: 'gdata_marshal'
 )
+sources += gdata_marshal_files[0]
+headers += gdata_marshal_files[1]
 
 # Copy all the header files required to compile the enum_source_file
 r = run_command(
@@ -145,13 +147,15 @@ sources += files([
 headers += files(gdata_headers)
 generated_enum_headers += gdata_enum_header
 generated_enum_sources += gdata_enum_source
-marshal_files += gdata_marshal_files
 
 libgdata_lib = shared_library(
   'gdata',
-  include_directories: top_inc,
-  sources: sources + headers + generated_enum_headers +
-    generated_enum_sources + marshal_files + [version_header] + gdata_private_headers,
+  include_directories: top_inc_dir,
+  sources: sources +
+           headers +
+           gdata_private_headers +
+           generated_enum_headers +
+           generated_enum_sources,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,
@@ -159,6 +163,8 @@ libgdata_lib = shared_library(
   soversion: gdata_soversion,
   gnu_symbol_visibility: 'default'
 )
+
+compiled_libs += libgdata_lib
 
 pkgconfig.generate(
   name: 'libgdata',

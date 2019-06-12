@@ -1128,6 +1128,9 @@ global:
 	gdata_oauth2_authorizer_set_proxy_resolver;
 	gdata_calendar_access_rule_get_type;
 	gdata_calendar_access_rule_new;
+	gdata_goa_authorizer_get_type;
+	gdata_goa_authorizer_new;
+	gdata_goa_authorizer_get_goa_object;
 local:
 	*;
 };

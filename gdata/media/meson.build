@@ -10,7 +10,10 @@ gdata_media_headers = [
   'gdata-media-thumbnail.h',
 ]
 
-install_headers(files(gdata_media_headers), install_dir: gdata_media_include_path)
+install_headers(
+  gdata_media_headers,
+  install_dir: gdata_media_include_path
+)
 
 enum_header_file = 'gdata-media-enums.h'
 enum_source_file = 'gdata-media-enums.c'

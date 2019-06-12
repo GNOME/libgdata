@@ -11,7 +11,7 @@ gdata_freebase_headers = [
 ]
 
 install_headers(
-  files(gdata_freebase_headers),
+  gdata_freebase_headers,
   install_dir: gdata_freebase_include_path
 )
 

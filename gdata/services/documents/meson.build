@@ -24,7 +24,7 @@ gdata_documents_headers = [
 ]
 
 install_headers(
-  files(gdata_documents_headers),
+  gdata_documents_headers,
   install_dir: gdata_documents_include_path
 )
 
