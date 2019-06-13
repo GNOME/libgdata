@@ -7,7 +7,7 @@ gdata_contacts_headers = files([
 
 install_headers(
   gdata_contacts_headers,
-  install_dir: join_paths(gdata_includedir, 'gdata/services/contacts')
+  install_dir: gdata_includedir / 'gdata/services/contacts'
 )
 
 sources += files([

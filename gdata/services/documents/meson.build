@@ -1,5 +1,5 @@
 gdata_documents_path = 'gdata/services/documents'
-gdata_documents_include_path = join_paths(gdata_includedir, gdata_documents_path)
+gdata_documents_include_path = gdata_includedir / gdata_documents_path
 
 gdata_private_headers += files([
   'gdata-documents-entry-private.h',
@@ -36,7 +36,7 @@ gdata_documents_enum_header = custom_target(
   enum_header_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_header.py'),
+    enum_header_generator_script,
     enum_header_file,
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
@@ -54,7 +54,7 @@ gdata_documents_enum_source = custom_target(
   enum_source_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_source.py'),
+    enum_source_generator_script,
     enum_source_file,
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
@@ -90,6 +90,5 @@ sources += files([
   'gdata-documents-utils.c'
 ])
 
-headers += files(gdata_documents_headers)
-generated_enum_headers += [gdata_documents_enum_header]
-generated_enum_sources += [gdata_documents_enum_source]
+headers += files(gdata_documents_headers) + [gdata_documents_enum_header]
+sources += [gdata_documents_enum_source]

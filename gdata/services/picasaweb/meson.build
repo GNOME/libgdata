@@ -1,4 +1,4 @@
-gdata_picasaweb_include_path = join_paths(gdata_includedir, 'gdata/services/picasaweb')
+gdata_picasaweb_include_path = gdata_includedir / 'gdata/services/picasaweb'
 
 gdata_picasaweb_headers = [
   'gdata-picasaweb-album.h',
@@ -23,7 +23,7 @@ gdata_picasaweb_enum_header = custom_target(
   enum_header_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_header.py'),
+    enum_header_generator_script,
     enum_header_file,
     '--replace', 'g_data_picasa_web', 'gdata_picasaweb',
     '--replace', 'GDATA_TYPE_DATA_PICASA_WEB', 'GDATA_TYPE_PICASAWEB',
@@ -42,7 +42,7 @@ gdata_picasaweb_enum_source = custom_target(
   enum_source_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_source.py'),
+    enum_source_generator_script,
     enum_source_file,
     '--replace', 'g_data_picasa_web', 'gdata_picasaweb',
     '--source-dir', meson.current_source_dir(),
@@ -70,6 +70,5 @@ sources += files([
   'gdata-picasaweb-user.c',
 ])
 
-headers += files(gdata_picasaweb_headers)
-generated_enum_headers += gdata_picasaweb_enum_header
-generated_enum_sources += gdata_picasaweb_enum_source
+headers += files(gdata_picasaweb_headers) + [gdata_picasaweb_enum_header]
+sources += gdata_picasaweb_enum_source

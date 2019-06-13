@@ -1,4 +1,4 @@
-gdata_freebase_include_path = join_paths(gdata_includedir, 'gdata/services/freebase')
+gdata_freebase_include_path = gdata_includedir / 'gdata/services/freebase'
 
 gdata_freebase_headers = [
   'gdata-freebase-query.h',
@@ -23,7 +23,7 @@ gdata_freebase_enum_header = custom_target(
   enum_header_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_header.py'),
+    enum_header_generator_script,
     enum_header_file,
     '--replace', 'g_data_freebase', 'gdata_freebase',
     '--replace', 'GDATA_TYPE_DATA_FREEBASE', 'GDATA_TYPE_FREEBASE',
@@ -42,7 +42,7 @@ gdata_freebase_enum_source = custom_target(
   enum_source_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_source.py'),
+    enum_source_generator_script,
     enum_source_file,
     '--replace', 'g_data_freebase', 'gdata_freebase',
     '--source-dir', meson.current_source_dir(),
@@ -71,6 +71,5 @@ sources += files([
   'gdata-freebase-topic-result.c',
 ])
 
-headers += files(gdata_freebase_headers)
-generated_enum_headers += gdata_freebase_enum_header
-generated_enum_sources += gdata_freebase_enum_source
+headers += files(gdata_freebase_headers) + [gdata_freebase_enum_header]
+sources += gdata_freebase_enum_source

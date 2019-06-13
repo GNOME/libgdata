@@ -22,7 +22,7 @@ gdata_api_version_minor = 0
 gdata_prefix = get_option('prefix')
 gdata_bindir = get_option('bindir')
 gdata_datadir = get_option('datadir')
-gdata_includedir = join_paths(get_option('includedir'), meson.project_name())
+gdata_includedir = get_option('includedir') / meson.project_name()
 gdata_localedir = get_option('localedir')
 gdata_mandir = get_option('mandir')
 
@@ -58,20 +58,25 @@ config_h.set_quoted('VERSION',
 config_h.set('_GNU_SOURCE',
   true,
   description: 'Enable GNU extensions on systems that have them.')
-#gdata_debug = get_option('buildtype').contains('debug')
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
 python_prog = import('python').find_installation('python3')
-cp_prog = find_program('cp', '/usr/bin/cp')
+
+# Internationalisation support
+i18n = import('i18n')
+
+cp_prog = find_program('cp')
+
+# Absolute paths to glib-mkenums wrapper scripts
+enum_header_generator_script = meson.current_source_dir() / './scripts/generate_enum_header.py'
+enum_source_generator_script = meson.current_source_dir() / './scripts/generate_enum_source.py'
 
 top_inc_dir = include_directories('.')
 
-po_dir = meson.current_source_dir() / 'po'
-
 cc = meson.get_compiler('c')
 
-symbol_map = join_paths(meson.current_source_dir(), 'gdata/symbol.map')
+symbol_map = meson.current_source_dir() / 'gdata/symbol.map'
 ldflags = cc.get_supported_link_arguments('-Wl,--version-script,@0@'.format(symbol_map))
 
 # Requirements
@@ -185,24 +190,18 @@ check_headers = [
   'unistd.h',
 ]
 
-# Internationalisation support
-i18n = import('i18n')
 add_project_arguments('-DGETTEXT_PACKAGE="intltest"', language: 'c')
 
 sources = []
 headers = []
-generated_enum_headers = []
-generated_enum_sources = []
 
-# TODO: We just need this to store libgdata_lib which is compiled in gdata subdir
-#       This is because we need libgdata_lib in docs/reference folder as well.
-compiled_libs = []
-
-# Create the build sub-directories
 subdir('gdata')
 subdir('demos')
 subdir('po')
-#subdir('docs/reference')
+if get_option('gtk_doc')
+  subdir('docs/reference')
+endif
 
 # Create the `config.h` file from the `config_h` data
 configure_file(output : 'config.h', configuration : config_h)
+

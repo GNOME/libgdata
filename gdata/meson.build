@@ -1,5 +1,5 @@
 gdata_path = 'gdata'
-gdata_include_path = join_paths(gdata_includedir, gdata_path)
+gdata_include_path = gdata_includedir / gdata_path
 gdata_inc_dir = include_directories('.')
 
 subdir('app')
@@ -49,11 +49,9 @@ version_conf.set('GDATA_VERSION_MAJOR', gdata_version_major)
 version_conf.set('GDATA_VERSION_MINOR', gdata_version_minor)
 version_conf.set('GDATA_VERSION_MICRO', gdata_version_micro)
 
-version_header_name = 'gdata-version.h'
-
 headers += configure_file(
-  input: version_header_name + '.in',
-  output: version_header_name,
+  input: 'gdata-version.h.in',
+  output: '@BASENAME@',
   configuration: version_conf,
   install: true,
   install_dir: gdata_include_path,
@@ -74,7 +72,7 @@ gdata_enum_header = custom_target(
   enum_header_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../scripts/generate_enum_header.py'),
+    enum_header_generator_script,
     enum_header_file,
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
@@ -92,7 +90,7 @@ gdata_enum_source = custom_target(
   enum_source_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../scripts/generate_enum_source.py'),
+    enum_source_generator_script,
     enum_source_file,
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
@@ -144,18 +142,15 @@ sources += files([
   'gdata-upload-stream.c',
 ])
 
-headers += files(gdata_headers)
-generated_enum_headers += gdata_enum_header
-generated_enum_sources += gdata_enum_source
+headers += files(gdata_headers) + [gdata_enum_header]
+sources += gdata_enum_source
 
 libgdata_lib = shared_library(
   'gdata',
   include_directories: top_inc_dir,
   sources: sources +
            headers +
-           gdata_private_headers +
-           generated_enum_headers +
-           generated_enum_sources,
+           gdata_private_headers,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,
@@ -164,18 +159,22 @@ libgdata_lib = shared_library(
   gnu_symbol_visibility: 'default'
 )
 
-compiled_libs += libgdata_lib
+libgdata_dep = declare_dependency(
+  link_with: libgdata_lib,
+  include_directories: gdata_inc_dir,
+  dependencies: gdata_deps + gdata_private_deps
+)
 
 pkgconfig.generate(
   name: 'libgdata',
   description: 'GData client library',
-  subdirs : ['libgdata'],
+  subdirs: ['libgdata'],
   libraries: [libgdata_lib],
   requires: gdata_deps,
   requires_private: gdata_private_deps,
-  filebase : 'libgdata',
+  filebase: 'libgdata',
   version: gdata_version,
-  variables : ['exec_prefix=${prefix}',
+  variables: ['exec_prefix=${prefix}',
                'goa_enabled=' + (goa_dep.found() ? 'true': 'false')],
 )
 

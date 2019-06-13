@@ -7,7 +7,7 @@ gdata_tasks_headers = files([
 
 install_headers(
   gdata_tasks_headers,
-  install_dir: join_paths(gdata_includedir, 'gdata/services/tasks')
+  install_dir: gdata_includedir / 'gdata/services/tasks'
 )
 
 sources += files([

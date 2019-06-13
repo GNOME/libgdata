@@ -1,4 +1,4 @@
-gdata_youtube_include_path = join_paths(gdata_includedir, 'gdata/services/youtube')
+gdata_youtube_include_path = gdata_includedir / 'gdata/services/youtube'
 
 gdata_youtube_headers = [
   'gdata-youtube-category.h',
@@ -25,7 +25,7 @@ gdata_youtube_enum_header = custom_target(
   enum_header_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_header.py'),
+    enum_header_generator_script,
     enum_header_file,
     '--replace', 'g_data_you_tube', 'gdata_youtube',
     '--replace', 'GDATA_TYPE_DATA_YOU_TUBE', 'GDATA_TYPE_YOUTUBE',
@@ -44,7 +44,7 @@ gdata_youtube_enum_source = custom_target(
   enum_source_file,
   command: [
     python_prog,
-    join_paths(meson.current_source_dir(), '../../../scripts/generate_enum_source.py'),
+    enum_source_generator_script,
     enum_source_file,
     '--replace', 'g_data_you_tube', 'gdata_youtube',
     '--source-dir', meson.current_source_dir(),
@@ -74,6 +74,5 @@ sources += files([
   'gdata-youtube-video.c',
 ])
 
-headers += files(gdata_youtube_headers)
-generated_enum_headers += gdata_youtube_enum_header
-generated_enum_sources += gdata_youtube_enum_source
+headers += files(gdata_youtube_headers) + [gdata_youtube_enum_header]
+sources += gdata_youtube_enum_source

@@ -1,4 +1,4 @@
-install_testdir = join_paths(get_option('libexecdir'), 'installed-tests', gdata_name)
+install_testdir = get_option('libexecdir') / 'installed-tests' / gdata_name
 
 gdata_sample_test_files = [
   'photo.jpg',
@@ -378,12 +378,16 @@ tests = {
   'buffer': {},
   'calendar': {},
   'contacts': {},
-  #'documents': {},
+  'documents': {
+    'should_fail': true
+  },
   'general': {},
   'oauth1-authorizer': {},
   'oauth2-authorizer': {},
   'perf': {},
-  #'picasaweb': {},
+  'picasaweb': {
+    'should_fail': true
+  },
   'streams': {},
   'tasks': {},
   'youtube': {},
@@ -393,6 +397,8 @@ tests_cargs = ['-DG_LOG_DOMAIN="libgdata"']
 
 if always_build_tests
   foreach test_name, extra_args: tests
+    should_fail = extra_args.get('should_fail', false)
+
     exe = executable(
       test_name,
       test_name + '.c',
@@ -403,13 +409,14 @@ if always_build_tests
       sources: tests_sources +
                tests_headers +
                headers +
-               generated_enum_headers +
 	             gdata_private_headers,
       install: install_tests,
       install_dir: install_testdir
     )
 
-    test(test_name, exe)
+    test(test_name, exe, workdir: meson.current_source_dir(),
+	 should_fail: should_fail)
+
   endforeach
 endif
 
@@ -417,6 +424,17 @@ if always_build_tests and install_tests
   install_subdir(
     'traces',
     install_dir: install_testdir
+  )
+
+  # Copy all the trace files required for running ninja test after
+  # the build step
+  run_command(
+    cp_prog,
+    ['-r'] + gdata_sample_test_files + [
+      meson.current_source_dir() / 'traces',
+      meson.current_build_dir()
+    ],
+    check: true
   )
 
   install_data(gdata_sample_test_files, install_dir: install_testdir)
