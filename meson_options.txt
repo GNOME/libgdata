@@ -21,7 +21,7 @@ option('always_build_tests',
 
 option('installed_tests',
   type: 'boolean',
-  value: true,
+  value: false,
   description: 'Install test programs (default: false)')
 
 option('man',
@@ -30,6 +30,16 @@ option('man',
   description: 'generate man pages')
 
 option('gtk_doc',
-       type : 'boolean',
-       value : true,
-       description : 'use gtk-doc to build documentation (default: false)')
+  type: 'boolean',
+  value: true,
+  description: 'use gtk-doc to build documentation (default: false)')
+
+option('with_introspection',
+  type: 'boolean',
+  value: true,
+  description: 'Enable creation of GObject Introspection files')
+
+option('with_vapi',
+  type: 'boolean',
+  value: true,
+  description: 'Enable creation of vapi files')
