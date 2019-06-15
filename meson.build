@@ -22,9 +22,14 @@ gdata_api_version_minor = 0
 gdata_prefix = get_option('prefix')
 gdata_bindir = get_option('bindir')
 gdata_datadir = get_option('datadir')
+gdata_libdir = get_option('libdir')
 gdata_includedir = get_option('includedir') / meson.project_name()
 gdata_localedir = get_option('localedir')
 gdata_mandir = get_option('mandir')
+
+gdata_gir_dir = gdata_datadir / 'gir-1.0'
+gdata_vapi_dir = gdata_datadir / 'vala' / 'vapi'
+gdata_typelib_dir = gdata_libdir / 'girepository-1.0'
 
 # The following array contains private headers, and shouldn't be installed
 gdata_private_headers = []

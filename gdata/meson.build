@@ -184,4 +184,40 @@ pkgconfig.generate(
   ],
 )
 
+if get_option('with_introspection')
+
+  gdata_gir_includes = ['GObject-2.0', 'libxml2-2.0', 'Soup-2.4', 'Json-1.0']
+  gdata_vapi_deps = ['libxml-2.0', 'libsoup-2.4', 'json-glib-1.0']
+
+  if enable_goa.enabled()
+    gdata_gir_includes += ['Goa-1.0']
+    gdata_vapi_deps += ['goa-1.0']
+  endif
+
+  libgdata_gir = gnome.generate_gir(libgdata_lib,
+    sources: sources + headers,
+    nsversion: '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor),
+    namespace: 'GData',
+    symbol_prefix: 'gdata',
+    includes: gdata_gir_includes,
+    link_with: libgdata_lib,
+    dependencies: libgdata_dep,
+    header: 'gdata/gdata.h',
+    install: true,
+    install_dir_gir: gdata_gir_dir,
+    install_dir_typelib: gdata_typelib_dir,
+    export_packages: gdata_name,
+  )
+
+  if get_option('with_vapi')
+
+    libgdata_vapi = gnome.generate_vapi(gdata_name,
+      sources: libgdata_gir[0],
+      packages: gdata_vapi_deps,
+      install: true,
+      install_dir: gdata_vapi_dir,
+    )
+
+  endif
+endif
 subdir('tests')
