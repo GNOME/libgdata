@@ -43,11 +43,11 @@ gdata_headers = [
   'gdata-upload-stream.h',
 ]
 
-version_conf = configuration_data()
-
-version_conf.set('GDATA_VERSION_MAJOR', gdata_version_major)
-version_conf.set('GDATA_VERSION_MINOR', gdata_version_minor)
-version_conf.set('GDATA_VERSION_MICRO', gdata_version_micro)
+version_conf = {
+  'GDATA_VERSION_MAJOR': gdata_version_major,
+  'GDATA_VERSION_MINOR': gdata_version_minor,
+  'GDATA_VERSION_MICRO': gdata_version_micro,
+}
 
 headers += configure_file(
   input: 'gdata-version.h.in',
@@ -81,7 +81,7 @@ gdata_enum_header = custom_target(
     ] + gdata_headers,
   install: true,
   install_dir: gdata_include_path,
-  output: [enum_header_file],
+  output: enum_header_file,
   console: true
 )
 
@@ -97,14 +97,16 @@ gdata_enum_source = custom_target(
     '--out-dir', meson.current_build_dir(),
     '--sources'
     ] + gdata_headers,
-  output: [enum_source_file],
+  output: enum_source_file,
   console: true
 )
 
+marshal = 'gdata-marshal'
+
 gdata_marshal_files = gnome.genmarshal(
-  'gdata-marshal',
-  sources: 'gdata-marshal.list',
-  prefix: 'gdata_marshal'
+  marshal,
+  sources: marshal + '.list',
+  prefix: marshal.underscorify(),
 )
 sources += gdata_marshal_files[0]
 headers += gdata_marshal_files[1]
@@ -145,12 +147,13 @@ sources += files([
 headers += files(gdata_headers) + [gdata_enum_header]
 sources += gdata_enum_source
 
+symbol_map = meson.current_source_dir() / 'symbol.map'
+ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
+
 libgdata_lib = shared_library(
   'gdata',
   include_directories: top_inc_dir,
-  sources: sources +
-           headers +
-           gdata_private_headers,
+  sources: sources + headers + gdata_private_headers,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,
@@ -160,6 +163,7 @@ libgdata_lib = shared_library(
 )
 
 libgdata_dep = declare_dependency(
+  sources: gdata_enum_header,
   link_with: libgdata_lib,
   include_directories: gdata_inc_dir,
   dependencies: gdata_deps + gdata_private_deps
@@ -168,14 +172,16 @@ libgdata_dep = declare_dependency(
 pkgconfig.generate(
   name: 'libgdata',
   description: 'GData client library',
-  subdirs: ['libgdata'],
-  libraries: [libgdata_lib],
+  subdirs: 'libgdata',
+  libraries: libgdata_lib,
   requires: gdata_deps,
   requires_private: gdata_private_deps,
   filebase: 'libgdata',
   version: gdata_version,
-  variables: ['exec_prefix=${prefix}',
-               'goa_enabled=' + (goa_dep.found() ? 'true': 'false')],
+  variables: [
+    'exec_prefix=${prefix}',
+    'goa_enabled=' + goa_dep.found().to_string(),
+  ],
 )
 
 subdir('tests')

@@ -69,15 +69,12 @@ i18n = import('i18n')
 cp_prog = find_program('cp')
 
 # Absolute paths to glib-mkenums wrapper scripts
-enum_header_generator_script = meson.current_source_dir() / './scripts/generate_enum_header.py'
-enum_source_generator_script = meson.current_source_dir() / './scripts/generate_enum_source.py'
+enum_header_generator_script = meson.current_source_dir() / 'scripts/generate_enum_header.py'
+enum_source_generator_script = meson.current_source_dir() / 'scripts/generate_enum_source.py'
 
 top_inc_dir = include_directories('.')
 
 cc = meson.get_compiler('c')
-
-symbol_map = meson.current_source_dir() / 'gdata/symbol.map'
-ldflags = cc.get_supported_link_arguments('-Wl,--version-script,@0@'.format(symbol_map))
 
 # Requirements
 gobject_dep = dependency('gobject-2.0')
@@ -203,5 +200,4 @@ if get_option('gtk_doc')
 endif
 
 # Create the `config.h` file from the `config_h` data
-configure_file(output : 'config.h', configuration : config_h)
-
+configure_file(output: 'config.h', configuration: config_h)

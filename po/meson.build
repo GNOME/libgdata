@@ -1,1 +1,1 @@
-i18n.gettext('gdata', preset: 'glib')
+i18n.gettext('libgdata', preset: 'glib')
