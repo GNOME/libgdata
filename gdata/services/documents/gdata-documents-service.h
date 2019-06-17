@@ -162,7 +162,7 @@ gchar *gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder) G_G
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataProperty, g_object_unref)
 GDataProperty *
-gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, gboolean is_public_property, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, gboolean visibility, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 gboolean
 gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT;
