@@ -1,3 +1,5 @@
+gdata_picasaweb_inc_dir = include_directories('.')
+
 gdata_picasaweb_subdir = 'gdata/services/picasaweb'
 gdata_picasaweb_include_path = gdata_includedir / gdata_picasaweb_subdir
 
@@ -16,43 +18,30 @@ install_headers(
   install_dir: gdata_picasaweb_include_path
 )
 
-enum_header_file = 'gdata-picasaweb-enums.h'
-enum_source_file = 'gdata-picasaweb-enums.c'
+enums = 'gdata-picasaweb-enums'
 
-# Generate the enum source file in the source code and build directories
-gdata_picasaweb_enum_header = custom_target(
-  enum_header_file,
-  command: [
-    python_prog,
-    enum_header_generator_script,
-    enum_header_file,
-    '--replace', 'g_data_picasa_web', 'gdata_picasaweb',
-    '--replace', 'GDATA_TYPE_DATA_PICASA_WEB', 'GDATA_TYPE_PICASAWEB',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--sources'
-    ] + gdata_picasaweb_headers,
-  install: true,
-  install_dir: gdata_picasaweb_include_path,
-  output: [enum_header_file],
-  console: true
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: gdata_picasaweb_headers,
 )
 
-# Generate the enum source file in the source code directory
+# workaround to fix namespace
 gdata_picasaweb_enum_source = custom_target(
-  enum_source_file,
-  command: [
-    python_prog,
-    enum_source_generator_script,
-    enum_source_file,
-    '--replace', 'g_data_picasa_web', 'gdata_picasaweb',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--include-dir', gdata_picasaweb_subdir,
-    '--sources'
-    ] + gdata_picasaweb_headers,
-  output: [enum_source_file],
-  console: true
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: [sed, '-e', 's/-in//', '-e', 's/g_data_picasa_web/gdata_picasaweb/', build_root / '@INPUT@'],
+  capture: true,
+)
+
+gdata_picasaweb_enum_header = custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: [sed, '-e', 's/g_data_picasa_web/gdata_picasaweb/', '-e', 's/G_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/',  build_root / '@INPUT@'],
+  capture: true,
+  install: true,
+  install_dir: gdata_picasaweb_include_path,
 )
 
 sources += files([

@@ -1,3 +1,5 @@
+gdata_media_inc_dir = include_directories('.')
+
 gdata_media_subdir = 'gdata/media'
 gdata_media_include_path = gdata_includedir / gdata_media_subdir
 
@@ -15,43 +17,30 @@ install_headers(
   install_dir: gdata_media_include_path
 )
 
-enum_header_file = 'gdata-media-enums.h'
-enum_source_file = 'gdata-media-enums.c'
+enums = 'gdata-media-enums'
 
-# Generate the enum source file in the source code and build directories
-gdata_media_enum_header = custom_target(
-  enum_header_file,
-  command: [
-    python_prog,
-    enum_header_generator_script,
-    enum_header_file,
-    '--replace', 'g_data', 'gdata',
-    '--replace', 'GDATA_TYPE_DATA', 'GDATA_TYPE',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--sources'
-    ] + gdata_media_headers,
-  install: true,
-  install_dir: gdata_media_include_path,
-  output: [enum_header_file],
-  console: true
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: gdata_media_headers,
 )
 
-# Generate the enum source file in the source code directory
+# workaround to fix namespace
 gdata_media_enum_source = custom_target(
-  enum_source_file,
-  command: [
-    python_prog,
-    enum_source_generator_script,
-    enum_source_file,
-    '--replace', 'g_data', 'gdata',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--include-dir', gdata_media_subdir,
-    '--sources'
-    ] + gdata_media_headers,
-  output: [enum_source_file],
-  console: true
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+gdata_media_enum_header = custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_media_include_path,
 )
 
 sources += files([

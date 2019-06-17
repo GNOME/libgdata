@@ -64,42 +64,30 @@ endif
 
 install_headers(gdata_headers, install_dir: gdata_include_path)
 
-enum_header_file = 'gdata-enums.h'
-enum_source_file = 'gdata-enums.c'
+enums = 'gdata-enums'
 
-# Generate the enum source file in the source code and build directories
-gdata_enum_header = custom_target(
-  enum_header_file,
-  command: [
-    python_prog,
-    enum_header_generator_script,
-    enum_header_file,
-    '--replace', 'g_data', 'gdata',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--sources'
-    ] + gdata_headers,
-  install: true,
-  install_dir: gdata_include_path,
-  output: enum_header_file,
-  console: true
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: gdata_headers,
 )
 
-# Generate the enum source file in the source code directory
+# workaround to fix namespace
 gdata_enum_source = custom_target(
-  enum_source_file,
-  command: [
-    python_prog,
-    enum_source_generator_script,
-    enum_source_file,
-    '--replace', 'g_data', 'gdata',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--include-dir', gdata_subdir,
-    '--sources'
-    ] + gdata_headers,
-  output: enum_source_file,
-  console: true
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+gdata_enum_header = custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_include_path,
 )
 
 marshal = 'gdata-marshal'
@@ -139,12 +127,21 @@ sources += files([
 headers += files(gdata_headers) + [gdata_enum_header]
 sources += gdata_enum_source
 
+incs = [
+  top_inc_dir,
+  gdata_media_inc_dir,
+  gdata_documents_inc_dir,
+  gdata_freebase_inc_dir,
+  gdata_picasaweb_inc_dir,
+  gdata_youtube_inc_dir,
+]
+
 symbol_map = meson.current_source_dir() / 'symbol.map'
 ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
 
 libgdata_lib = shared_library(
   'gdata',
-  include_directories: top_inc_dir,
+  include_directories: incs,
   sources: sources + headers + gdata_private_headers + gdata_marshal_files,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,

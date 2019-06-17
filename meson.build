@@ -74,9 +74,14 @@ python_prog = import('python').find_installation('python3')
 # Internationalisation support
 i18n = import('i18n')
 
-# Absolute paths to glib-mkenums wrapper scripts
-enum_header_generator_script = meson.current_source_dir() / 'scripts/generate_enum_header.py'
-enum_source_generator_script = meson.current_source_dir() / 'scripts/generate_enum_source.py'
+build_root = meson.current_build_dir()
+
+cp_prog = find_program('cp')
+
+# workaround to fix namespace
+sed = find_program('sed')
+enum_source_cmd = [sed, '-e', 's/-in//', '-e', 's/g_data/gdata/', build_root / '@INPUT@']
+enum_header_cmd = [sed, '-e', 's/g_data/gdata/', '-e', 's/G_TYPE_DATA/GDATA_TYPE/', build_root / '@INPUT@']
 
 top_inc_dir = include_directories('.')
 

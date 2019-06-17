@@ -1,3 +1,5 @@
+gdata_documents_inc_dir = include_directories('.')
+
 gdata_documents_subdir = 'gdata/services/documents'
 gdata_documents_include_path = gdata_includedir / gdata_documents_subdir
 
@@ -28,42 +30,30 @@ install_headers(
   install_dir: gdata_documents_include_path
 )
 
-enum_header_file = 'gdata-documents-enums.h'
-enum_source_file = 'gdata-documents-enums.c'
+enums = 'gdata-documents-enums'
 
-# Generate the enum source file in the source code and build directories
-gdata_documents_enum_header = custom_target(
-  enum_header_file,
-  command: [
-    python_prog,
-    enum_header_generator_script,
-    enum_header_file,
-    '--replace', 'g_data', 'gdata',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--sources'
-    ] + gdata_documents_headers,
-  install: true,
-  install_dir: gdata_documents_include_path,
-  output: [enum_header_file],
-  console: true
+# workaround to fix namespace
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: gdata_documents_headers,
 )
 
-# Generate the enum source file in the source code directory
 gdata_documents_enum_source = custom_target(
-  enum_source_file,
-  command: [
-    python_prog,
-    enum_source_generator_script,
-    enum_source_file,
-    '--replace', 'g_data', 'gdata',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--include-dir', gdata_documents_subdir,
-    '--sources'
-    ] + gdata_documents_headers,
-  output: [enum_source_file],
-  console: true
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+gdata_documents_enum_header = custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_documents_include_path,
 )
 
 sources += files([

@@ -1,3 +1,5 @@
+gdata_youtube_inc_dir = include_directories('.')
+
 gdata_youtube_subdir = 'gdata/services/youtube'
 gdata_youtube_include_path = gdata_includedir / gdata_youtube_subdir
 
@@ -18,43 +20,30 @@ install_headers(
   install_dir: gdata_youtube_include_path
 )
 
-enum_header_file = 'gdata-youtube-enums.h'
-enum_source_file = 'gdata-youtube-enums.c'
+enums = 'gdata-youtube-enums'
 
-# Generate the enum source file in the source code and build directories
-gdata_youtube_enum_header = custom_target(
-  enum_header_file,
-  command: [
-    python_prog,
-    enum_header_generator_script,
-    enum_header_file,
-    '--replace', 'g_data_you_tube', 'gdata_youtube',
-    '--replace', 'GDATA_TYPE_DATA_YOU_TUBE', 'GDATA_TYPE_YOUTUBE',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--sources'
-    ] + gdata_youtube_headers,
-  install: true,
-  install_dir: gdata_youtube_include_path,
-  output: [enum_header_file],
-  console: true
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: gdata_youtube_headers,
 )
 
-# Generate the enum source file in the source code directory
+# workaround to fix namespace
 gdata_youtube_enum_source = custom_target(
-  enum_source_file,
-  command: [
-    python_prog,
-    enum_source_generator_script,
-    enum_source_file,
-    '--replace', 'g_data_you_tube', 'gdata_youtube',
-    '--source-dir', meson.current_source_dir(),
-    '--out-dir', meson.current_build_dir(),
-    '--include-dir', gdata_youtube_subdir,
-    '--sources'
-    ] + gdata_youtube_headers,
-  output: [enum_source_file],
-  console: true
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: [sed, '-e', 's/-in//', '-e', 's/g_data_you_tube/gdata_youtube/', build_root / '@INPUT@'],
+  capture: true,
+)
+
+gdata_youtube_enum_header = custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: [sed, '-e', 's/g_data_you_tube/gdata_youtube/', '-e', 's/G_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/', build_root / '@INPUT@'],
+  capture: true,
+  install: true,
+  install_dir: gdata_youtube_include_path,
 )
 
 sources += files([
