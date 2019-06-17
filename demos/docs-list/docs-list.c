@@ -107,7 +107,7 @@ main (void)
 
 			property = gdata_property_new (property_key);
 			gdata_property_set_value (property, "Some temporary value");
-			gdata_property_set_is_publicly_visible (property, TRUE);
+			gdata_property_set_visibility (property, TRUE);
 
 			success = gdata_documents_service_set_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
 
@@ -124,7 +124,7 @@ main (void)
 				g_message ("key = %s, value = %s, public = %d",
 					   gdata_property_get_key (GDATA_PROPERTY (property)),
 					   gdata_property_get_value (GDATA_PROPERTY (property)),
-					   gdata_property_get_is_publicly_visible (GDATA_PROPERTY (property))
+					   gdata_property_get_visibility (GDATA_PROPERTY (property))
 				);
 				g_message ("etag = %s", gdata_property_get_etag (GDATA_PROPERTY (property)));
 

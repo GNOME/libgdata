@@ -28,6 +28,28 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GDATA_PROPERTY_VISIBILITY_PUBLIC:
+ *
+ * The #GDataProperty having the visibility set to TRUE corresponds to having the visibility property
+ * on a Drive Property Resource
+ * set to "PUBLIC". This makes the Property Resource visible to other apps.
+ *
+ * Since: 0.18.0
+ */
+#define GDATA_PROPERTY_VISIBILITY_PUBLIC "PUBLIC"
+
+/**
+ * GDATA_PROPERTY_VISIBILITY_PRIVATE:
+ *
+ * The #GDataProperty having the visibility set to FALSE (default) corresponds to having the visibility property on a Drive Property Resource
+ * set to "PRIVATE". This makes the Property Resource accessible only by the app that created it.
+ *
+ * Since: 0.18.0
+ */
+#define GDATA_PROPERTY_VISIBILITY_PRIVATE "PRIVATE"
+
+
 #define GDATA_TYPE_PROPERTY		(gdata_property_get_type ())
 #define GDATA_PROPERTY(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), GDATA_TYPE_PROPERTY, GDataProperty))
 #define GDATA_PROPERTY_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), GDATA_TYPE_PROPERTY, GDataPropertyClass))
@@ -35,16 +57,27 @@ G_BEGIN_DECLS
 #define GDATA_IS_PROPERTY_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), GDATA_TYPE_PROPERTY))
 #define GDATA_PROPERTY_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), GDATA_TYPE_PROPERTY, GDataPropertyClass))
 
-#define GDATA_PROPERTY_VISIBILITY_PUBLIC "PUBLIC"
-#define GDATA_PROPERTY_VISIBILITY_PRIVATE "PRIVATE"
-
 typedef struct _GDataPropertyPrivate	GDataPropertyPrivate;
 
+/**
+ * GDataProperty:
+ *
+ * All the fields in the #GDataProperty structure are private and should never be accessed directly.
+ *
+ * Since: 0.18.0
+ */
 typedef struct {
 	GDataParsable parent;
 	GDataPropertyPrivate *priv;
 } GDataProperty;
 
+/**
+ * GDataPropertyClass:
+ *
+ * All the fields in the #GDataPropertyClass structure are private and should never be accessed directly.
+ *
+ * Since: 0.18.0
+ */
 typedef struct {
 	/*< private >*/
 	GDataParsableClass parent;
@@ -60,16 +93,14 @@ GType gdata_property_get_type (void) G_GNUC_CONST;
 GDataProperty *gdata_property_new (const gchar *key) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
 const gchar *gdata_property_get_key (GDataProperty *self) G_GNUC_PURE;
-void _gdata_property_set_key (GDataProperty *self, const gchar *key);
 
 const gchar *gdata_property_get_etag (GDataProperty *self) G_GNUC_PURE;
-void gdata_property_set_etag (GDataProperty *self, const gchar *etag);
 
 const gchar *gdata_property_get_value (GDataProperty *self) G_GNUC_PURE;
 void gdata_property_set_value (GDataProperty *self, const gchar *value);
 
-gboolean gdata_property_get_is_publicly_visible (GDataProperty *self) G_GNUC_PURE;
-void gdata_property_set_is_publicly_visible (GDataProperty *self, gboolean is_publicly_visible);
+gboolean gdata_property_get_visibility (GDataProperty *self) G_GNUC_PURE;
+void gdata_property_set_visibility (GDataProperty *self, gboolean visibility);
 
 G_END_DECLS
 
