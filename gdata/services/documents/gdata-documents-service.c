@@ -1614,8 +1614,29 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 	return g_strdup ("https://www.googleapis.com/upload/drive/v2/files");
 }
 
+/**
+ * gdata_documents_service_get_property:
+ * @self: a #GDataDocumentsService
+ * @entry: a #GDataDocumentsEntry from which a Property Resource needs to be fetched
+ * @key: The key of the Property Resource
+ * @visibility: The visibility status of the Property Resource - %TRUE for PUBLIC, %FALSE for PRIVATE
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Looks up for a Property Resource on the file object specified by @entry. If the Property exists, it
+ * initializes a new #GDataProperty and sets all the properties accordingly; otherwise returns %NULL.
+ *
+ * It can happen that a file object has two different properties with exact same values for
+ * #GDataProperty:key and #GDataProperty:value. In that case, it's guaranteed that they will have different #GDataProperty:visibility.
+ *
+ * Hence, @key along with @visibility uniquely identify a Property Resource.
+ *
+ * Return value: (transfer full) : a new #GDataProperty, or %NULL; unref with g_object_unref()
+ *
+ * Since: 0.18.0
+ */
 GDataProperty *
-gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, const gboolean is_public_property, GCancellable *cancellable, GError **error)
+gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, const gboolean visibility, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
@@ -1625,14 +1646,16 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
 	const gchar *id;
 
 	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (entry == NULL || GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
 	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (key != NULL && *key != '\0', NULL);
 
 	id = gdata_entry_get_id (GDATA_ENTRY (entry));
 	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX,
 			   id, "/properties/",
 			   key, "?visibility=",
-			   (is_public_property) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
+			   (visibility) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
 			   NULL);
 
 	domain = gdata_documents_service_get_primary_authorization_domain ();
@@ -1673,13 +1696,29 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
 	g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
 		 gdata_property_get_key (GDATA_PROPERTY (property)),
 		 gdata_property_get_value (GDATA_PROPERTY (property)),
-		 gdata_property_get_is_publicly_visible (GDATA_PROPERTY (property)),
+		 gdata_property_get_visibility (GDATA_PROPERTY (property)),
 		 gdata_property_get_etag (GDATA_PROPERTY (property)));
 
 	g_object_unref (message);
 	return property;
 }
 
+/**
+ * gdata_documents_service_set_property:
+ * @self: a #GDataDocumentsService
+ * @entry: a #GDataDocumentsEntry on which a Property Resource needs to created/updated
+ * @property: a #GDataProperty which will be created/updated on the file object identified by @entry
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Inserts a new Property Resource on a file object identified by @entry's id.
+ *
+ * Since, a Property Resource is uniquely identified by #GDataProperty:key and #GDataProperty:visibility, if such a Property Resource already exists, then this function updates that Property.
+ *
+ * Return value: %TRUE if the a Property Resource (@property) has been created/updated successfully on the file object, %FALSE otherwise.
+ *
+ * Since: 0.18.0
+ */
 gboolean
 gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error)
 {
@@ -1715,7 +1754,7 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 	if (status == SOUP_STATUS_NONE || status == SOUP_STATUS_CANCELLED) {
 		/* Redirect error or cancelled */
 		g_object_unref (message);
-		return TRUE;
+		return FALSE;
 	} else if (status != SOUP_STATUS_OK && status != SOUP_STATUS_NO_CONTENT) {
 		/* Error */
 		GDataServiceClass *service_klass = GDATA_SERVICE_GET_CLASS (self);
@@ -1728,7 +1767,7 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 						     message->response_body->length,
 						     error);
 		g_object_unref (message);
-		return TRUE;
+		return FALSE;
 	}
 
 	/* Parse the JSON; and update the entry */
@@ -1740,7 +1779,7 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 		g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
 			 gdata_property_get_key (GDATA_PROPERTY (ret_property)),
 			 gdata_property_get_value (GDATA_PROPERTY (ret_property)),
-			 gdata_property_get_is_publicly_visible (GDATA_PROPERTY (ret_property)),
+			 gdata_property_get_visibility (GDATA_PROPERTY (ret_property)),
 			 gdata_property_get_etag (GDATA_PROPERTY (ret_property)));
 		g_object_unref (ret_property);
 	}
@@ -1749,6 +1788,23 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 	return TRUE;
 }
 
+/**
+ * gdata_documents_service_remove_property:
+ * @self: a #GDataDocumentsService
+ * @entry: a #GDataDocumentsEntry from which a Property Resource needs to removed
+ * @property: a #GDataProperty which will be removed from the file object identified by @entry
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Removed a Property Resource specified by @property on a file object identified by @entry's id.
+ *
+ * @property 's #GDataProperty:key and #GDataProperty:visibility will only be needed since they uniquely
+ * identify a Property Resource. The #GDataProperty:value set on @property is not used at all.
+ *
+ * Return value: %TRUE if the a Property Resource (@property) has been successfully removed from the file object, %FALSE otherwise.
+ *
+ * Since: 0.18.0
+ */
 gboolean
 gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error)
 {
@@ -1764,8 +1820,8 @@ gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocum
 
 	id = gdata_entry_get_id (GDATA_ENTRY (entry));
 	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, "/properties/",
-			   gdata_property_get_key(property), "?visibility=",
-			   gdata_property_get_is_publicly_visible (property) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
+			   gdata_property_get_key (property), "?visibility=",
+			   gdata_property_get_visibility (property) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
 			   NULL);
 	domain = gdata_documents_service_get_primary_authorization_domain ();
 
@@ -1801,7 +1857,7 @@ gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocum
 	g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
 		 gdata_property_get_key (GDATA_PROPERTY (property)),
 		 gdata_property_get_value (GDATA_PROPERTY (property)),
-		 gdata_property_get_is_publicly_visible (GDATA_PROPERTY (property)),
+		 gdata_property_get_visibility (GDATA_PROPERTY (property)),
 		 gdata_property_get_etag (GDATA_PROPERTY (property)));
 
 	g_object_unref (message);

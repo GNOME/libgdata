@@ -89,15 +89,13 @@ test_property_get_json (void)
 	property1 = gdata_property_new ("Testing key & \"escaping\"");
 
 	/* Set the properties more conventionally */
-	gdata_property_set_etag (property1, "Testing etag & \"escaping\"");
 	gdata_property_set_value (property1, "Testing value & \"escaping\"");
-	gdata_property_set_is_publicly_visible (property1, FALSE);
+	gdata_property_set_visibility (property1, FALSE);
 
 	/* Check the generated JSON's OK */
 	gdata_test_assert_json (property1,
 				"{"
 				"\"key\":\"Testing key & \\\"escaping\\\"\","
-				"\"etag\":\"Testing etag & \\\"escaping\\\"\","
 				"\"value\":\"Testing value & \\\"escaping\\\"\","
 				"\"visibility\":\"PRIVATE\""
 				"}");
@@ -113,7 +111,7 @@ test_property_get_json (void)
 	g_assert_cmpstr (gdata_property_get_key (property1), ==, gdata_property_get_key (property2));
 	g_assert_cmpstr (gdata_property_get_etag (property1), ==, gdata_property_get_etag (property2));
 	g_assert_cmpstr (gdata_property_get_value (property1), ==, gdata_property_get_value (property2));
-	g_assert_cmpint (gdata_property_get_is_publicly_visible (property1), ==, gdata_property_get_is_publicly_visible (property2)); /* should both be FALSE */
+	g_assert_cmpint (gdata_property_get_visibility (property1), ==, gdata_property_get_visibility (property2)); /* should both be FALSE */
 
 	g_object_unref (property1);
 	g_object_unref (property2);
