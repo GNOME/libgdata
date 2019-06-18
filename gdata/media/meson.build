@@ -1,5 +1,5 @@
-gdata_media_path = 'gdata/media'
-gdata_media_include_path = gdata_includedir / gdata_media_path
+gdata_media_subdir = 'gdata/media'
+gdata_media_include_path = gdata_includedir / gdata_media_subdir
 
 gdata_private_headers += files(['gdata-media-group.h'])
 
@@ -47,17 +47,11 @@ gdata_media_enum_source = custom_target(
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
     '--out-dir', meson.current_build_dir(),
+    '--include-dir', gdata_media_subdir,
     '--sources'
     ] + gdata_media_headers,
   output: [enum_source_file],
   console: true
-)
-
-# Copy all the header files required to compile the enum_source_file
-r = run_command(
-  cp_prog,
-  ['-r'] + gdata_media_headers + [meson.current_build_dir()],
-  check: true
 )
 
 sources += files([

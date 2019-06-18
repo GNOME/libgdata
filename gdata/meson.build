@@ -1,5 +1,5 @@
-gdata_path = 'gdata'
-gdata_include_path = gdata_includedir / gdata_path
+gdata_subdir = 'gdata'
+gdata_include_path = gdata_includedir / gdata_subdir
 gdata_inc_dir = include_directories('.')
 
 subdir('app')
@@ -95,6 +95,7 @@ gdata_enum_source = custom_target(
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
     '--out-dir', meson.current_build_dir(),
+    '--include-dir', gdata_subdir,
     '--sources'
     ] + gdata_headers,
   output: enum_source_file,
@@ -107,15 +108,6 @@ gdata_marshal_files = gnome.genmarshal(
   marshal,
   sources: marshal + '.list',
   prefix: marshal.underscorify(),
-)
-sources += gdata_marshal_files[0]
-headers += gdata_marshal_files[1]
-
-# Copy all the header files required to compile the enum_source_file
-r = run_command(
-  cp_prog,
-  ['-r'] + gdata_headers + [meson.current_build_dir()],
-  check: true
 )
 
 sources += files([
@@ -153,7 +145,7 @@ ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
 libgdata_lib = shared_library(
   'gdata',
   include_directories: top_inc_dir,
-  sources: sources + headers + gdata_private_headers,
+  sources: sources + headers + gdata_private_headers + gdata_marshal_files,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,

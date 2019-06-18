@@ -1,4 +1,5 @@
-install_testdir = get_option('libexecdir') / 'installed-tests' / gdata_name
+tests_execdir = gdata_libexecdir / 'installed-tests' / gdata_name
+tests_metadir = gdata_datadir / 'installed-tests' / gdata_name
 
 gdata_sample_test_files = [
   'photo.jpg',
@@ -411,7 +412,7 @@ if always_build_tests
                headers +
 	             gdata_private_headers,
       install: install_tests,
-      install_dir: install_testdir
+      install_dir: tests_execdir
     )
 
     test(test_name, exe, workdir: meson.current_source_dir(),
@@ -421,11 +422,28 @@ if always_build_tests
 endif
 
 if always_build_tests and install_tests
+  foreach test_name, extra_args: tests
+    tests_conf = configuration_data ()
+    tests_conf.set('TEST_TYPE', 'session')
+    tests_conf.set('TEST_ABS_PATH', tests_execdir / test_name)
+    config_h.set_quoted('foobar', tests_execdir)
+    config_h.set_quoted('foobar', tests_execdir / test_name)
+
+    configure_file (
+      input: 'template.test.in',
+      output: test_name + '.test',
+      install: true,
+      install_dir: tests_metadir,
+      configuration: tests_conf
+    )
+  endforeach
+
   install_subdir(
     'traces',
-    install_dir: install_testdir
+    install_dir: tests_execdir
   )
 
+  cp_prog = find_program('cp')
   # Copy all the trace files required for running ninja test after
   # the build step
   run_command(
@@ -437,5 +455,5 @@ if always_build_tests and install_tests
     check: true
   )
 
-  install_data(gdata_sample_test_files, install_dir: install_testdir)
+  install_data(gdata_sample_test_files, install_dir: tests_execdir)
 endif

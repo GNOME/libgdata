@@ -21,7 +21,7 @@ option('always_build_tests',
 
 option('installed_tests',
   type: 'boolean',
-  value: false,
+  value: true,
   description: 'Install test programs (default: false)')
 
 option('man',

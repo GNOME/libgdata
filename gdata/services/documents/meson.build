@@ -1,5 +1,5 @@
-gdata_documents_path = 'gdata/services/documents'
-gdata_documents_include_path = gdata_includedir / gdata_documents_path
+gdata_documents_subdir = 'gdata/services/documents'
+gdata_documents_include_path = gdata_includedir / gdata_documents_subdir
 
 gdata_private_headers += files([
   'gdata-documents-entry-private.h',
@@ -59,17 +59,11 @@ gdata_documents_enum_source = custom_target(
     '--replace', 'g_data', 'gdata',
     '--source-dir', meson.current_source_dir(),
     '--out-dir', meson.current_build_dir(),
+    '--include-dir', gdata_documents_subdir,
     '--sources'
     ] + gdata_documents_headers,
   output: [enum_source_file],
   console: true
-)
-
-# Copy all the header files required to compile the enum_source_file
-r = run_command(
-  cp_prog,
-  ['-r'] + gdata_documents_headers + [meson.current_build_dir()],
-  check: true
 )
 
 sources += files([

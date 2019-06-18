@@ -20,12 +20,13 @@ gdata_api_version_minor = 0
 
 # Define the install directories
 gdata_prefix = get_option('prefix')
-gdata_bindir = get_option('bindir')
-gdata_datadir = get_option('datadir')
-gdata_libdir = get_option('libdir')
-gdata_includedir = get_option('includedir') / meson.project_name()
-gdata_localedir = get_option('localedir')
-gdata_mandir = get_option('mandir')
+gdata_bindir = gdata_prefix / get_option('bindir')
+gdata_datadir = gdata_prefix / get_option('datadir')
+gdata_libdir = gdata_prefix / get_option('libdir')
+gdata_libexecdir = gdata_prefix / get_option('libexecdir')
+gdata_includedir = gdata_prefix / get_option('includedir') / meson.project_name()
+gdata_localedir = gdata_prefix / get_option('localedir')
+gdata_mandir = gdata_prefix / get_option('mandir')
 
 gdata_gir_dir = gdata_datadir / 'gir-1.0'
 gdata_vapi_dir = gdata_datadir / 'vala' / 'vapi'
@@ -72,8 +73,6 @@ python_prog = import('python').find_installation('python3')
 
 # Internationalisation support
 i18n = import('i18n')
-
-cp_prog = find_program('cp')
 
 # Absolute paths to glib-mkenums wrapper scripts
 enum_header_generator_script = meson.current_source_dir() / 'scripts/generate_enum_header.py'

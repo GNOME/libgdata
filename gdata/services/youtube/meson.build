@@ -1,4 +1,5 @@
-gdata_youtube_include_path = gdata_includedir / 'gdata/services/youtube'
+gdata_youtube_subdir = 'gdata/services/youtube'
+gdata_youtube_include_path = gdata_includedir / gdata_youtube_subdir
 
 gdata_youtube_headers = [
   'gdata-youtube-category.h',
@@ -49,17 +50,11 @@ gdata_youtube_enum_source = custom_target(
     '--replace', 'g_data_you_tube', 'gdata_youtube',
     '--source-dir', meson.current_source_dir(),
     '--out-dir', meson.current_build_dir(),
+    '--include-dir', gdata_youtube_subdir,
     '--sources'
     ] + gdata_youtube_headers,
   output: [enum_source_file],
   console: true
-)
-
-# Copy all the header files required to compile the enum_source_file
-r = run_command(
-  cp_prog,
-  ['-r'] + gdata_youtube_headers + [meson.current_build_dir()],
-  check: true
 )
 
 sources += files([

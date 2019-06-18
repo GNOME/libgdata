@@ -37,6 +37,11 @@ def create_parser():
             You can supply this argument multiple times, thereby sequentially
             replacing the text in generated source file.''')
 
+    parser.add_argument('--include-dir', metavar=('INCLUDE_DIR'), nargs=1,
+            help='''The relative path (from source root directory) to the directory
+            in which the headers are present. This will be appended before the header file
+            in #include <INCLUDE_DIR/$header>. ''')
+
     parser.add_argument('--source-dir', metavar=('SOURCE_DIR'),
             help='''The absolute path to source directory in which the sources are present.
             If this argument is set, the relative paths will be resolved from
@@ -85,7 +90,10 @@ def get_template_sections(args):
 
     # File-header section
     for s in args.sources:
-        fhead += '#include "{}"\n'.format(s)
+        if (args.include_dir is not None):
+            fhead += '#include "{}/{}"\n'.format(args.include_dir[0], s)
+        else:
+            fhead += '#include "{}"\n'.format(s)
 
     fhead += '''
     #define C_ENUM(v) ((gint) v)

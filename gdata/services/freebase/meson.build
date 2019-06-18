@@ -1,4 +1,5 @@
-gdata_freebase_include_path = gdata_includedir / 'gdata/services/freebase'
+gdata_freebase_subdir = 'gdata/services/freebase'
+gdata_freebase_include_path = gdata_includedir / gdata_freebase_subdir
 
 gdata_freebase_headers = [
   'gdata-freebase-query.h',
@@ -47,18 +48,12 @@ gdata_freebase_enum_source = custom_target(
     '--replace', 'g_data_freebase', 'gdata_freebase',
     '--source-dir', meson.current_source_dir(),
     '--out-dir', meson.current_build_dir(),
+    '--include-dir', gdata_freebase_subdir,
     '--sources'
     ] + gdata_freebase_headers,
   input: [gdata_freebase_enum_header],
   output: [enum_source_file],
   console: true
-)
-
-# Copy all the header files required to compile the enum_source_file
-r = run_command(
-  cp_prog,
-  ['-r'] + gdata_freebase_headers + [meson.current_build_dir()],
-  check: true
 )
 
 sources += files([
