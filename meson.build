@@ -30,10 +30,6 @@ gdata_mandir = get_option('mandir')
 
 gdata_include_subdir = gdata_name / 'gdata'
 
-gdata_gir_dir = gdata_datadir / 'gir-1.0'
-gdata_vapi_dir = gdata_datadir / 'vala' / 'vapi'
-gdata_typelib_dir = gdata_libdir / 'girepository-1.0'
-
 # The following array contains private headers, and shouldn't be installed
 gdata_private_headers = []
 

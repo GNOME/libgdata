@@ -194,8 +194,6 @@ if get_option('with_introspection')
     dependencies: libgdata_dep,
     header: 'gdata/gdata.h',
     install: true,
-    install_dir_gir: gdata_gir_dir,
-    install_dir_typelib: gdata_typelib_dir,
     export_packages: gdata_name,
   )
 
@@ -205,7 +203,6 @@ if get_option('with_introspection')
       sources: libgdata_gir[0],
       packages: gdata_vapi_deps,
       install: true,
-      install_dir: gdata_vapi_dir,
     )
 
   endif
