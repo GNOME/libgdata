@@ -1,7 +1,6 @@
 gdata_picasaweb_inc_dir = include_directories('.')
 
-gdata_picasaweb_subdir = 'gdata/services/picasaweb'
-gdata_picasaweb_include_path = gdata_includedir / gdata_picasaweb_subdir
+include_subdir = gdata_include_subdir / 'services/picasaweb'
 
 gdata_picasaweb_headers = [
   'gdata-picasaweb-album.h',
@@ -15,7 +14,7 @@ gdata_picasaweb_headers = [
 
 install_headers(
   gdata_picasaweb_headers,
-  install_dir: gdata_picasaweb_include_path
+  subdir: include_subdir,
 )
 
 enums = 'gdata-picasaweb-enums'
@@ -41,7 +40,7 @@ gdata_picasaweb_enum_header = custom_target(
   command: [sed, '-e', 's/g_data_picasa_web/gdata_picasaweb/', '-e', 's/G_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/',  build_root / '@INPUT@'],
   capture: true,
   install: true,
-  install_dir: gdata_picasaweb_include_path,
+  install_dir: gdata_includedir / include_subdir,
 )
 
 sources += files([

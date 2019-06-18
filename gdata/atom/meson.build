@@ -7,7 +7,7 @@ gdata_atom_headers = files([
 
 install_headers(
   gdata_atom_headers,
-  install_dir: gdata_includedir / 'gdata/atom'
+  subdir: gdata_include_subdir / 'atom',
 )
 
 sources += files([

@@ -20,13 +20,15 @@ gdata_api_version_minor = 0
 
 # Define the install directories
 gdata_prefix = get_option('prefix')
-gdata_bindir = gdata_prefix / get_option('bindir')
-gdata_datadir = gdata_prefix / get_option('datadir')
-gdata_libdir = gdata_prefix / get_option('libdir')
+gdata_bindir = get_option('bindir')
+gdata_datadir = get_option('datadir')
+gdata_libdir = get_option('libdir')
 gdata_libexecdir = gdata_prefix / get_option('libexecdir')
-gdata_includedir = gdata_prefix / get_option('includedir') / meson.project_name()
-gdata_localedir = gdata_prefix / get_option('localedir')
-gdata_mandir = gdata_prefix / get_option('mandir')
+gdata_includedir = get_option('includedir')
+gdata_localedir = get_option('localedir')
+gdata_mandir = get_option('mandir')
+
+gdata_include_subdir = gdata_name / 'gdata'
 
 gdata_gir_dir = gdata_datadir / 'gir-1.0'
 gdata_vapi_dir = gdata_datadir / 'vala' / 'vapi'

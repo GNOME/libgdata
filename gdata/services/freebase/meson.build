@@ -1,7 +1,6 @@
 gdata_freebase_inc_dir = include_directories('.')
 
-gdata_freebase_subdir = 'gdata/services/freebase'
-gdata_freebase_include_path = gdata_includedir / gdata_freebase_subdir
+include_subdir = gdata_include_subdir / 'services/freebase'
 
 gdata_freebase_headers = [
   'gdata-freebase-query.h',
@@ -15,7 +14,7 @@ gdata_freebase_headers = [
 
 install_headers(
   gdata_freebase_headers,
-  install_dir: gdata_freebase_include_path
+  subdir: include_subdir,
 )
 
 enums = 'gdata-freebase-enums'
@@ -41,7 +40,7 @@ gdata_freebase_enum_header = custom_target(
   command: enum_header_cmd,
   capture: true,
   install: true,
-  install_dir: gdata_freebase_include_path,
+  install_dir: gdata_includedir / include_subdir,
 )
 
 sources += files([

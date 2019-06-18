@@ -1,7 +1,6 @@
 gdata_youtube_inc_dir = include_directories('.')
 
-gdata_youtube_subdir = 'gdata/services/youtube'
-gdata_youtube_include_path = gdata_includedir / gdata_youtube_subdir
+include_subdir = gdata_include_subdir / 'services/youtube'
 
 gdata_youtube_headers = [
   'gdata-youtube-category.h',
@@ -17,7 +16,7 @@ gdata_youtube_headers = [
 
 install_headers(
   gdata_youtube_headers,
-  install_dir: gdata_youtube_include_path
+  subdir: include_subdir,
 )
 
 enums = 'gdata-youtube-enums'
@@ -43,7 +42,7 @@ gdata_youtube_enum_header = custom_target(
   command: [sed, '-e', 's/g_data_you_tube/gdata_youtube/', '-e', 's/G_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/', build_root / '@INPUT@'],
   capture: true,
   install: true,
-  install_dir: gdata_youtube_include_path,
+  install_dir: gdata_includedir / include_subdir,
 )
 
 sources += files([

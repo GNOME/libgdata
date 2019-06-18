@@ -1,5 +1,3 @@
-gdata_subdir = 'gdata'
-gdata_include_path = gdata_includedir / gdata_subdir
 gdata_inc_dir = include_directories('.')
 
 subdir('app')
@@ -54,7 +52,7 @@ headers += configure_file(
   output: '@BASENAME@',
   configuration: version_conf,
   install: true,
-  install_dir: gdata_include_path,
+  install_dir: gdata_includedir / gdata_include_subdir,
 )
 
 if enable_goa.enabled()
@@ -62,7 +60,10 @@ if enable_goa.enabled()
   sources += files(['gdata-goa-authorizer.c'])
 endif
 
-install_headers(gdata_headers, install_dir: gdata_include_path)
+install_headers(
+  gdata_headers,
+  subdir: gdata_include_subdir,
+)
 
 enums = 'gdata-enums'
 
@@ -87,7 +88,7 @@ gdata_enum_header = custom_target(
   command: enum_header_cmd,
   capture: true,
   install: true,
-  install_dir: gdata_include_path,
+  install_dir: gdata_includedir / gdata_include_subdir,
 )
 
 marshal = 'gdata-marshal'

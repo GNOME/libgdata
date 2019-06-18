@@ -9,7 +9,7 @@ gdata_calendar_headers = files([
 
 install_headers(
   gdata_calendar_headers,
-  install_dir: gdata_includedir / 'gdata/services/calendar'
+  subdir: gdata_include_subdir / 'services/calendar',
 )
 
 sources += files([

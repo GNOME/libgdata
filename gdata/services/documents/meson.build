@@ -1,7 +1,6 @@
 gdata_documents_inc_dir = include_directories('.')
 
-gdata_documents_subdir = 'gdata/services/documents'
-gdata_documents_include_path = gdata_includedir / gdata_documents_subdir
+include_subdir = gdata_include_subdir / 'services/documents'
 
 gdata_private_headers += files([
   'gdata-documents-entry-private.h',
@@ -27,7 +26,7 @@ gdata_documents_headers = [
 
 install_headers(
   gdata_documents_headers,
-  install_dir: gdata_documents_include_path
+  subdir: include_subdir,
 )
 
 enums = 'gdata-documents-enums'
@@ -53,7 +52,7 @@ gdata_documents_enum_header = custom_target(
   command: enum_header_cmd,
   capture: true,
   install: true,
-  install_dir: gdata_documents_include_path,
+  install_dir: gdata_includedir / include_subdir,
 )
 
 sources += files([

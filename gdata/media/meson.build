@@ -1,7 +1,6 @@
 gdata_media_inc_dir = include_directories('.')
 
-gdata_media_subdir = 'gdata/media'
-gdata_media_include_path = gdata_includedir / gdata_media_subdir
+include_subdir = gdata_include_subdir / 'media'
 
 gdata_private_headers += files(['gdata-media-group.h'])
 
@@ -14,7 +13,7 @@ gdata_media_headers = [
 
 install_headers(
   gdata_media_headers,
-  install_dir: gdata_media_include_path
+  subdir: include_subdir,
 )
 
 enums = 'gdata-media-enums'
@@ -40,7 +39,7 @@ gdata_media_enum_header = custom_target(
   command: enum_header_cmd,
   capture: true,
   install: true,
-  install_dir: gdata_media_include_path,
+  install_dir: gdata_includedir / include_subdir,
 )
 
 sources += files([

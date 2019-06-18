@@ -13,7 +13,7 @@ gdata_gd_headers = files([
 
 install_headers(
   gdata_gd_headers,
-  install_dir: gdata_includedir / 'gdata/gd'
+  subdir: gdata_include_subdir / 'gd',
 )
 
 sources += files([
