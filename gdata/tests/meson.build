@@ -1,10 +1,10 @@
 tests_execdir = gdata_libexecdir / 'installed-tests' / gdata_name
 tests_metadir = gdata_datadir / 'installed-tests' / gdata_name
 
-tests_sources = files([
+tests_sources = files(
   'common.c',
   'gdata-dummy-authorizer.c',
-])
+)
 
 # The empty objects may be used in future for keeping custom
 # arguments for each test

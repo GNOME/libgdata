@@ -1,1 +1,1 @@
-sources += files(['gdata-exif-tags.c'])
+sources += files('gdata-exif-tags.c')

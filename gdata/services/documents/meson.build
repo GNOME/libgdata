@@ -2,7 +2,7 @@ gdata_documents_inc_dir = include_directories('.')
 
 include_subdir = gdata_include_subdir / 'services/documents'
 
-gdata_documents_headers = [
+gdata_documents_headers = files(
   'gdata-documents-access-rule.h',
   'gdata-documents-document.h',
   'gdata-documents-drawing.h',
@@ -17,7 +17,7 @@ gdata_documents_headers = [
   'gdata-documents-spreadsheet.h',
   'gdata-documents-text.h',
   'gdata-documents-upload-query.h',
-]
+)
 
 install_headers(
   gdata_documents_headers,
@@ -50,7 +50,7 @@ gdata_documents_enum_header = custom_target(
   install_dir: gdata_includedir / include_subdir,
 )
 
-sources += files([
+sources += files(
   'gdata-documents-access-rule.c',
   'gdata-documents-document.c',
   'gdata-documents-drawing.c',
@@ -66,7 +66,7 @@ sources += files([
   'gdata-documents-text.c',
   'gdata-documents-upload-query.c',
   'gdata-documents-utils.c'
-])
+)
 
-headers += files(gdata_documents_headers) + [gdata_documents_enum_header]
-sources += [gdata_documents_enum_source]
+headers += gdata_documents_headers + [gdata_documents_enum_header]
+sources += gdata_documents_enum_source

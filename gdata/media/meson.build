@@ -2,12 +2,12 @@ gdata_media_inc_dir = include_directories('.')
 
 include_subdir = gdata_include_subdir / 'media'
 
-gdata_media_headers = [
+gdata_media_headers = files(
   'gdata-media-category.h',
   'gdata-media-content.h',
   'gdata-media-credit.h',
   'gdata-media-thumbnail.h',
-]
+)
 
 install_headers(
   gdata_media_headers,
@@ -40,13 +40,13 @@ gdata_media_enum_header = custom_target(
   install_dir: gdata_includedir / include_subdir,
 )
 
-sources += files([
+sources += files(
   'gdata-media-category.c',
   'gdata-media-content.c',
   'gdata-media-credit.c',
   'gdata-media-group.c',
   'gdata-media-thumbnail.c',
-])
+)
 
-headers += files(gdata_media_headers) + [gdata_media_enum_header]
+headers += gdata_media_headers + [gdata_media_enum_header]
 sources += gdata_media_enum_source

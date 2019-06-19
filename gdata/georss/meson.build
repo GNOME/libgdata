@@ -1,1 +1,1 @@
-sources += files(['gdata-georss-where.c'])
+sources += files('gdata-georss-where.c')

@@ -9,7 +9,7 @@ subdir('georss')
 subdir('media')
 subdir('services')
 
-gdata_headers = [
+gdata_headers = files(
   'gdata.h',
   'gdata-access-handler.h',
   'gdata-access-rule.h',
@@ -31,7 +31,7 @@ gdata_headers = [
   'gdata-service.h',
   'gdata-types.h',
   'gdata-upload-stream.h',
-]
+)
 
 version_conf = {
   'GDATA_VERSION_MAJOR': gdata_version_major,
@@ -48,8 +48,8 @@ headers += configure_file(
 )
 
 if enable_goa.enabled()
-  gdata_headers += ['gdata-goa-authorizer.h']
-  sources += files(['gdata-goa-authorizer.c'])
+  gdata_headers += files('gdata-goa-authorizer.h')
+  sources += files('gdata-goa-authorizer.c')
 endif
 
 install_headers(
@@ -91,7 +91,7 @@ gdata_marshal_files = gnome.genmarshal(
   prefix: marshal.underscorify(),
 )
 
-sources += files([
+sources += files(
   'gdata-access-handler.c',
   'gdata-access-rule.c',
   'gdata-authorization-domain.c',
@@ -115,9 +115,9 @@ sources += files([
   'gdata-service.c',
   'gdata-types.c',
   'gdata-upload-stream.c',
-])
+)
 
-headers += files(gdata_headers) + [gdata_enum_header]
+headers += gdata_headers + [gdata_enum_header]
 sources += gdata_enum_source
 
 incs = [

@@ -2,7 +2,7 @@ gdata_picasaweb_inc_dir = include_directories('.')
 
 include_subdir = gdata_include_subdir / 'services/picasaweb'
 
-gdata_picasaweb_headers = [
+gdata_picasaweb_headers = files(
   'gdata-picasaweb-album.h',
   'gdata-picasaweb-comment.h',
   'gdata-picasaweb-feed.h',
@@ -10,7 +10,7 @@ gdata_picasaweb_headers = [
   'gdata-picasaweb-query.h',
   'gdata-picasaweb-service.h',
   'gdata-picasaweb-user.h',
-]
+)
 
 install_headers(
   gdata_picasaweb_headers,
@@ -43,7 +43,7 @@ gdata_picasaweb_enum_header = custom_target(
   install_dir: gdata_includedir / include_subdir,
 )
 
-sources += files([
+sources += files(
   'gdata-picasaweb-album.c',
   'gdata-picasaweb-comment.c',
   'gdata-picasaweb-feed.c',
@@ -51,7 +51,7 @@ sources += files([
   'gdata-picasaweb-query.c',
   'gdata-picasaweb-service.c',
   'gdata-picasaweb-user.c',
-])
+)
 
-headers += files(gdata_picasaweb_headers) + [gdata_picasaweb_enum_header]
+headers += gdata_picasaweb_headers + [gdata_picasaweb_enum_header]
 sources += gdata_picasaweb_enum_source
