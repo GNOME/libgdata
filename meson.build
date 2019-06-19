@@ -30,9 +30,6 @@ gdata_mandir = get_option('mandir')
 
 gdata_include_subdir = gdata_name / 'gdata'
 
-# The following array contains private headers, and shouldn't be installed
-gdata_private_headers = []
-
 # Before making a release, the GDATA_LT_VERSION string should be modified. The string is of the form c:r:a. Follow these instructions sequentially:
 #
 #  1. If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).

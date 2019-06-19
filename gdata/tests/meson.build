@@ -407,10 +407,7 @@ if always_build_tests
       include_directories: [top_inc_dir, gdata_inc_dir],
       link_with: libgdata_lib,
       dependencies: gdata_deps + gdata_private_deps,
-      sources: tests_sources +
-               tests_headers +
-               headers +
-	             gdata_private_headers,
+      sources: tests_sources + tests_headers + headers,
       install: install_tests,
       install_dir: tests_execdir
     )

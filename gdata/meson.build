@@ -9,14 +9,6 @@ subdir('georss')
 subdir('media')
 subdir('services')
 
-gdata_private_headers += files([
-  'gdata-batch-feed.h',
-  'gdata-batch-private.h',
-  'gdata-buffer.h',
-  'gdata-parser.h',
-  'gdata-private.h',
-])
-
 gdata_headers = [
   'gdata.h',
   'gdata-access-handler.h',
@@ -143,7 +135,7 @@ ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
 libgdata_lib = shared_library(
   'gdata',
   include_directories: incs,
-  sources: sources + headers + gdata_private_headers + gdata_marshal_files,
+  sources: sources + headers + gdata_marshal_files,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,

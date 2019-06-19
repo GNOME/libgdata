@@ -2,11 +2,6 @@ gdata_documents_inc_dir = include_directories('.')
 
 include_subdir = gdata_include_subdir / 'services/documents'
 
-gdata_private_headers += files([
-  'gdata-documents-entry-private.h',
-  'gdata-documents-utils.h',
-])
-
 gdata_documents_headers = [
   'gdata-documents-access-rule.h',
   'gdata-documents-document.h',

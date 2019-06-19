@@ -2,8 +2,6 @@ gdata_media_inc_dir = include_directories('.')
 
 include_subdir = gdata_include_subdir / 'media'
 
-gdata_private_headers += files(['gdata-media-group.h'])
-
 gdata_media_headers = [
   'gdata-media-category.h',
   'gdata-media-content.h',
