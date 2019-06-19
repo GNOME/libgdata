@@ -36,6 +36,10 @@ tests = {
 tests_cargs = ['-DG_LOG_DOMAIN="libgdata"']
 
 if always_build_tests
+  test_env = environment()
+  test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
+  test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
+
   foreach test_name, extra_args: tests
     should_fail = extra_args.get('should_fail', false)
 
@@ -51,9 +55,12 @@ if always_build_tests
       install_dir: tests_execdir
     )
 
-    test(test_name, exe, workdir: meson.current_source_dir(),
-	 should_fail: should_fail)
-
+    test(
+      test_name,
+      exe,
+      env: test_env,
+      should_fail: should_fail,
+    )
   endforeach
 endif
 
@@ -92,17 +99,6 @@ if always_build_tests and install_tests
     'test_updated_file.ppt',
     'test.xls',
   ]
-
-  # Copy all the trace files required for running ninja test after
-  # the build step
-  run_command(
-    find_program('cp'),
-    ['-r'] + test_data + [
-      meson.current_source_dir() / 'traces',
-      meson.current_build_dir()
-    ],
-    check: true
-  )
 
   install_data(
     test_data,
