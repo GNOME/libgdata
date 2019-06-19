@@ -58,11 +58,10 @@ endif
 
 if always_build_tests and install_tests
   foreach test_name, extra_args: tests
-    tests_conf = configuration_data ()
-    tests_conf.set('TEST_TYPE', 'session')
-    tests_conf.set('TEST_ABS_PATH', tests_execdir / test_name)
-    config_h.set_quoted('foobar', tests_execdir)
-    config_h.set_quoted('foobar', tests_execdir / test_name)
+    tests_conf = {
+      'TEST_TYPE': 'session',
+      'TEST_ABS_PATH': tests_execdir / test_name,
+    }
 
     configure_file (
       input: 'template.test.in',
