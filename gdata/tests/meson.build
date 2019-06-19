@@ -6,11 +6,6 @@ tests_sources = files([
   'gdata-dummy-authorizer.c',
 ])
 
-tests_headers = files([
-  'common.h',
-  'gdata-dummy-authorizer.h',
-])
-
 # The empty objects may be used in future for keeping custom
 # arguments for each test
 tests = {
@@ -45,10 +40,9 @@ if always_build_tests
       test_name,
       test_name + '.c',
       c_args: '-DG_LOG_DOMAIN="@0@"'.format(gdata_name),
-      include_directories: [top_inc_dir, gdata_inc_dir],
-      link_with: libgdata_lib,
-      dependencies: gdata_deps + gdata_private_deps,
-      sources: tests_sources + tests_headers + headers,
+      include_directories: top_inc_dir,
+      dependencies: libgdata_dep,
+      sources: tests_sources,
       install: install_tests,
       install_dir: tests_execdir
     )
