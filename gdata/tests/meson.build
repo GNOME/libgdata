@@ -440,11 +440,10 @@ if always_build_tests and install_tests
     install_dir: tests_execdir
   )
 
-  cp_prog = find_program('cp')
   # Copy all the trace files required for running ninja test after
   # the build step
   run_command(
-    cp_prog,
+    find_program('cp'),
     ['-r'] + gdata_sample_test_files + [
       meson.current_source_dir() / 'traces',
       meson.current_build_dir()

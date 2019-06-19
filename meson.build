@@ -71,8 +71,6 @@ i18n = import('i18n')
 
 build_root = meson.current_build_dir()
 
-cp_prog = find_program('cp')
-
 # workaround to fix namespace
 sed = find_program('sed')
 enum_source_cmd = [sed, '-e', 's/-in//', '-e', 's/g_data/gdata/', build_root / '@INPUT@']
