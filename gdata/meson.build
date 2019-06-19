@@ -141,7 +141,7 @@ libgdata_lib = shared_library(
   link_depends: symbol_map,
   install: true,
   soversion: gdata_soversion,
-  gnu_symbol_visibility: 'default'
+  gnu_symbol_visibility: 'default',
 )
 
 libgdata_dep = declare_dependency(

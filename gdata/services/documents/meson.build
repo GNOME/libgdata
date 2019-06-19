@@ -41,7 +41,7 @@ sources += files(
   'gdata-documents-spreadsheet.c',
   'gdata-documents-text.c',
   'gdata-documents-upload-query.c',
-  'gdata-documents-utils.c'
+  'gdata-documents-utils.c',
 )
 
 enums = 'gdata-documents-enums'

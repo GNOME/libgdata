@@ -22,5 +22,5 @@ sources += files(
   'gdata-gcontact-jot.c',
   'gdata-gcontact-language.c',
   'gdata-gcontact-relation.c',
-  'gdata-gcontact-website.c'
+  'gdata-gcontact-website.c',
 )

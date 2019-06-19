@@ -98,13 +98,13 @@ gdata_deps = [
   gio_unix_dep,
   libxml_dep,
   libsoup_dep,
-  libjson_glib_dep
+  libjson_glib_dep,
 ]
 
 # Private dependencies for libgdata (specifically used for pkgconfig)
 gdata_private_deps = [
   liboauth_dep,
-  libgthread_dep
+  libgthread_dep,
 ]
 
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
@@ -127,7 +127,7 @@ if enable_gtk.enabled()
   gtk_dep = dependency(
     'gtk+-3.0',
     version: gtk_dep_req_version,
-    not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found'
+    not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found',
   )
   gdata_deps += gtk_dep
 endif

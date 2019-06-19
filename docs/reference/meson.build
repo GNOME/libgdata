@@ -8,7 +8,7 @@ ent_conf.set_quoted('PACKAGE_VERSION', gdata_version)
 configure_file(
   input: 'gtkdocentities.ent.in',
   output: 'gtkdocentities.ent',
-  configuration: ent_conf
+  configuration: ent_conf,
 )
 
 ignore_files = [
@@ -38,7 +38,7 @@ ignore_files = [
 gtkdoc_common_scan_args = [
   '--rebuild-types',
   '--deprecated-guards=LIBGDATA_DISABLE_DEPRECATED',
-  '--ignore-headers=' + ' '.join(ignore_files)
+  '--ignore-headers=' + ' '.join(ignore_files),
 ]
 
 # Images to copy into HTML directory.

@@ -44,7 +44,7 @@ if always_build_tests
       dependencies: libgdata_dep,
       sources: tests_sources,
       install: install_tests,
-      install_dir: tests_execdir
+      install_dir: tests_execdir,
     )
 
     test(

@@ -4,7 +4,7 @@ demos_cargs = ['-DG_LOG_DOMAIN="libgdata"', '-DLIBGDATA_DISABLE_DEPRECATED']
 demos = [
   ['calendar', 'calendar-cli', {'sources': 'calendar/calendar-cli.c'}],
   ['tasks', 'task-cli', {'sources': 'tasks/tasks-cli.c'}],
-  ['youtube', 'youtube-cli', {'sources': 'youtube/youtube-cli.c'}]
+  ['youtube', 'youtube-cli', {'sources': 'youtube/youtube-cli.c'}],
 ]
 
 if enable_goa.enabled()
