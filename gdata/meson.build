@@ -176,14 +176,13 @@ if get_option('with_introspection')
     gdata_vapi_deps += ['goa-1.0']
   endif
 
-  libgdata_gir = gnome.generate_gir(libgdata_lib,
+  libgdata_gir = gnome.generate_gir(
+    libgdata_lib,
     sources: sources + gir_headers + enum_headers,
     nsversion: '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor),
     namespace: 'GData',
     symbol_prefix: 'gdata',
     includes: gdata_gir_includes,
-    link_with: libgdata_lib,
-    dependencies: libgdata_dep,
     header: 'gdata/gdata.h',
     install: true,
     export_packages: gdata_name,
