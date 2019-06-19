@@ -1,4 +1,7 @@
-demos_cargs = ['-DG_LOG_DOMAIN="libgdata"', '-DLIBGDATA_DISABLE_DEPRECATED']
+demos_cargs = [
+  '-DG_LOG_DOMAIN="@0@"'.format(gdata_name),
+  '-DLIBGDATA_DISABLE_DEPRECATED',
+]
 
 # demos = [subdir, executable name, custom objects (for sources)]
 demos = [
