@@ -33,8 +33,6 @@ tests = {
   'youtube': {},
 }
 
-tests_cargs = ['-DG_LOG_DOMAIN="libgdata"']
-
 if always_build_tests
   test_env = environment()
   test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
@@ -46,7 +44,7 @@ if always_build_tests
     exe = executable(
       test_name,
       test_name + '.c',
-      c_args: tests_cargs,
+      c_args: '-DG_LOG_DOMAIN="@0@"'.format(gdata_name),
       include_directories: [top_inc_dir, gdata_inc_dir],
       link_with: libgdata_lib,
       dependencies: gdata_deps + gdata_private_deps,
