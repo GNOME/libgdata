@@ -54,45 +54,45 @@ if always_build_tests
       should_fail: should_fail,
     )
   endforeach
-endif
 
-if always_build_tests and install_tests
-  foreach test_name, extra_args: tests
-    tests_conf = {
-      'TEST_TYPE': 'session',
-      'TEST_ABS_PATH': tests_execdir / test_name,
-    }
+  if install_tests
+    foreach test_name, extra_args: tests
+      tests_conf = {
+        'TEST_TYPE': 'session',
+        'TEST_ABS_PATH': tests_execdir / test_name,
+      }
 
-    configure_file (
-      input: 'template.test.in',
-      output: test_name + '.test',
-      install: true,
-      install_dir: tests_metadir,
-      configuration: tests_conf
+      configure_file (
+        input: 'template.test.in',
+        output: test_name + '.test',
+        configuration: tests_conf,
+        install: true,
+        install_dir: tests_metadir,
+      )
+    endforeach
+
+    install_subdir(
+      'traces',
+      install_dir: tests_execdir,
     )
-  endforeach
 
-  install_subdir(
-    'traces',
-    install_dir: tests_execdir
-  )
+    test_data = [
+      'cert.pem',
+      'key.pem',
+      'photo.jpg',
+      'sample.ogg',
+      'test.doc',
+      'test.ods',
+      'test.odt',
+      'test.ppt',
+      'test_updated.odt',
+      'test_updated_file.ppt',
+      'test.xls',
+    ]
 
-  test_data = [
-    'cert.pem',
-    'key.pem',
-    'photo.jpg',
-    'sample.ogg',
-    'test.doc',
-    'test.ods',
-    'test.odt',
-    'test.ppt',
-    'test_updated.odt',
-    'test_updated_file.ppt',
-    'test.xls',
-  ]
-
-  install_data(
-    test_data,
-    install_dir: tests_execdir,
-  )
+    install_data(
+      test_data,
+      install_dir: tests_execdir,
+    )
+  endif
 endif
