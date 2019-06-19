@@ -1,15 +1,6 @@
-ent_conf = configuration_data()
+subdir('xml')
 
-ent_conf.set_quoted('PACKAGE', gdata_name)
-ent_conf.set_quoted('PACKAGE_NAME', gdata_name)
-ent_conf.set_quoted('PACKAGE_STRING', '@0@ @1@'.format(gdata_name, gdata_version))
-ent_conf.set_quoted('PACKAGE_VERSION', gdata_version)
-
-configure_file(
-  input: 'gtkdocentities.ent.in',
-  output: 'gtkdocentities.ent',
-  configuration: ent_conf,
-)
+doc_module = 'gdata'
 
 ignore_files = [
   'common.h',
@@ -33,12 +24,24 @@ ignore_files = [
   'gdata-youtube-enums.h',
   'mock-resolver.h',
   'mock-server.h',
+  # FIXME: theses files are created by enums workaround
+  'gdata-documents-enums-in.h',
+  'gdata-enums-in.h',
+  'gdata-freebase-enums-in.h',
+  'gdata-media-enums-in.h',
+  'gdata-picasaweb-enums-in.h',
+  'gdata-youtube-enums-in.h',
 ]
 
-gtkdoc_common_scan_args = [
+scan_args = [
   '--rebuild-types',
   '--deprecated-guards=LIBGDATA_DISABLE_DEPRECATED',
-  '--ignore-headers=' + ' '.join(ignore_files),
+]
+
+# Extra SGML files
+content_files = [
+  'gdata-overview.xml',
+  'gdata-running.xml',
 ]
 
 # Images to copy into HTML directory.
@@ -48,19 +51,16 @@ html_assets = [
   'cancellation.png',
 ]
 
-# Extra SGML files
-content_files = [
-  'gdata-overview.xml',
-  'gdata-running.xml',
-]
-
-gnome.gtkdoc('gdata',
-             main_xml: 'gdata-docs.xml',
-             namespace: 'gdata',
-             src_dir: meson.current_source_dir() / '..' / '..' / 'gdata',
-             dependencies: libgdata_dep,
-             scan_args: gtkdoc_common_scan_args,
-             content_files: content_files,
-             html_assets: html_assets,
-             fixxref_args: '--html-dir=' + (gdata_prefix / gnome.gtkdoc_html_dir(gdata_name)),
-             install: true)
+gnome.gtkdoc(
+  doc_module,
+  main_xml: doc_module + '-docs.xml',
+  src_dir: gdata_inc_dir,
+  ignore_headers: ignore_files,
+  dependencies: libgdata_dep,
+  namespace: doc_module,
+  scan_args: scan_args,
+  fixxref_args: '--html-dir=' + (gdata_prefix / gnome.gtkdoc_html_dir(gdata_name)),
+  content_files: content_files,
+  html_assets: html_assets,
+  install: true,
+)
