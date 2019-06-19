@@ -15,7 +15,7 @@ if enable_goa.enabled()
 endif
 
 if enable_gtk.enabled()
-  demos += [['scrapbook', 'scrapbook', { 'sources': ['scrapbook/scrapbook.c', 'scrapbook/scrapbook.h']}]]
+  demos += [['scrapbook', 'scrapbook', {'sources': 'scrapbook/scrapbook.c'}]]
 endif
 
 foreach demo: demos
