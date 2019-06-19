@@ -143,7 +143,7 @@ if enable_gnome.enabled()
   gdata_private_deps += dependency('gcr-base-3')
   goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
   config_h.set10('HAVE_GOA', goa_dep.found(), description: 'Define if GOA support is enabled.')
-  gdata_private_deps += goa_dep
+  gdata_deps += goa_dep
 endif
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
