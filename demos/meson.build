@@ -18,10 +18,9 @@ endif
 foreach demo: demos
   executable(
     demo[1],
-    link_with: libgdata_lib,
     c_args: demos_cargs,
-    dependencies: [libgdata_dep] + gdata_deps + gdata_private_deps,
-    include_directories: [top_inc_dir, gdata_inc_dir],
+    dependencies: libgdata_dep,
+    include_directories: top_inc_dir,
     kwargs: demo[2],
   )
 endforeach
