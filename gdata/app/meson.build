@@ -1,10 +1,10 @@
-gdata_app_headers = files('gdata-app-categories.h')
+headers = files('gdata-app-categories.h')
 
 install_headers(
-  gdata_app_headers,
+  headers,
   subdir: gdata_include_subdir / 'app',
 )
 
-sources += files('gdata-app-categories.c')
+gir_headers += headers
 
-headers += gdata_app_headers
+sources += files('gdata-app-categories.c')

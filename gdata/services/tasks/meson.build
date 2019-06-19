@@ -1,4 +1,4 @@
-gdata_tasks_headers = files(
+headers = files(
   'gdata-tasks-query.h',
   'gdata-tasks-service.h',
   'gdata-tasks-task.h',
@@ -6,9 +6,11 @@ gdata_tasks_headers = files(
 )
 
 install_headers(
-  gdata_tasks_headers,
+  headers,
   subdir: gdata_include_subdir / 'services/tasks',
 )
+
+gir_headers += headers
 
 sources += files(
   'gdata-tasks-query.c',
@@ -16,5 +18,3 @@ sources += files(
   'gdata-tasks-task.c',
   'gdata-tasks-tasklist.c',
 )
-
-headers += gdata_tasks_headers

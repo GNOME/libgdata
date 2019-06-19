@@ -1,4 +1,4 @@
-gdata_gd_headers = files(
+headers = files(
   'gdata-gd-email-address.h',
   'gdata-gd-im-address.h',
   'gdata-gd-name.h',
@@ -12,9 +12,11 @@ gdata_gd_headers = files(
 )
 
 install_headers(
-  gdata_gd_headers,
+  headers,
   subdir: gdata_include_subdir / 'gd',
 )
+
+gir_headers += headers
 
 sources += files(
   'gdata-gd-email-address.c',
@@ -29,5 +31,3 @@ sources += files(
   'gdata-gd-where.c',
   'gdata-gd-who.c',
 )
-
-headers += gdata_gd_headers

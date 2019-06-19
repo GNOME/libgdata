@@ -1,4 +1,4 @@
-gdata_atom_headers = files(
+headers = files(
   'gdata-author.h',
   'gdata-category.h',
   'gdata-generator.h',
@@ -6,9 +6,11 @@ gdata_atom_headers = files(
 )
 
 install_headers(
-  gdata_atom_headers,
+  headers,
   subdir: gdata_include_subdir / 'atom',
 )
+
+gir_headers += headers
 
 sources += files(
   'gdata-author.c',
@@ -16,5 +18,3 @@ sources += files(
   'gdata-generator.c',
   'gdata-link.c'
 )
-
-headers += gdata_atom_headers

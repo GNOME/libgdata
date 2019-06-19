@@ -191,9 +191,6 @@ check_headers = [
   'unistd.h',
 ]
 
-sources = []
-headers = []
-
 subdir('gdata')
 subdir('demos')
 subdir('po')

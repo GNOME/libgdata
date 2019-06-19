@@ -1,4 +1,4 @@
-gdata_calendar_headers = files(
+headers = files(
   'gdata-calendar-access-rule.h',
   'gdata-calendar-calendar.h',
   'gdata-calendar-event.h',
@@ -8,9 +8,11 @@ gdata_calendar_headers = files(
 )
 
 install_headers(
-  gdata_calendar_headers,
+  headers,
   subdir: gdata_include_subdir / 'services/calendar',
 )
+
+gir_headers += headers
 
 sources += files(
   'gdata-calendar-access-rule.c',
@@ -20,5 +22,3 @@ sources += files(
   'gdata-calendar-query.c',
   'gdata-calendar-service.c',
 )
-
-headers += gdata_calendar_headers

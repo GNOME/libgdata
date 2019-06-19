@@ -1,8 +1,8 @@
-gdata_picasaweb_inc_dir = include_directories('.')
+incs += include_directories('.')
 
 include_subdir = gdata_include_subdir / 'services/picasaweb'
 
-gdata_picasaweb_headers = files(
+headers = files(
   'gdata-picasaweb-album.h',
   'gdata-picasaweb-comment.h',
   'gdata-picasaweb-feed.h',
@@ -13,35 +13,11 @@ gdata_picasaweb_headers = files(
 )
 
 install_headers(
-  gdata_picasaweb_headers,
+  headers,
   subdir: include_subdir,
 )
 
-enums = 'gdata-picasaweb-enums'
-
-enums_in = gnome.mkenums_simple(
-  enums + '-in',
-  sources: gdata_picasaweb_headers,
-)
-
-# workaround to fix namespace
-gdata_picasaweb_enum_source = custom_target(
-  enums + '.c',
-  input: enums_in[0],
-  output: enums + '.c',
-  command: [sed, '-e', 's/-in//', '-e', 's/g_data_picasa_web/gdata_picasaweb/', build_root / '@INPUT@'],
-  capture: true,
-)
-
-gdata_picasaweb_enum_header = custom_target(
-  enums + '.h',
-  input: enums_in[1],
-  output: enums + '.h',
-  command: [sed, '-e', 's/g_data_picasa_web/gdata_picasaweb/', '-e', 's/G_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/',  build_root / '@INPUT@'],
-  capture: true,
-  install: true,
-  install_dir: gdata_includedir / include_subdir,
-)
+gir_headers += headers
 
 sources += files(
   'gdata-picasaweb-album.c',
@@ -53,5 +29,28 @@ sources += files(
   'gdata-picasaweb-user.c',
 )
 
-headers += gdata_picasaweb_headers + [gdata_picasaweb_enum_header]
-sources += gdata_picasaweb_enum_source
+enums = 'gdata-picasaweb-enums'
+
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: headers,
+)
+
+# workaround to fix namespace
+sources += custom_target(
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: [sed, '-e', 's/-in//', '-e', 's/g_data_picasa_web/gdata_picasaweb/', build_root / '@INPUT@'],
+  capture: true,
+)
+
+enum_headers += custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: [sed, '-e', 's/g_data_picasa_web/gdata_picasaweb/', '-e', 's/G_TYPE_DATA_PICASA_WEB/GDATA_TYPE_PICASAWEB/',  build_root / '@INPUT@'],
+  capture: true,
+  install: true,
+  install_dir: gdata_includedir / include_subdir,
+)

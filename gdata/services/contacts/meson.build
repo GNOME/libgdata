@@ -1,4 +1,4 @@
-gdata_contacts_headers = files(
+headers = files(
   'gdata-contacts-contact.h',
   'gdata-contacts-group.h',
   'gdata-contacts-query.h',
@@ -6,9 +6,11 @@ gdata_contacts_headers = files(
 )
 
 install_headers(
-  gdata_contacts_headers,
+  headers,
   subdir: gdata_include_subdir / 'services/contacts',
 )
+
+gir_headers += headers
 
 sources += files(
   'gdata-contacts-contact.c',
@@ -16,5 +18,3 @@ sources += files(
   'gdata-contacts-query.c',
   'gdata-contacts-service.c',
 )
-
-headers += gdata_contacts_headers

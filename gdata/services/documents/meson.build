@@ -1,8 +1,8 @@
-gdata_documents_inc_dir = include_directories('.')
+incs += include_directories('.')
 
 include_subdir = gdata_include_subdir / 'services/documents'
 
-gdata_documents_headers = files(
+headers = files(
   'gdata-documents-access-rule.h',
   'gdata-documents-document.h',
   'gdata-documents-drawing.h',
@@ -20,35 +20,11 @@ gdata_documents_headers = files(
 )
 
 install_headers(
-  gdata_documents_headers,
+  headers,
   subdir: include_subdir,
 )
 
-enums = 'gdata-documents-enums'
-
-# workaround to fix namespace
-enums_in = gnome.mkenums_simple(
-  enums + '-in',
-  sources: gdata_documents_headers,
-)
-
-gdata_documents_enum_source = custom_target(
-  enums + '.c',
-  input: enums_in[0],
-  output: enums + '.c',
-  command: enum_source_cmd,
-  capture: true,
-)
-
-gdata_documents_enum_header = custom_target(
-  enums + '.h',
-  input: enums_in[1],
-  output: enums + '.h',
-  command: enum_header_cmd,
-  capture: true,
-  install: true,
-  install_dir: gdata_includedir / include_subdir,
-)
+gir_headers += headers
 
 sources += files(
   'gdata-documents-access-rule.c',
@@ -68,5 +44,28 @@ sources += files(
   'gdata-documents-utils.c'
 )
 
-headers += gdata_documents_headers + [gdata_documents_enum_header]
-sources += gdata_documents_enum_source
+enums = 'gdata-documents-enums'
+
+# workaround to fix namespace
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: headers,
+)
+
+sources += custom_target(
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+enum_headers += custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_includedir / include_subdir,
+)

@@ -1,5 +1,15 @@
 gdata_inc_dir = include_directories('.')
 
+enum_headers = []
+gir_headers = []
+
+sources = []
+
+incs = [
+  gdata_inc_dir,
+  top_inc_dir,
+]
+
 subdir('app')
 subdir('atom')
 subdir('exif')
@@ -9,7 +19,7 @@ subdir('georss')
 subdir('media')
 subdir('services')
 
-gdata_headers = files(
+headers = files(
   'gdata.h',
   'gdata-access-handler.h',
   'gdata-access-rule.h',
@@ -31,64 +41,6 @@ gdata_headers = files(
   'gdata-service.h',
   'gdata-types.h',
   'gdata-upload-stream.h',
-)
-
-version_conf = {
-  'GDATA_VERSION_MAJOR': gdata_version_major,
-  'GDATA_VERSION_MINOR': gdata_version_minor,
-  'GDATA_VERSION_MICRO': gdata_version_micro,
-}
-
-headers += configure_file(
-  input: 'gdata-version.h.in',
-  output: '@BASENAME@',
-  configuration: version_conf,
-  install: true,
-  install_dir: gdata_includedir / gdata_include_subdir,
-)
-
-if enable_goa.enabled()
-  gdata_headers += files('gdata-goa-authorizer.h')
-  sources += files('gdata-goa-authorizer.c')
-endif
-
-install_headers(
-  gdata_headers,
-  subdir: gdata_include_subdir,
-)
-
-enums = 'gdata-enums'
-
-enums_in = gnome.mkenums_simple(
-  enums + '-in',
-  sources: gdata_headers,
-)
-
-# workaround to fix namespace
-gdata_enum_source = custom_target(
-  enums + '.c',
-  input: enums_in[0],
-  output: enums + '.c',
-  command: enum_source_cmd,
-  capture: true,
-)
-
-gdata_enum_header = custom_target(
-  enums + '.h',
-  input: enums_in[1],
-  output: enums + '.h',
-  command: enum_header_cmd,
-  capture: true,
-  install: true,
-  install_dir: gdata_includedir / gdata_include_subdir,
-)
-
-marshal = 'gdata-marshal'
-
-gdata_marshal_files = gnome.genmarshal(
-  marshal,
-  sources: marshal + '.list',
-  prefix: marshal.underscorify(),
 )
 
 sources += files(
@@ -117,17 +69,65 @@ sources += files(
   'gdata-upload-stream.c',
 )
 
-headers += gdata_headers + [gdata_enum_header]
-sources += gdata_enum_source
+if enable_goa.enabled()
+  headers += files('gdata-goa-authorizer.h')
+  sources += files('gdata-goa-authorizer.c')
+endif
 
-incs = [
-  top_inc_dir,
-  gdata_media_inc_dir,
-  gdata_documents_inc_dir,
-  gdata_freebase_inc_dir,
-  gdata_picasaweb_inc_dir,
-  gdata_youtube_inc_dir,
-]
+install_headers(
+  headers,
+  subdir: gdata_include_subdir,
+)
+
+version_conf = {
+  'GDATA_VERSION_MAJOR': gdata_version_major,
+  'GDATA_VERSION_MINOR': gdata_version_minor,
+  'GDATA_VERSION_MICRO': gdata_version_micro,
+}
+
+headers += configure_file(
+  input: 'gdata-version.h.in',
+  output: '@BASENAME@',
+  configuration: version_conf,
+  install: true,
+  install_dir: gdata_includedir / gdata_include_subdir,
+)
+
+gir_headers += headers
+
+marshal = 'gdata-marshal'
+
+sources += gnome.genmarshal(
+  marshal,
+  sources: marshal + '.list',
+  prefix: marshal.underscorify(),
+)
+
+enums = 'gdata-enums'
+
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: headers,
+)
+
+# workaround to fix namespace
+sources += custom_target(
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+enum_headers += custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_includedir / gdata_include_subdir,
+)
 
 symbol_map = meson.current_source_dir() / 'symbol.map'
 ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
@@ -135,7 +135,7 @@ ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
 libgdata_lib = shared_library(
   'gdata',
   include_directories: incs,
-  sources: sources + headers + gdata_marshal_files,
+  sources: sources + enum_headers,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,
@@ -145,14 +145,7 @@ libgdata_lib = shared_library(
 )
 
 libgdata_dep = declare_dependency(
-  sources: [
-    gdata_documents_enum_header,
-    gdata_enum_header,
-    gdata_freebase_enum_header,
-    gdata_media_enum_header,
-    gdata_picasaweb_enum_header,
-    gdata_youtube_enum_header,
-  ],
+  sources: enum_headers,
   include_directories: gdata_inc_dir,
   dependencies: gdata_deps,
   link_with: libgdata_lib,
@@ -184,7 +177,7 @@ if get_option('with_introspection')
   endif
 
   libgdata_gir = gnome.generate_gir(libgdata_lib,
-    sources: sources + headers,
+    sources: sources + gir_headers + enum_headers,
     nsversion: '@0@.@1@'.format(gdata_api_version_major, gdata_api_version_minor),
     namespace: 'GData',
     symbol_prefix: 'gdata',

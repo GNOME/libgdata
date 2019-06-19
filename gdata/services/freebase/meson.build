@@ -1,8 +1,8 @@
-gdata_freebase_inc_dir = include_directories('.')
+incs += include_directories('.')
 
 include_subdir = gdata_include_subdir / 'services/freebase'
 
-gdata_freebase_headers = files(
+headers = files(
   'gdata-freebase-query.h',
   'gdata-freebase-result.h',
   'gdata-freebase-search-query.h',
@@ -13,35 +13,11 @@ gdata_freebase_headers = files(
 )
 
 install_headers(
-  gdata_freebase_headers,
+  headers,
   subdir: include_subdir,
 )
 
-enums = 'gdata-freebase-enums'
-
-enums_in = gnome.mkenums_simple(
-  enums + '-in',
-  sources: gdata_freebase_headers,
-)
-
-# workaround to fix namespace
-gdata_freebase_enum_source = custom_target(
-  enums + '.c',
-  input: enums_in[0],
-  output: enums + '.c',
-  command: enum_source_cmd,
-  capture: true,
-)
-
-gdata_freebase_enum_header = custom_target(
-  enums + '.h',
-  input: enums_in[1],
-  output: enums + '.h',
-  command: enum_header_cmd,
-  capture: true,
-  install: true,
-  install_dir: gdata_includedir / include_subdir,
-)
+gir_headers += headers
 
 sources += files(
   'gdata-freebase-query.c',
@@ -53,5 +29,28 @@ sources += files(
   'gdata-freebase-topic-result.c',
 )
 
-headers += gdata_freebase_headers + [gdata_freebase_enum_header]
-sources += gdata_freebase_enum_source
+enums = 'gdata-freebase-enums'
+
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: headers,
+)
+
+# workaround to fix namespace
+sources += custom_target(
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+enum_headers += custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_includedir / include_subdir,
+)

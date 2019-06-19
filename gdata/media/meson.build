@@ -1,8 +1,8 @@
-gdata_media_inc_dir = include_directories('.')
+incs += include_directories('.')
 
 include_subdir = gdata_include_subdir / 'media'
 
-gdata_media_headers = files(
+headers = files(
   'gdata-media-category.h',
   'gdata-media-content.h',
   'gdata-media-credit.h',
@@ -10,35 +10,11 @@ gdata_media_headers = files(
 )
 
 install_headers(
-  gdata_media_headers,
+  headers,
   subdir: include_subdir,
 )
 
-enums = 'gdata-media-enums'
-
-enums_in = gnome.mkenums_simple(
-  enums + '-in',
-  sources: gdata_media_headers,
-)
-
-# workaround to fix namespace
-gdata_media_enum_source = custom_target(
-  enums + '.c',
-  input: enums_in[0],
-  output: enums + '.c',
-  command: enum_source_cmd,
-  capture: true,
-)
-
-gdata_media_enum_header = custom_target(
-  enums + '.h',
-  input: enums_in[1],
-  output: enums + '.h',
-  command: enum_header_cmd,
-  capture: true,
-  install: true,
-  install_dir: gdata_includedir / include_subdir,
-)
+gir_headers += headers
 
 sources += files(
   'gdata-media-category.c',
@@ -48,5 +24,28 @@ sources += files(
   'gdata-media-thumbnail.c',
 )
 
-headers += gdata_media_headers + [gdata_media_enum_header]
-sources += gdata_media_enum_source
+enums = 'gdata-media-enums'
+
+enums_in = gnome.mkenums_simple(
+  enums + '-in',
+  sources: headers,
+)
+
+# workaround to fix namespace
+sources += custom_target(
+  enums + '.c',
+  input: enums_in[0],
+  output: enums + '.c',
+  command: enum_source_cmd,
+  capture: true,
+)
+
+enum_headers += custom_target(
+  enums + '.h',
+  input: enums_in[1],
+  output: enums + '.h',
+  command: enum_header_cmd,
+  capture: true,
+  install: true,
+  install_dir: gdata_includedir / include_subdir,
+)
