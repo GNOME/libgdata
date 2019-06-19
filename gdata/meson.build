@@ -153,10 +153,17 @@ libgdata_lib = shared_library(
 )
 
 libgdata_dep = declare_dependency(
-  sources: gdata_enum_header,
-  link_with: libgdata_lib,
+  sources: [
+    gdata_documents_enum_header,
+    gdata_enum_header,
+    gdata_freebase_enum_header,
+    gdata_media_enum_header,
+    gdata_picasaweb_enum_header,
+    gdata_youtube_enum_header,
+  ],
   include_directories: gdata_inc_dir,
-  dependencies: gdata_deps + gdata_private_deps
+  dependencies: gdata_deps,
+  link_with: libgdata_lib,
 )
 
 pkgconfig.generate(
