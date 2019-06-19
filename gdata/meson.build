@@ -167,7 +167,6 @@ pkgconfig.generate(
 )
 
 if get_option('with_introspection')
-
   gdata_gir_includes = ['GObject-2.0', 'libxml2-2.0', 'Soup-2.4', 'Json-1.0']
   gdata_vapi_deps = ['libxml-2.0', 'libsoup-2.4', 'json-glib-1.0']
 
@@ -189,13 +188,12 @@ if get_option('with_introspection')
   )
 
   if get_option('with_vapi')
-
     libgdata_vapi = gnome.generate_vapi(gdata_name,
       sources: libgdata_gir[0],
       packages: gdata_vapi_deps,
       install: true,
     )
-
   endif
 endif
+
 subdir('tests')
