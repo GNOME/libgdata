@@ -20,13 +20,9 @@ gdata_api_version_minor = 0
 
 # Define the install directories
 gdata_prefix = get_option('prefix')
-gdata_bindir = get_option('bindir')
 gdata_datadir = get_option('datadir')
-gdata_libdir = get_option('libdir')
 gdata_libexecdir = gdata_prefix / get_option('libexecdir')
 gdata_includedir = get_option('includedir')
-gdata_localedir = get_option('localedir')
-gdata_mandir = get_option('mandir')
 
 gdata_include_subdir = gdata_name / 'gdata'
 
@@ -64,7 +60,6 @@ config_h.set_quoted('GETTEXT_PACKAGE', 'intltest')
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
-python_prog = import('python').find_installation('python3')
 
 # Internationalisation support
 i18n = import('i18n')
