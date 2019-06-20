@@ -97,7 +97,7 @@ gir_headers += headers
 
 marshal = 'gdata-marshal'
 
-sources += gnome.genmarshal(
+marshal_files = gnome.genmarshal(
   marshal,
   sources: marshal + '.list',
   prefix: marshal.underscorify(),
@@ -135,7 +135,7 @@ ldflags = cc.get_supported_link_arguments('-Wl,--version-script,' + symbol_map)
 libgdata_lib = shared_library(
   'gdata',
   include_directories: incs,
-  sources: sources + enum_headers,
+  sources: sources + enum_headers + marshal_files,
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,

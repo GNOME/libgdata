@@ -76,9 +76,8 @@ gdata_deps = [
   dependency('gobject-2.0'),
   dependency('glib-2.0', version: '>= 2.44.0'),
   dependency('gio-2.0', version: '>= 2.44.0'),
-  dependency('gio-unix-2.0')
+  dependency('gio-unix-2.0'),
   dependency('json-glib-1.0', version: '>= 0.15'),
-  dependency('libsoup-2.4', version: '>= 2.42.0'),
   dependency('libxml-2.0'),
 ]
 
@@ -88,6 +87,8 @@ gdata_private_deps = [
   dependency('oauth', version: '>= 0.9.4'),
 ]
 
+libsoup_dep = dependency('libsoup-2.4', version: '>= 2.42.0')
+gdata_deps += [libsoup_dep]
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
 config_h.set10('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>= 2.55.90'))
