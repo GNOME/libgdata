@@ -102,13 +102,6 @@ gdata_private_deps = [
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
 config_h.set10('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>= 2.55.90'))
 
-# Optional dependencies
-gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
-config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found())
-if gdk_pixbuf_dep.found()
-  gdata_deps += gdk_pixbuf_dep
-endif
-
 # Check for gtk
 gtk_dep_req_version = '>= 2.91.2'
 enable_gtk = get_option('gtk')
@@ -140,9 +133,11 @@ endif
 always_build_tests = get_option('always_build_tests')
 install_tests = get_option('installed_tests')
 
-if always_build_tests or install_tests
+if always_build_tests
   libuhttpmock_dep = dependency('libuhttpmock-0.0', version: '>= 0.5.0')
-  gdata_deps += libuhttpmock_dep
+
+  gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
+  config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found())
 endif
 
 check_functions = [

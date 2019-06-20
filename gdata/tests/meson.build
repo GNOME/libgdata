@@ -6,6 +6,11 @@ tests_sources = files(
   'gdata-dummy-authorizer.c',
 )
 
+common_deps = [
+  libgdata_dep,
+  libuhttpmock_dep,
+]
+
 # The empty objects may be used in future for keeping custom
 # arguments for each test
 tests = {
@@ -14,6 +19,7 @@ tests = {
   'calendar': {},
   'contacts': {},
   'documents': {
+    'dependencies': [gdk_pixbuf_dep],
     'should_fail': true
   },
   'general': {},
@@ -21,6 +27,7 @@ tests = {
   'oauth2-authorizer': {},
   'perf': {},
   'picasaweb': {
+    'dependencies': [gdk_pixbuf_dep],
     'should_fail': true
   },
   'streams': {},
@@ -41,7 +48,7 @@ if always_build_tests
       test_name + '.c',
       c_args: '-DG_LOG_DOMAIN="@0@"'.format(gdata_name),
       include_directories: top_inc_dir,
-      dependencies: libgdata_dep,
+      dependencies: common_deps + extra_args.get('dependencies', []),
       sources: tests_sources,
       install: install_tests,
       install_dir: tests_execdir,
