@@ -35,69 +35,67 @@ tests = {
   'youtube': {},
 }
 
-if always_build_tests
-  test_env = environment()
-  test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
-  test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
+test_env = environment()
+test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
+test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
 
+foreach test_name, extra_args: tests
+  exe = executable(
+    test_name,
+    test_name + '.c',
+    c_args: '-DG_LOG_DOMAIN="@0@"'.format(gdata_name),
+    include_directories: top_inc_dir,
+    dependencies: common_deps + extra_args.get('dependencies', []),
+    sources: tests_sources,
+    install: install_tests,
+    install_dir: tests_execdir,
+  )
+
+  test(
+    test_name,
+    exe,
+    env: test_env,
+    should_fail: extra_args.get('should_fail', false),
+  )
+endforeach
+
+if install_tests
   foreach test_name, extra_args: tests
-    exe = executable(
-      test_name,
-      test_name + '.c',
-      c_args: '-DG_LOG_DOMAIN="@0@"'.format(gdata_name),
-      include_directories: top_inc_dir,
-      dependencies: common_deps + extra_args.get('dependencies', []),
-      sources: tests_sources,
-      install: install_tests,
-      install_dir: tests_execdir,
-    )
+    tests_conf = {
+      'TEST_TYPE': 'session',
+      'TEST_ABS_PATH': gdata_prefix / tests_execdir / test_name,
+    }
 
-    test(
-      test_name,
-      exe,
-      env: test_env,
-      should_fail: extra_args.get('should_fail', false),
+    configure_file (
+      input: 'template.test.in',
+      output: test_name + '.test',
+      configuration: tests_conf,
+      install: true,
+      install_dir: tests_metadir,
     )
   endforeach
 
-  if install_tests
-    foreach test_name, extra_args: tests
-      tests_conf = {
-        'TEST_TYPE': 'session',
-        'TEST_ABS_PATH': gdata_prefix / tests_execdir / test_name,
-      }
+  install_subdir(
+    'traces',
+    install_dir: tests_execdir,
+  )
 
-      configure_file (
-        input: 'template.test.in',
-        output: test_name + '.test',
-        configuration: tests_conf,
-        install: true,
-        install_dir: tests_metadir,
-      )
-    endforeach
+  test_data = [
+    'cert.pem',
+    'key.pem',
+    'photo.jpg',
+    'sample.ogg',
+    'test.doc',
+    'test.ods',
+    'test.odt',
+    'test.ppt',
+    'test_updated.odt',
+    'test_updated_file.ppt',
+    'test.xls',
+  ]
 
-    install_subdir(
-      'traces',
-      install_dir: tests_execdir,
-    )
-
-    test_data = [
-      'cert.pem',
-      'key.pem',
-      'photo.jpg',
-      'sample.ogg',
-      'test.doc',
-      'test.ods',
-      'test.odt',
-      'test.ppt',
-      'test_updated.odt',
-      'test_updated_file.ppt',
-      'test.xls',
-    ]
-
-    install_data(
-      test_data,
-      install_dir: tests_execdir,
-    )
-  endif
+  install_data(
+    test_data,
+    install_dir: tests_execdir,
+  )
 endif

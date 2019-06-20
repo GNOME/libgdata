@@ -196,4 +196,7 @@ if get_option('with_introspection')
   endif
 endif
 
-subdir('tests')
+
+if always_build_tests
+  subdir('tests')
+endif
