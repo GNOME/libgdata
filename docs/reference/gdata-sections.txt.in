@@ -1572,6 +1572,32 @@ GDataDocumentsEntryPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gdata-property</FILE>
+<TITLE>GDataProperty</TITLE>
+GDATA_PROPERTY_VISIBILITY_PUBLIC
+GDATA_PROPERTY_VISIBILITY_PRIVATE
+GDataProperty
+GDataPropertyClass
+gdata_property_new
+gdata_property_get_key
+gdata_property_get_etag
+gdata_property_get_value
+gdata_property_set_value
+gdata_property_get_visibility
+gdata_property_set_visibility
+<SUBSECTION Standard>
+gdata_property_get_type
+GDATA_PROPERTY
+GDATA_PROPERTY_CLASS
+GDATA_PROPERTY_GET_CLASS
+GDATA_IS_PROPERTY
+GDATA_IS_PROPERTY_CLASS
+GDATA_TYPE_PROPERTY
+<SUBSECTION Private>
+GDataPropertyPrivate
+</SECTION>
+
+<SECTION>
 <FILE>gdata-documents-feed</FILE>
 <TITLE>GDataDocumentsFeed</TITLE>
 GDataDocumentsFeed
@@ -1803,6 +1829,9 @@ gdata_documents_service_remove_entry_from_folder
 gdata_documents_service_remove_entry_from_folder_async
 gdata_documents_service_remove_entry_from_folder_finish
 gdata_documents_service_get_upload_uri
+gdata_documents_service_get_property
+gdata_documents_service_set_property
+gdata_documents_service_remove_property
 <SUBSECTION Standard>
 gdata_documents_service_get_type
 GDATA_DOCUMENTS_SERVICE
