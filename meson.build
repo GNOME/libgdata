@@ -47,14 +47,10 @@ top_inc_dir = include_directories('.')
 
 config_h = configuration_data()
 
-config_h.set_quoted('VERSION',
-  gdata_version,
-  description: 'Version number of package.')
+config_h.set_quoted('VERSION', gdata_version)
 
 # Globally define _GNU_SOURCE and therefore enable the GNU extensions
-config_h.set('_GNU_SOURCE',
-  true,
-  description: 'Enable GNU extensions on systems that have them.')
+config_h.set('_GNU_SOURCE', true)
 
 config_h.set_quoted('GETTEXT_PACKAGE', 'intltest')
 
@@ -104,13 +100,11 @@ gdata_private_deps = [
 
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
-config_h.set10('HAVE_LIBSOUP_2_55_90',
-  libsoup_dep.version().version_compare('>= 2.55.90'),
-  description: 'Define if the new SoupServer API is available')
+config_h.set10('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>= 2.55.90'))
 
 # Optional dependencies
 gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
-config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found(), description: 'Defined if gdk-pixbuf is installed')
+config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found())
 if gdk_pixbuf_dep.found()
   gdata_deps += gdk_pixbuf_dep
 endif
@@ -137,7 +131,7 @@ enable_goa = get_option('goa')
 if enable_gnome.enabled()
   gdata_private_deps += dependency('gcr-base-3')
   goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
-  config_h.set10('HAVE_GOA', goa_dep.found(), description: 'Define if GOA support is enabled.')
+  config_h.set10('HAVE_GOA', goa_dep.found())
   gdata_deps += goa_dep
 endif
 
