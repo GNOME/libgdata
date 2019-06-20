@@ -72,30 +72,20 @@ top_inc_dir = include_directories('.')
 cc = meson.get_compiler('c')
 
 # Requirements
-gobject_dep = dependency('gobject-2.0')
-glib_dep = dependency('glib-2.0', version: '>= 2.44.0')
-gio_dep = dependency('gio-2.0', version: '>= 2.44.0')
-gio_unix_dep = dependency('gio-unix-2.0')
-libxml_dep = dependency('libxml-2.0')
-libsoup_dep = dependency('libsoup-2.4', version: ['>= 2.42.0'])
-libjson_glib_dep = dependency('json-glib-1.0', version: '>= 0.15')
-liboauth_dep = dependency('oauth', version: '>= 0.9.4')
-libgthread_dep = dependency('gthread-2.0')
-
 gdata_deps = [
-  gobject_dep,
-  glib_dep,
-  gio_dep,
-  gio_unix_dep,
-  libxml_dep,
-  libsoup_dep,
-  libjson_glib_dep,
+  dependency('gobject-2.0'),
+  dependency('glib-2.0', version: '>= 2.44.0'),
+  dependency('gio-2.0', version: '>= 2.44.0'),
+  dependency('gio-unix-2.0')
+  dependency('json-glib-1.0', version: '>= 0.15'),
+  dependency('libsoup-2.4', version: '>= 2.42.0'),
+  dependency('libxml-2.0'),
 ]
 
 # Private dependencies for libgdata (specifically used for pkgconfig)
 gdata_private_deps = [
-  liboauth_dep,
-  libgthread_dep,
+  dependency('gthread-2.0'),
+  dependency('oauth', version: '>= 0.9.4'),
 ]
 
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
