@@ -69,7 +69,7 @@ sources += files(
   'gdata-upload-stream.c',
 )
 
-if enable_goa.enabled()
+if enable_goa
   headers += files('gdata-goa-authorizer.h')
   sources += files('gdata-goa-authorizer.c')
 endif
@@ -170,7 +170,7 @@ if get_option('with_introspection')
   gdata_gir_includes = ['GObject-2.0', 'libxml2-2.0', 'Soup-2.4', 'Json-1.0']
   gdata_vapi_deps = ['libxml-2.0', 'libsoup-2.4', 'json-glib-1.0']
 
-  if enable_goa.enabled()
+  if enable_goa
     gdata_gir_includes += ['Goa-1.0']
     gdata_vapi_deps += ['goa-1.0']
   endif

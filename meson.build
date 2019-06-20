@@ -117,13 +117,13 @@ enable_gnome = get_option('gnome')
 # Check for goa
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
 # Pulls in gdata/gdata-goa-authorizer.[ch]
-enable_goa = get_option('goa')
-if enable_gnome.enabled()
-  gdata_private_deps += dependency('gcr-base-3')
-  goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
-  config_h.set10('HAVE_GOA', goa_dep.found())
+goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
+enable_goa = goa_dep.found()
+if enable_goa
   gdata_deps += goa_dep
+  gdata_private_deps += dependency('gcr-base-3')
 endif
+config_h.set10('HAVE_GOA', goa_dep.found())
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
 # Install test programs (default: no)

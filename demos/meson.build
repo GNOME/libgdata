@@ -10,7 +10,7 @@ demos = [
   ['youtube', 'youtube-cli', {'sources': 'youtube/youtube-cli.c'}],
 ]
 
-if enable_goa.enabled()
+if enable_goa
   demos += [['docs-list', 'docs-list', {'sources': 'docs-list/docs-list.c'}]]
 endif
 
