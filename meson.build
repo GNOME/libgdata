@@ -21,7 +21,7 @@ gdata_api_version_minor = 0
 # Define the install directories
 gdata_prefix = get_option('prefix')
 gdata_datadir = get_option('datadir')
-gdata_libexecdir = gdata_prefix / get_option('libexecdir')
+gdata_libexecdir = get_option('libexecdir')
 gdata_includedir = get_option('includedir')
 
 gdata_include_subdir = gdata_name / 'gdata'

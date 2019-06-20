@@ -59,7 +59,7 @@ if always_build_tests
     foreach test_name, extra_args: tests
       tests_conf = {
         'TEST_TYPE': 'session',
-        'TEST_ABS_PATH': tests_execdir / test_name,
+        'TEST_ABS_PATH': gdata_prefix / tests_execdir / test_name,
       }
 
       configure_file (
