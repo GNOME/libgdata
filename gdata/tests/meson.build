@@ -41,8 +41,6 @@ if always_build_tests
   test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
 
   foreach test_name, extra_args: tests
-    should_fail = extra_args.get('should_fail', false)
-
     exe = executable(
       test_name,
       test_name + '.c',
@@ -58,7 +56,7 @@ if always_build_tests
       test_name,
       exe,
       env: test_env,
-      should_fail: should_fail,
+      should_fail: extra_args.get('should_fail', false),
     )
   endforeach
 
