@@ -104,15 +104,12 @@ config_h.set10('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>=
 
 # Check for gtk
 gtk_dep_req_version = '>= 2.91.2'
-enable_gtk = get_option('gtk')
-if enable_gtk.enabled()
-  gtk_dep = dependency(
-    'gtk+-3.0',
-    version: gtk_dep_req_version,
-    not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found',
-  )
-  gdata_deps += gtk_dep
-endif
+gtk_dep = dependency(
+  'gtk+-3.0',
+  version: gtk_dep_req_version,
+  required: get_option('gtk'),
+  not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found',
+)
 
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
 enable_gnome = get_option('gnome')

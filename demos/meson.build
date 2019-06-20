@@ -14,16 +14,17 @@ if enable_goa.enabled()
   demos += [['docs-list', 'docs-list', {'sources': 'docs-list/docs-list.c'}]]
 endif
 
-if enable_gtk.enabled()
-  demos += [['scrapbook', 'scrapbook', {'sources': 'scrapbook/scrapbook.c'}]]
+if gtk_dep.found()
+  demos += [['scrapbook', 'scrapbook', {'sources': 'scrapbook/scrapbook.c', 'dependencies': [gtk_dep]}]]
 endif
 
 foreach demo: demos
+  kwargs = demo[2] + {'dependencies': [libgdata_dep] + demo[2].get('dependencies', [])}
+
   executable(
     demo[1],
     c_args: demos_cargs,
-    dependencies: libgdata_dep,
     include_directories: top_inc_dir,
-    kwargs: demo[2],
+    kwargs: kwargs,
   )
 endforeach
