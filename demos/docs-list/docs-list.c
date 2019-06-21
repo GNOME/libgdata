@@ -99,15 +99,15 @@ main (void)
 			GDataEntry *entry = GDATA_ENTRY (l->data);
 			const gchar *title;
 			const gchar *property_key = "Foobar";
-			GDataProperty *property = NULL;
+			GDataDocumentsProperty *property = NULL;
 			gboolean success = FALSE;
 
 			title = gdata_entry_get_title (entry);
 			g_message ("%s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
 
-			property = gdata_property_new (property_key);
-			gdata_property_set_value (property, "Some temporary value");
-			gdata_property_set_visibility (property, TRUE);
+			property = gdata_documents_property_new (property_key);
+			gdata_documents_property_set_value (property, "Some temporary value");
+			gdata_documents_property_set_visibility (property, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
 
 			success = gdata_documents_service_set_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
 
@@ -121,16 +121,16 @@ main (void)
 
 			property = gdata_documents_service_get_property (service, GDATA_DOCUMENTS_ENTRY (entry), property_key, TRUE, NULL, NULL);
 			if (property != NULL) {
-				g_message ("key = %s, value = %s, public = %d",
-					   gdata_property_get_key (GDATA_PROPERTY (property)),
-					   gdata_property_get_value (GDATA_PROPERTY (property)),
-					   gdata_property_get_visibility (GDATA_PROPERTY (property))
+				g_message ("key = %s, value = %s, %s",
+					   gdata_documents_property_get_key (GDATA_DOCUMENTS_PROPERTY (property)),
+					   gdata_documents_property_get_value (GDATA_DOCUMENTS_PROPERTY (property)),
+					   gdata_documents_property_get_visibility (GDATA_DOCUMENTS_PROPERTY (property))
 				);
-				g_message ("etag = %s", gdata_property_get_etag (GDATA_PROPERTY (property)));
+				g_message ("etag = %s", gdata_documents_property_get_etag (GDATA_DOCUMENTS_PROPERTY (property)));
 
 			}
 
-			/* Now remove the added GDataProperty on the file object */
+			/* Now remove the added GDataDocumentsProperty on the file object */
 			success = gdata_documents_service_remove_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
 
 			if (!success) {

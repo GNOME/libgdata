@@ -258,7 +258,7 @@
 #include <libsoup/soup.h>
 #include <string.h>
 
-#include "gdata-property.h"
+#include "gdata-documents-property.h"
 #include "gdata-documents-service.h"
 #include "gdata-documents-utils.h"
 #include "gdata-batchable.h"
@@ -1624,30 +1624,30 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
  * @error: a #GError, or %NULL
  *
  * Looks up for a Property Resource on the file object specified by @entry. If the Property exists, it
- * initializes a new #GDataProperty and sets all the properties accordingly; otherwise returns %NULL.
+ * initializes a new #GDataDocumentsProperty and sets all the properties accordingly; otherwise returns %NULL.
  *
  * It can happen that a file object has two different properties with exact same values for
- * #GDataProperty:key and #GDataProperty:value. In that case, it's guaranteed that they will have different #GDataProperty:visibility.
+ * #GDataDocumentsProperty:key and #GDataDocumentsProperty:value. In that case, it's guaranteed that they will have different #GDataDocumentsProperty:visibility.
  *
  * Hence, @key along with @visibility uniquely identify a Property Resource.
  *
- * Return value: (transfer full) : a new #GDataProperty, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full) : a new #GDataDocumentsProperty, or %NULL; unref with g_object_unref()
  *
  * Since: 0.18.0
  */
-GDataProperty *
+GDataDocumentsProperty *
 gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, const gboolean visibility, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
 	SoupMessage *message;
 	GDataAuthorizationDomain *domain = NULL;
-	GDataProperty *property = NULL;
+	GDataDocumentsProperty *property = NULL;
 	const gchar *id;
 
 	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (entry == NULL || GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
-	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), NULL);
+	g_return_val_if_fail (property == NULL || GDATA_IS_DOCUMENTS_PROPERTY (property), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 	g_return_val_if_fail (key != NULL && *key != '\0', NULL);
 
@@ -1655,7 +1655,7 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
 	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX,
 			   id, "/properties/",
 			   key, "?visibility=",
-			   (visibility) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
+			   (visibility) ? GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC : GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE,
 			   NULL);
 
 	domain = gdata_documents_service_get_primary_authorization_domain ();
@@ -1690,14 +1690,8 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
 
 	/* Parse the JSON; and update the entry */
 	g_assert (message->response_body->data != NULL);
-	property = GDATA_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_PROPERTY, message->response_body->data, message->response_body->length,
+	property = GDATA_DOCUMENTS_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_DOCUMENTS_PROPERTY, message->response_body->data, message->response_body->length,
 								 error));
-
-	g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
-		 gdata_property_get_key (GDATA_PROPERTY (property)),
-		 gdata_property_get_value (GDATA_PROPERTY (property)),
-		 gdata_property_get_visibility (GDATA_PROPERTY (property)),
-		 gdata_property_get_etag (GDATA_PROPERTY (property)));
 
 	g_object_unref (message);
 	return property;
@@ -1707,20 +1701,20 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
  * gdata_documents_service_set_property:
  * @self: a #GDataDocumentsService
  * @entry: a #GDataDocumentsEntry on which a Property Resource needs to created/updated
- * @property: a #GDataProperty which will be created/updated on the file object identified by @entry
+ * @property: a #GDataDocumentsProperty which will be created/updated on the file object identified by @entry
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Inserts a new Property Resource on a file object identified by @entry's id.
  *
- * Since, a Property Resource is uniquely identified by #GDataProperty:key and #GDataProperty:visibility, if such a Property Resource already exists, then this function updates that Property.
+ * Since, a Property Resource is uniquely identified by #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility, if such a Property Resource already exists, then this function updates that Property.
  *
  * Return value: %TRUE if the a Property Resource (@property) has been created/updated successfully on the file object, %FALSE otherwise.
  *
  * Since: 0.18.0
  */
 gboolean
-gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error)
+gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsProperty *property, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
@@ -1728,10 +1722,10 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 	GDataAuthorizationDomain *domain = NULL;
 	const gchar *id;
 	gchar *upload_data;
-	GDataProperty *ret_property;
+	GDataDocumentsProperty *ret_property;
 
 	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), FALSE);
-	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), FALSE);
+	g_return_val_if_fail (property == NULL || GDATA_IS_DOCUMENTS_PROPERTY (property), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	id = gdata_entry_get_id (GDATA_ENTRY (entry));
@@ -1772,15 +1766,12 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 
 	/* Parse the JSON; and update the entry */
 	g_assert (message->response_body->data != NULL);
-	ret_property = GDATA_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_PROPERTY, message->response_body->data, message->response_body->length,
-								     error));
+	ret_property = GDATA_DOCUMENTS_PROPERTY (gdata_parsable_new_from_json (GDATA_TYPE_DOCUMENTS_PROPERTY,
+									       message->response_body->data,
+									       message->response_body->length,
+									       error));
 
 	if (ret_property != NULL) {
-		g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
-			 gdata_property_get_key (GDATA_PROPERTY (ret_property)),
-			 gdata_property_get_value (GDATA_PROPERTY (ret_property)),
-			 gdata_property_get_visibility (GDATA_PROPERTY (ret_property)),
-			 gdata_property_get_etag (GDATA_PROPERTY (ret_property)));
 		g_object_unref (ret_property);
 	}
 
@@ -1792,21 +1783,21 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
  * gdata_documents_service_remove_property:
  * @self: a #GDataDocumentsService
  * @entry: a #GDataDocumentsEntry from which a Property Resource needs to removed
- * @property: a #GDataProperty which will be removed from the file object identified by @entry
+ * @property: a #GDataDocumentsProperty which will be removed from the file object identified by @entry
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: a #GError, or %NULL
  *
  * Removed a Property Resource specified by @property on a file object identified by @entry's id.
  *
- * @property 's #GDataProperty:key and #GDataProperty:visibility will only be needed since they uniquely
- * identify a Property Resource. The #GDataProperty:value set on @property is not used at all.
+ * @property 's #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility will only be needed since they uniquely
+ * identify a Property Resource. The #GDataDocumentsProperty:value set on @property is not used at all.
  *
  * Return value: %TRUE if the a Property Resource (@property) has been successfully removed from the file object, %FALSE otherwise.
  *
  * Since: 0.18.0
  */
 gboolean
-gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataProperty *property, GCancellable *cancellable, GError **error)
+gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsProperty *property, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
@@ -1815,13 +1806,13 @@ gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocum
 	const gchar *id;
 
 	g_return_val_if_fail (self == NULL || GDATA_IS_DOCUMENTS_SERVICE (self), FALSE);
-	g_return_val_if_fail (property == NULL || GDATA_IS_PROPERTY (property), FALSE);
+	g_return_val_if_fail (property == NULL || GDATA_IS_DOCUMENTS_PROPERTY (property), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	id = gdata_entry_get_id (GDATA_ENTRY (entry));
 	uri = g_strconcat (GDATA_DOCUMENTS_URI_PREFIX, id, "/properties/",
-			   gdata_property_get_key (property), "?visibility=",
-			   gdata_property_get_visibility (property) ? GDATA_PROPERTY_VISIBILITY_PUBLIC : GDATA_PROPERTY_VISIBILITY_PRIVATE,
+			   gdata_documents_property_get_key (property), "?visibility=",
+			   gdata_documents_property_get_visibility (property) ? GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC : GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE,
 			   NULL);
 	domain = gdata_documents_service_get_primary_authorization_domain ();
 
@@ -1854,12 +1845,8 @@ gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocum
 		return FALSE;
 	}
 
-	g_debug ("key = %s, value = %s, public = %d\netag = %s\n\n",
-		 gdata_property_get_key (GDATA_PROPERTY (property)),
-		 gdata_property_get_value (GDATA_PROPERTY (property)),
-		 gdata_property_get_visibility (GDATA_PROPERTY (property)),
-		 gdata_property_get_etag (GDATA_PROPERTY (property)));
-
 	g_object_unref (message);
 	return TRUE;
 }
+
+

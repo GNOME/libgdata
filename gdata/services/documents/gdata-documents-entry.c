@@ -133,6 +133,7 @@ struct _GDataDocumentsEntryPrivate {
 	GDataAuthor *last_modified_by;
 	goffset quota_used; /* bytes */
 	goffset file_size; /* bytes */
+	GList *properties; /* GDataDocumentsProperty */
 };
 
 enum {
@@ -309,6 +310,19 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                     "File size", "The size of the document.",
 	                                                     0, G_MAXINT64, 0,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:documents-properties:
+	 *
+	 * TODO: Fill this here
+	 *
+	 * Since: 0.18.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_FILE_SIZE,
+	                                 g_param_spec_int64 ("file-size",
+	                                                     "File size", "The size of the document.",
+	                                                     0, G_MAXINT64, 0,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static gboolean
@@ -384,6 +398,9 @@ gdata_entry_dispose (GObject *object)
 		g_object_unref (priv->last_modified_by);
 	priv->last_modified_by = NULL;
 
+	g_list_free_full (priv->properties, g_object_unref);
+	priv->properties = NULL;
+
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->dispose (object);
 }
@@ -456,6 +473,75 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
 	}
+}
+
+static void get_key_value_and_visibility (JsonReader *reader, gchar **out_key, gchar **out_value, gchar **out_visibility, GError **error)
+{
+	GError *child_error = NULL;
+	gchar *key = NULL;
+	gchar *value = NULL;
+	gchar *visibility = NULL;
+	gboolean success = FALSE;
+	guint i, members;
+
+	for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+		json_reader_read_element (reader, i);
+
+		if (gdata_parser_string_from_json_member (reader, "key", P_REQUIRED | P_NON_EMPTY, &key, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+							    /* Translators: the parameter is an error message */
+							    _("Error parsing JSON: %s"),
+							    "Failed to find ‘key’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		if (gdata_parser_string_from_json_member (reader, "visibility", P_REQUIRED | P_NON_EMPTY, &visibility, &success, &child_error) == TRUE) {
+			// TODO: Test if this is always present in the response body
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+							    /* Translators: the parameter is an error message */
+							    _("Error parsing JSON: %s"),
+							    "Failed to find ‘visibility’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+
+		/* A Property can have a value field to be an empty string */
+		if (gdata_parser_string_from_json_member (reader, "value", P_DEFAULT, &value, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, child_error,
+							    /* Translators: the parameter is an error message */
+							    _("Error parsing JSON: %s"),
+							    "Failed to find ‘value’.");
+				json_reader_end_element (reader);
+				goto out;
+			}
+		}
+	}
+
+	if (out_key != NULL) {
+		*out_key = key;
+		key = NULL;
+	}
+
+	if (out_visibility != NULL) {
+		*out_visibility = visibility;
+		visibility = NULL;
+	}
+
+	if (out_value != NULL) {
+		*out_value = value;
+		value = NULL;
+	}
+
+ out:
+	g_free (key);
+	g_free (value);
+	g_free (visibility);
 }
 
 static void
@@ -804,6 +890,64 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			g_free (kind);
 			g_free (uri);
 			json_reader_end_element (reader);
+		}
+
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "properties") == 0) {
+		guint i, elements;
+
+		if (json_reader_is_array (reader) == FALSE) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘properties’ is not an array.");
+			return FALSE;
+		}
+
+		/* Loop through the properties array. */
+		for (i = 0, elements = (guint) json_reader_count_elements (reader); success && i < elements; i++) {
+			GDataDocumentsProperty *property = NULL;
+			gchar *key = NULL;
+			gchar *value = NULL;
+			gchar *visibility = NULL;
+
+			json_reader_read_element (reader, i);
+
+			if (json_reader_is_object (reader) == FALSE) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+					     /* Translators: the parameter is an error message */
+					     _("Error parsing JSON: %s"),
+					     "JSON node inside ‘properties’ is not an object.");
+				success = FALSE;
+				// TODO: Do we need a jump to branch here?
+				/*goto continue_parents;*/
+			}
+
+			get_key_value_and_visibility (reader, &key, &value, &visibility, &child_error);
+
+			if (child_error != NULL) {
+				g_propagate_error (error, child_error);
+				success = FALSE;
+				// TODO: Do we need a jump to branch here?
+				/*goto continue_parents;*/
+			}
+
+			// TODO: Decide the error strings below
+			if (!(g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC) &&
+			      g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE))) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+					     /* Translators: the parameter is an error message */
+					     _("Invalid : %s"),
+					     "JSON node inside ‘properties’ is not an object.");
+				success = FALSE;
+				// TODO: Do we need a jump to branch here?
+				/*goto continue_parents;*/
+			}
+
+			property = gdata_documents_property_new (key);
+
+			gdata_documents_property_set_visibility (property, visibility);
+			gdata_documents_property_set_value (property, value);
 		}
 
 		return success;
@@ -1156,3 +1300,42 @@ gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
 	return self->priv->is_deleted;
 }
+
+
+/**
+ * gdata_documents_entry_get_document_properties:
+ * @self: a #GDataEntry
+ *
+ * Gets a list of the #GDataDocumentsProperty<!-- -->s containing this entry.
+ *
+ * TODO: What's the element type below?
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataDocumentsProperty<!-- -->s
+ *
+ * Since: 0.18.0
+ */
+GList *
+gdata_entry_get_document_properties (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+	return self->priv->properties;
+}
+
+//TODO: Add documentation
+void
+gdata_documents_entry_add_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
+	/* TODO: More link API */
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
+	g_return_if_fail (GDATA_IS_DOCUMENTS_PROPERTY (property));
+
+	if (g_list_find_custom (self->priv->properties, property, (GCompareFunc) gdata_comparable_compare) == NULL)
+		self->priv->links = g_list_prepend (self->priv->links, g_object_ref (_link));
+}
+
+//TODO: Add documentation
+gboolean
+gdata_documents_entry_remove_property (GDataDocumentsEntry *entry, GDataDocumentsProperty *property) {
+	
+}
+
+
+
