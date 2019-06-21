@@ -26,6 +26,7 @@
 #include <gdata/gdata-entry.h>
 #include <gdata/gdata-service.h>
 #include <gdata/atom/gdata-author.h>
+#include <gdata/services/documents/gdata-documents-property.h>
 
 G_BEGIN_DECLS
 
@@ -118,6 +119,9 @@ goffset gdata_documents_entry_get_quota_used (GDataDocumentsEntry *self) G_GNUC_
 goffset gdata_documents_entry_get_file_size (GDataDocumentsEntry *self) G_GNUC_PURE;
 
 gboolean gdata_documents_entry_is_deleted (GDataDocumentsEntry *self) G_GNUC_PURE;
+
+void gdata_documents_entry_add_property (GDataDocumentsEntry *entry, GDataDocumentsProperty *property);
+gboolean gdata_documents_entry_remove_property (GDataDocumentsEntry *entry, GDataDocumentsProperty *property);
 
 G_END_DECLS
 
