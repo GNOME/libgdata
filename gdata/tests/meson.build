@@ -20,7 +20,7 @@ tests = {
   'contacts': {},
   'documents': {
     'dependencies': [gdk_pixbuf_dep],
-    'should_fail': true
+    'should_fail': true,
   },
   'general': {},
   'oauth1-authorizer': {},
