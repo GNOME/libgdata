@@ -110,7 +110,9 @@ enums_in = gnome.mkenums_simple(
   sources: headers,
 )
 
-# workaround to fix namespace
+# FIXME: Work around the namespace being incorrectly detected
+# by glib-mkenums. This needs to be fixed by changing the
+# namespace in libgdata. See !6.
 sources += custom_target(
   enums + '.c',
   input: enums_in[0],
@@ -166,7 +168,7 @@ pkgconfig.generate(
   ],
 )
 
-if get_option('with_introspection')
+if get_option('introspection')
   gdata_gir_includes = ['GObject-2.0', 'libxml2-2.0', 'Soup-2.4', 'Json-1.0']
   gdata_vapi_deps = ['libxml-2.0', 'libsoup-2.4', 'json-glib-1.0']
 
@@ -187,7 +189,7 @@ if get_option('with_introspection')
     export_packages: gdata_name,
   )
 
-  if get_option('with_vapi')
+  if get_option('vapi')
     libgdata_vapi = gnome.generate_vapi(gdata_name,
       sources: libgdata_gir[0],
       packages: gdata_vapi_deps,

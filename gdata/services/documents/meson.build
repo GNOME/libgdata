@@ -46,7 +46,9 @@ sources += files(
 
 enums = 'gdata-documents-enums'
 
-# workaround to fix namespace
+# FIXME: Work around the namespace being incorrectly detected
+# by glib-mkenums. This needs to be fixed by changing the
+# namespace in libgdata. See !6.
 enums_in = gnome.mkenums_simple(
   enums + '-in',
   sources: headers,
