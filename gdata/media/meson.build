@@ -31,7 +31,9 @@ enums_in = gnome.mkenums_simple(
   sources: headers,
 )
 
-# workaround to fix namespace
+# FIXME: Work around the namespace being incorrectly detected
+# by glib-mkenums. This needs to be fixed by changing the
+# namespace in libgdata. See !6.
 sources += custom_target(
   enums + '.c',
   input: enums_in[0],

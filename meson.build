@@ -62,7 +62,9 @@ i18n = import('i18n')
 
 build_root = meson.current_build_dir()
 
-# workaround to fix namespace
+# FIXME: Work around the namespace being incorrectly detected
+# by glib-mkenums. This needs to be fixed by changing the
+# namespace in libgdata. See !6.
 sed = find_program('sed')
 enum_source_cmd = [sed, '-e', 's/-in//', '-e', 's/g_data/gdata/', build_root / '@INPUT@']
 enum_header_cmd = [sed, '-e', 's/g_data/gdata/', '-e', 's/G_TYPE_DATA/GDATA_TYPE/', build_root / '@INPUT@']
@@ -88,7 +90,7 @@ gdata_private_deps = [
 ]
 
 libsoup_dep = dependency('libsoup-2.4', version: '>= 2.42.0')
-gdata_deps += [libsoup_dep]
+gdata_deps += libsoup_dep
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
 config_h.set10('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>= 2.55.90'))
@@ -147,17 +149,13 @@ endforeach
 
 check_headers = [
   'arpa/inet.h',
-  'dlfcn.h',
-  'inttypes.h',
   'locale.h',
   'memory.h',
   'netinet/in.h',
-  'stdint.h',
   'stdlib.h',
   'string.h',
   'strings.h',
   'sys/socket.h',
-  'sys/stat.h',
   'sys/time.h',
   'sys/types.h',
   'unistd.h',

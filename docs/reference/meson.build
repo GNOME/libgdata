@@ -33,12 +33,21 @@ ignore_files = [
   'gdata-youtube-enums-in.h',
 ]
 
+# FIXME: Currently, when you disable GOA support and try to build gtk-doc
+# documentation, gtkdoc-mkhtml errors out because it tries to find those GOA
+# symbols. To fix that, the particular sections in gdata-docs.xml and
+# gdata-sections.txt have to be conditionally commented. It's not a major bug
+# since at the only time generating documentation makes sense is at a release,
+# and GOA needs toe be enabled.
+if not enable_goa
+  ignore_files += ['gdata-goa-authorizer.c', 'gdata-goa-authorizer.h']
+endif
+
 scan_args = [
   '--rebuild-types',
   '--deprecated-guards=LIBGDATA_DISABLE_DEPRECATED',
 ]
 
-# Extra SGML files
 content_files = [
   'gdata-overview.xml',
   'gdata-running.xml',

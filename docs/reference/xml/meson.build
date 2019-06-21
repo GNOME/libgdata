@@ -1,10 +1,10 @@
 ent_conf = {
   'PACKAGE': gdata_name,
-  'PACKAGE_BUGREPORT': 'https://bugzilla.gnome.org/enter_bug.cgi?product=' + gdata_name,
+  'PACKAGE_BUGREPORT': 'https://gitlab.gnome.org/GNOME/libgdata/issues',
   'PACKAGE_NAME': gdata_name,
   'PACKAGE_STRING': '@0@ @1@'.format(gdata_name, gdata_version),
   'PACKAGE_TARNAME': gdata_name,
-  'PACKAGE_URL': 'https://wiki.gnome.org/Projects/' + gdata_name,
+  'PACKAGE_URL': 'https://wiki.gnome.org/Projects/libgdata',
   'PACKAGE_VERSION': gdata_version,
 }
 
