@@ -142,7 +142,7 @@ libgdata_lib = shared_library(
   link_args: ldflags,
   link_depends: symbol_map,
   install: true,
-  soversion: gdata_soversion,
+  version: gdata_soversion,
   gnu_symbol_visibility: 'default',
 )
 
