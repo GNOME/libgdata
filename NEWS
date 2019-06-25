@@ -1,3 +1,33 @@
+Overview of changes from libgdata 0.17.9 to libgdata 0.17.10
+============================================================
+
+* Port to Meson and drop autotools support (#27)
+
+* Migrate from intltool to gettext (bug #787252)
+
+* Bugs fixed:
+ - #26 Support deleting shared Google Drive files
+ - #27 Port to Meson
+ - !1 Remove use of foreach with wrong function prototype and use g_list_free_full
+ - !3 core: Move the header guards before including other headers
+ - !4 tasks: Turn 'position' and 'parent' into writable properties
+ - Bug 787252 — [Patch] Migrate from intltool to gettext
+
+* Translation updates:
+ - Catalan
+ - Chinese (Taiwan)
+ - Croatian
+ - Danish
+ - Dutch
+ - English (United Kingdom)
+ - Esperanto
+ - French
+ - Indonesian
+ - Nepali
+ - Romanian
+ - Turkish
+
+
 Overview of changes from libgdata 0.17.8 to libgdata 0.17.9
 ===========================================================
 
