@@ -2356,25 +2356,25 @@ gdata_oauth1_authorizer_get_type
 GDataOAuth1AuthorizerPrivate
 </SECTION>
 
-<SECTION>
-<FILE>gdata-goa-authorizer</FILE>
-<TITLE>GDataGoaAuthorizer</TITLE>
-GDataGoaAuthorizer
-GDataGoaAuthorizerClass
-gdata_goa_authorizer_new
-gdata_goa_authorizer_get_goa_object
-<SUBSECTION Standard>
-GDATA_TYPE_GOA_AUTHORIZER
-GDATA_GOA_AUTHORIZER
-GDATA_GOA_AUTHORIZER_CLASS
-GDATA_IS_GOA_AUTHORIZER
-GDATA_IS_GOA_AUTHORIZER_CLASS
-GDATA_GOA_AUTHORIZER_GET_CLASS
-gdata_goa_authorizer_get_type
-<SUBSECTION Private>
-GDataGoaAuthorizerPrivate
-GOA_API_IS_SUBJECT_TO_CHANGE
-</SECTION>
+@COMMENT@<SECTION>
+@COMMENT@<FILE>gdata-goa-authorizer</FILE>
+@COMMENT@<TITLE>GDataGoaAuthorizer</TITLE>
+@COMMENT@GDataGoaAuthorizer
+@COMMENT@GDataGoaAuthorizerClass
+@COMMENT@gdata_goa_authorizer_new
+@COMMENT@gdata_goa_authorizer_get_goa_object
+@COMMENT@<SUBSECTION Standard>
+@COMMENT@GDATA_TYPE_GOA_AUTHORIZER
+@COMMENT@GDATA_GOA_AUTHORIZER
+@COMMENT@GDATA_GOA_AUTHORIZER_CLASS
+@COMMENT@GDATA_IS_GOA_AUTHORIZER
+@COMMENT@GDATA_IS_GOA_AUTHORIZER_CLASS
+@COMMENT@GDATA_GOA_AUTHORIZER_GET_CLASS
+@COMMENT@gdata_goa_authorizer_get_type
+@COMMENT@<SUBSECTION Private>
+@COMMENT@GDataGoaAuthorizerPrivate
+@COMMENT@GOA_API_IS_SUBJECT_TO_CHANGE
+@COMMENT@</SECTION>
 
 <SECTION>
 <FILE>gdata-commentable</FILE>
