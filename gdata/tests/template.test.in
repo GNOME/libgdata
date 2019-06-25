@@ -1,0 +1,4 @@
+[Test]
+Type=@TEST_TYPE@
+Exec=@TEST_ABS_PATH@ --tap
+Output=TAP

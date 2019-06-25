@@ -1,0 +1,45 @@
+option('gtk',
+  type: 'feature',
+  value: 'auto',
+  description: 'enable gtk+-3.0 support')
+
+option('gnome',
+  type: 'feature',
+  value: 'enabled',
+  description: 'enable GNOME support')
+
+option('goa',
+  type: 'feature',
+  value: 'enabled',
+  description: 'enable Gnome Online Accounts (goa) support')
+
+# Enable always building tests (default: yes)
+option('always_build_tests',
+  type: 'boolean',
+  value: true,
+  description: 'Enable always building tests (default: true)')
+
+option('installed_tests',
+  type: 'boolean',
+  value: true,
+  description: 'Install test programs (default: false)')
+
+option('man',
+  type: 'boolean',
+  value: false,
+  description: 'generate man pages')
+
+option('gtk_doc',
+  type: 'boolean',
+  value: true,
+  description: 'use gtk-doc to build documentation (default: false)')
+
+option('introspection',
+  type: 'boolean',
+  value: true,
+  description: 'Enable creation of GObject Introspection files')
+
+option('vapi',
+  type: 'boolean',
+  value: true,
+  description: 'Enable creation of vapi files')
