@@ -2,14 +2,13 @@ subdir('xml')
 
 doc_module = 'gdata'
 
-ignore_files = [
+ignore_headers = [
   'common.h',
   'gdata-batch-feed.h',
   'gdata-batch-private.h',
   'gdata-buffer.h',
   'gdata-documents-enums.h',
   'gdata-documents-utils.h',
-  'gdata-dummy-authorizer.c',
   'gdata-dummy-authorizer.h',
   'gdata-enums.h',
   'gdata-exif-tags.h',
@@ -33,14 +32,11 @@ ignore_files = [
   'gdata-youtube-enums-in.h',
 ]
 
-# FIXME: Currently, when you disable GOA support and try to build gtk-doc
-# documentation, gtkdoc-mkhtml errors out because it tries to find those GOA
-# symbols. To fix that, the particular sections in gdata-docs.xml and
-# gdata-sections.txt have to be conditionally commented. It's not a major bug
-# since at the only time generating documentation makes sense is at a release,
-# and GOA needs toe be enabled.
+ignore_files = []
+
 if not enable_goa
-  ignore_files += ['gdata-goa-authorizer.c', 'gdata-goa-authorizer.h']
+  ignore_headers += ['gdata-goa-authorizer.h']
+  ignore_files += ['gdata-goa-authorizer.c']
 endif
 
 scan_args = [
@@ -60,14 +56,21 @@ html_assets = [
   'cancellation.png',
 ]
 
+content_files += configure_file(
+  input: 'gdata-sections.txt.in',
+  output: '@BASENAME@',
+  configuration: {'COMMENT': (enable_goa) ? '': '#'},
+)
+
 gnome.gtkdoc(
   doc_module,
   main_xml: doc_module + '-docs.xml',
   src_dir: gdata_inc_dir,
-  ignore_headers: ignore_files,
+  ignore_headers: ignore_headers,
   dependencies: libgdata_dep,
   namespace: doc_module,
   scan_args: scan_args,
+  mkdb_args: '--ignore-files=' + ' '.join(ignore_files),
   fixxref_args: '--html-dir=' + (gdata_prefix / gnome.gtkdoc_html_dir(gdata_name)),
   content_files: content_files,
   html_assets: html_assets,
