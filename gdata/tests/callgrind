@@ -1,3 +1,0 @@
-#!/bin/sh
-
-libtool --mode=execute "valgrind --tool=callgrind --callgrind-out-file=callgrind.`date +%s` " ./general
