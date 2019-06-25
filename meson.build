@@ -52,7 +52,7 @@ config_h.set_quoted('VERSION', gdata_version)
 # Globally define _GNU_SOURCE and therefore enable the GNU extensions
 config_h.set('_GNU_SOURCE', true)
 
-config_h.set_quoted('GETTEXT_PACKAGE', 'intltest')
+config_h.set_quoted('GETTEXT_PACKAGE', 'gdata')
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
