@@ -105,7 +105,12 @@ gtk_dep = dependency(
 )
 
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
-enable_gnome = get_option('gnome')
+gcr_dep = dependency('gcr-base-3', required: get_option('gnome'))
+enable_gnome = gcr_dep.found()
+if enable_gnome
+  gdata_private_deps += dependency('gcr-base-3')
+endif
+config_h.set('HAVE_GNOME', gcr_dep.found())
 
 # Check for goa
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
@@ -114,7 +119,6 @@ goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
 enable_goa = goa_dep.found()
 if enable_goa
   gdata_deps += goa_dep
-  gdata_private_deps += dependency('gcr-base-3')
 endif
 config_h.set('HAVE_GOA', goa_dep.found())
 
