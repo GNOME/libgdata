@@ -52,7 +52,7 @@ config_h.set_quoted('VERSION', gdata_version)
 # Globally define _GNU_SOURCE and therefore enable the GNU extensions
 config_h.set('_GNU_SOURCE', true)
 
-config_h.set_quoted('GETTEXT_PACKAGE', 'intltest')
+config_h.set_quoted('GETTEXT_PACKAGE', 'gdata')
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
@@ -93,7 +93,7 @@ libsoup_dep = dependency('libsoup-2.4', version: '>= 2.42.0')
 gdata_deps += libsoup_dep
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in
 # soup_server_set_ssl_cert_file() which was only fixed in 2.55.90.
-config_h.set10('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>= 2.55.90'))
+config_h.set('HAVE_LIBSOUP_2_55_90', libsoup_dep.version().version_compare('>= 2.55.90'))
 
 # Check for gtk
 gtk_dep_req_version = '>= 2.91.2'
@@ -105,7 +105,12 @@ gtk_dep = dependency(
 )
 
 # GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
-enable_gnome = get_option('gnome')
+gcr_dep = dependency('gcr-base-3', required: get_option('gnome'))
+enable_gnome = gcr_dep.found()
+if enable_gnome
+  gdata_private_deps += dependency('gcr-base-3')
+endif
+config_h.set('HAVE_GNOME', gcr_dep.found())
 
 # Check for goa
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
@@ -114,9 +119,8 @@ goa_dep = dependency('goa-1.0', version: '>= 3.8', required: get_option('goa'))
 enable_goa = goa_dep.found()
 if enable_goa
   gdata_deps += goa_dep
-  gdata_private_deps += dependency('gcr-base-3')
 endif
-config_h.set10('HAVE_GOA', goa_dep.found())
+config_h.set('HAVE_GOA', goa_dep.found())
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
 # Install test programs (default: no)
@@ -127,7 +131,7 @@ if always_build_tests
   libuhttpmock_dep = dependency('libuhttpmock-0.0', version: '>= 0.5.0')
 
   gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.14')
-  config_h.set10('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found())
+  config_h.set('HAVE_GDK_PIXBUF', gdk_pixbuf_dep.found())
 endif
 
 check_functions = [
@@ -143,7 +147,7 @@ check_functions += [
 ]
 
 foreach func: check_functions
-  config_h.set10('HAVE_' + func.to_upper(), cc.has_function(func))
+  config_h.set('HAVE_' + func.to_upper(), cc.has_function(func))
 endforeach
 
 check_headers = [
