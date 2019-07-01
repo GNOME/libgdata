@@ -30,6 +30,11 @@
 #include <gdata/gdata.h>
 #include <goa/goa.h>
 
+/* TODO: Change the below functions to static */
+void add_dummy_properties (GDataDocumentsEntry *entry);
+void remove_dummy_properties (GDataDocumentsEntry *entry);
+void print_documents_property (GDataDocumentsProperty *property);
+
 gint
 main (void)
 {
@@ -95,51 +100,36 @@ main (void)
 			goto out;
 		}
 
-		for (l = entries; l != NULL; l = l->next) {
-			GDataEntry *entry = GDATA_ENTRY (l->data);
+		g_message ("Setting Dummy Properties on all the files!");
+                for (l = entries; l != NULL; l = l->next) {
 			const gchar *title;
-			const gchar *property_key = "Foobar";
-			GDataDocumentsProperty *property = NULL;
-			gboolean success = FALSE;
+			GDataEntry *entry = GDATA_ENTRY (l->data);
+			GDataEntry *new_entry = NULL;
+			GList *properties = NULL;
+			/* GList *properties *p = NULL; */
+
+			/* add_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry)); */
 
 			title = gdata_entry_get_title (entry);
-			g_message ("%s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
+			g_message ("File = %s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
 
-			property = gdata_documents_property_new (property_key);
-			gdata_documents_property_set_value (property, "Some temporary value");
-			gdata_documents_property_set_visibility (property, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
+			new_entry = gdata_service_update_entry (GDATA_SERVICE (service),
+								gdata_documents_service_get_primary_authorization_domain(),
+								entry,
+								NULL,
+			                                        NULL);
 
-			success = gdata_documents_service_set_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
+			properties = gdata_documents_entry_get_properties (GDATA_DOCUMENTS_ENTRY (new_entry));
 
-			if (!success) {
-				g_warning ("Setting property failed!");
-			} else {
-				g_message ("Successfully set the property %s", property_key);
-			}
+/*                         for (p = properties; p != NULL; p = p->next) {
+ *                                 print_documents_property (GDATA_DOCUMENTS_PROPERTY (p->data));
+ *                         }
+ *  */
+			g_list_free_full (properties, g_object_unref);
+			g_object_unref (new_entry);
+                }
 
-			g_object_unref (property);
-
-			property = gdata_documents_service_get_property (service, GDATA_DOCUMENTS_ENTRY (entry), property_key, TRUE, NULL, NULL);
-			if (property != NULL) {
-				g_message ("key = %s, value = %s, %s",
-					   gdata_documents_property_get_key (GDATA_DOCUMENTS_PROPERTY (property)),
-					   gdata_documents_property_get_value (GDATA_DOCUMENTS_PROPERTY (property)),
-					   gdata_documents_property_get_visibility (GDATA_DOCUMENTS_PROPERTY (property))
-				);
-				g_message ("etag = %s", gdata_documents_property_get_etag (GDATA_DOCUMENTS_PROPERTY (property)));
-
-			}
-
-			/* Now remove the added GDataDocumentsProperty on the file object */
-			success = gdata_documents_service_remove_property (service, GDATA_DOCUMENTS_ENTRY (entry), property, NULL, NULL);
-
-			if (!success) {
-				g_warning ("Removing property failed!");
-			} else {
-				g_message ("Successfully removed the property %s!", property_key);
-			}
-		}
-
+		g_message ("Now Removing all the Dummy Properties!");
 		gdata_query_next_page (GDATA_QUERY (query));
 		g_object_unref (feed);
 	}
@@ -154,4 +144,87 @@ out:
 	g_list_free_full (accounts, g_object_unref);
 
 	return retval;
+}
+
+void
+print_documents_property (GDataDocumentsProperty *property) {
+	g_return_if_fail (GDATA_IS_DOCUMENTS_PROPERTY (property));
+
+	if (property != NULL) {
+		g_message ("key = %s, value = %s, %s",
+			   gdata_documents_property_get_key (GDATA_DOCUMENTS_PROPERTY (property)),
+			   gdata_documents_property_get_value (GDATA_DOCUMENTS_PROPERTY (property)),
+			   gdata_documents_property_get_visibility (GDATA_DOCUMENTS_PROPERTY (property))
+		);
+	}
+}
+
+void
+add_dummy_properties (GDataDocumentsEntry *entry) {
+	GDataDocumentsProperty *p1, *p2, *p3, *p4;
+
+	p1 = gdata_documents_property_new ("1");
+	if (p1 != NULL) {
+		gdata_documents_property_set_visibility (p1, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
+		gdata_documents_property_set_value (p1, "ONE");
+		gdata_documents_entry_add_property (entry, p1);
+	};
+
+	p2 = gdata_documents_property_new ("2");
+	if (p2 != NULL) {
+		gdata_documents_property_set_visibility (p2, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
+		gdata_documents_property_set_value (p2, "TWO");
+		gdata_documents_entry_add_property (entry, p2);
+	};
+
+	p3 = gdata_documents_property_new ("3");
+	if (p3 != NULL) {
+		gdata_documents_property_set_visibility (p3, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
+		gdata_documents_entry_add_property (entry, p3);
+	};
+
+	p4 = gdata_documents_property_new ("4");
+	if (p4 != NULL) {
+		gdata_documents_property_set_visibility (p4, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
+		gdata_documents_entry_add_property (entry, p4);
+	};
+
+	g_clear_object (&p1);
+	g_clear_object (&p2);
+	g_clear_object (&p3);
+	g_clear_object (&p4);
+}
+
+void
+remove_dummy_properties (GDataDocumentsEntry *entry) {
+	GDataDocumentsProperty *p1, *p2, *p3, *p4;
+
+	p1 = gdata_documents_property_new ("1");
+	if (p1 != NULL) {
+		gdata_documents_property_set_visibility (p1, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
+		gdata_documents_entry_remove_property (entry, p1);
+	};
+
+	p2 = gdata_documents_property_new ("2");
+	if (p2 != NULL) {
+		gdata_documents_property_set_visibility (p2, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
+		gdata_documents_entry_remove_property (entry, p2);
+	};
+
+	p3 = gdata_documents_property_new ("3");
+	if (p3 != NULL) {
+		gdata_documents_property_set_visibility (p3, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
+		gdata_documents_entry_remove_property (entry, p3);
+	};
+
+	p4 = gdata_documents_property_new ("4");
+	if (p4 != NULL) {
+		gdata_documents_property_set_visibility (p4, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
+		gdata_documents_entry_remove_property (entry, p4);
+	};
+
+	g_clear_object (&p1);
+	g_clear_object (&p2);
+	g_clear_object (&p3);
+	g_clear_object (&p4);
 }
