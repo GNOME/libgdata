@@ -1131,6 +1131,23 @@ global:
 	gdata_youtube_video_set_keywords;
 	gdata_youtube_video_set_location;
 	gdata_youtube_video_set_recorded;
+
+  gdata_documents_property_get_type;
+  gdata_documents_property_new;
+  gdata_documents_property_get_key;
+  gdata_documents_property_get_etag;
+  gdata_documents_property_get_value;
+  gdata_documents_property_set_value;
+  gdata_documents_property_get_visibility;
+  gdata_documents_property_set_visibility;
+
+  gdata_documents_service_get_property;
+  gdata_documents_service_set_property;
+  gdata_documents_service_remove_property;
+
+  gdata_documents_entry_get_properties;
+  gdata_documents_entry_add_property;
+  gdata_documents_entry_remove_property;
 local:
 	*;
 };
