@@ -120,7 +120,6 @@ enable_goa = goa_dep.found()
 if enable_goa
   gdata_deps += goa_dep
 endif
-config_h.set('HAVE_GOA', goa_dep.found())
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
 # Install test programs (default: no)
