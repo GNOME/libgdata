@@ -110,7 +110,7 @@ enable_gnome = gcr_dep.found()
 if enable_gnome
   gdata_private_deps += dependency('gcr-base-3')
 endif
-config_h.set('HAVE_GNOME', gcr_dep.found())
+config_h.set('HAVE_GNOME', enable_gnome)
 
 # Check for goa
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
