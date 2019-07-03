@@ -110,7 +110,7 @@ enable_gnome = gcr_dep.found()
 if enable_gnome
   gdata_private_deps += dependency('gcr-base-3')
 endif
-config_h.set('HAVE_GNOME', gcr_dep.found())
+config_h.set('HAVE_GNOME', enable_gnome)
 
 # Check for goa
 # GNOME Online Accounts support -- only used if GNOME support is also enabled
@@ -120,7 +120,6 @@ enable_goa = goa_dep.found()
 if enable_goa
   gdata_deps += goa_dep
 endif
-config_h.set('HAVE_GOA', goa_dep.found())
 
 # Enable always building tests (default: yes) enable_always_build_tests = get_option('always_build_tests')
 # Install test programs (default: no)
@@ -147,7 +146,7 @@ check_functions += [
 ]
 
 foreach func: check_functions
-  config_h.set('HAVE_' + func.to_upper(), cc.has_function(func))
+  cc.has_function(func)
 endforeach
 
 check_headers = [
