@@ -146,7 +146,7 @@ check_functions += [
 ]
 
 foreach func: check_functions
-  config_h.set('HAVE_' + func.to_upper(), cc.has_function(func))
+  cc.has_function(func)
 endforeach
 
 check_headers = [
