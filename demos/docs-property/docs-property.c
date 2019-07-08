@@ -180,8 +180,9 @@ test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQ
 								&child_error);
 
 			if (child_error != NULL) {
-				g_propagate_error (error, child_error);
-				goto out_func;
+				g_warning ("Error: %s", child_error->message);
+				g_clear_object (&new_entry);
+				continue;
 			}
 
 			properties = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (new_entry));
@@ -190,7 +191,7 @@ test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQ
 				print_documents_property (GDATA_DOCUMENTS_PROPERTY (p->data));
 			}
 
-			g_object_unref (new_entry);
+			g_clear_object (&new_entry);
 		}
 
 		gdata_query_next_page (GDATA_QUERY (query));

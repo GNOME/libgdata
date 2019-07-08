@@ -156,7 +156,7 @@
 		<chapter>
 			<title>Google Documents/Drive API</title>
 			<xi:include href="xml/gdata-documents-service.xml"/>
-			<xi:include href="xml/gdata-property.xml"/>
+			<xi:include href="xml/gdata-documents-property.xml"/>
 			<xi:include href="xml/gdata-documents-feed.xml"/>
 			<xi:include href="xml/gdata-documents-query.xml"/>
 			<xi:include href="xml/gdata-documents-upload-query.xml"/>
@@ -308,6 +308,7 @@
 		<index role="0.17.10">
 			<title>Index of new symbols in 0.17.10</title>
 			<xi:include href="xml/api-index-0.17.10.xml"><xi:fallback/></xi:include>
+		</index>
 		<index role="0.18.0">
 			<title>Index of new symbols in 0.18.0</title>
 			<xi:include href="xml/api-index-0.18.0.xml"><xi:fallback/></xi:include>
