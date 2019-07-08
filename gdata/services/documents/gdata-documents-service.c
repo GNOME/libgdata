@@ -1615,7 +1615,7 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
 }
 
 /**
- * gdata_documents_service_get_property:
+ * gdata_documents_service_get_documents_property:
  * @self: a #GDataDocumentsService
  * @entry: a #GDataDocumentsEntry from which a Property Resource needs to be fetched
  * @key: The key of the Property Resource
@@ -1636,7 +1636,7 @@ gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder)
  * Since: 0.18.0
  */
 GDataDocumentsProperty *
-gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, const gboolean visibility, GCancellable *cancellable, GError **error)
+gdata_documents_service_get_documents_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, const gchar *key, const gboolean visibility, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
@@ -1698,7 +1698,7 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
 }
 
 /**
- * gdata_documents_service_set_property:
+ * gdata_documents_service_set_documents_property:
  * @self: a #GDataDocumentsService
  * @entry: a #GDataDocumentsEntry on which a Property Resource needs to created/updated
  * @property: a #GDataDocumentsProperty which will be created/updated on the file object identified by @entry
@@ -1714,7 +1714,7 @@ gdata_documents_service_get_property (GDataDocumentsService *self, GDataDocument
  * Since: 0.18.0
  */
 gboolean
-gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsProperty *property, GCancellable *cancellable, GError **error)
+gdata_documents_service_set_documents_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsProperty *property, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
@@ -1780,7 +1780,7 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
 }
 
 /**
- * gdata_documents_service_remove_property:
+ * gdata_documents_service_remove_documents_property:
  * @self: a #GDataDocumentsService
  * @entry: a #GDataDocumentsEntry from which a Property Resource needs to removed
  * @property: a #GDataDocumentsProperty which will be removed from the file object identified by @entry
@@ -1797,7 +1797,7 @@ gdata_documents_service_set_property (GDataDocumentsService *self, GDataDocument
  * Since: 0.18.0
  */
 gboolean
-gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsProperty *property, GCancellable *cancellable, GError **error)
+gdata_documents_service_remove_documents_property (GDataDocumentsService *self, GDataDocumentsEntry *entry, GDataDocumentsProperty *property, GCancellable *cancellable, GError **error)
 {
 	gchar *uri;
 	guint status;
@@ -1848,5 +1848,3 @@ gdata_documents_service_remove_property (GDataDocumentsService *self, GDataDocum
 	g_object_unref (message);
 	return TRUE;
 }
-
-
