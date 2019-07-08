@@ -310,7 +310,9 @@ global:
 	gdata_documents_document_new;
 	gdata_documents_drawing_get_type;
 	gdata_documents_drawing_new;
+	gdata_documents_entry_add_documents_property;
 	gdata_documents_entry_get_document_id;
+	gdata_documents_entry_get_document_properties;
 	gdata_documents_entry_get_edited;
 	gdata_documents_entry_get_file_size;
 	gdata_documents_entry_get_last_modified_by;
@@ -320,6 +322,7 @@ global:
 	gdata_documents_entry_get_resource_id;
 	gdata_documents_entry_get_type;
 	gdata_documents_entry_is_deleted;
+	gdata_documents_entry_remove_documents_property;
 	gdata_documents_entry_set_writers_can_invite;
 	gdata_documents_entry_writers_can_invite;
 	gdata_documents_feed_get_type;
@@ -332,6 +335,14 @@ global:
 	gdata_documents_pdf_new;
 	gdata_documents_presentation_get_type;
 	gdata_documents_presentation_new;
+	gdata_documents_property_get_etag;
+	gdata_documents_property_get_key;
+	gdata_documents_property_get_type;
+	gdata_documents_property_get_value;
+	gdata_documents_property_get_visibility;
+	gdata_documents_property_new;
+	gdata_documents_property_set_value;
+	gdata_documents_property_set_visibility;
 	gdata_documents_query_add_collaborator;
 	gdata_documents_query_add_reader;
 	gdata_documents_query_get_collaborator_addresses;
@@ -357,6 +368,7 @@ global:
 	gdata_documents_service_error_get_type;
 	gdata_documents_service_error_quark;
 	gdata_documents_service_finish_upload;
+	gdata_documents_service_get_documents_property;
 	gdata_documents_service_get_metadata;
 	gdata_documents_service_get_metadata_async;
 	gdata_documents_service_get_metadata_finish;
@@ -367,9 +379,11 @@ global:
 	gdata_documents_service_new;
 	gdata_documents_service_query_documents;
 	gdata_documents_service_query_documents_async;
+	gdata_documents_service_remove_documents_property;
 	gdata_documents_service_remove_entry_from_folder;
 	gdata_documents_service_remove_entry_from_folder_async;
 	gdata_documents_service_remove_entry_from_folder_finish;
+	gdata_documents_service_set_documents_property;
 	gdata_documents_service_update_document;
 	gdata_documents_service_update_document_resumable;
 	gdata_documents_service_upload_document;
@@ -1131,23 +1145,6 @@ global:
 	gdata_youtube_video_set_keywords;
 	gdata_youtube_video_set_location;
 	gdata_youtube_video_set_recorded;
-
-	gdata_documents_property_get_type;
-	gdata_documents_property_new;
-	gdata_documents_property_get_key;
-	gdata_documents_property_get_etag;
-	gdata_documents_property_get_value;
-	gdata_documents_property_set_value;
-	gdata_documents_property_get_visibility;
-	gdata_documents_property_set_visibility;
-
-	gdata_documents_service_get_documents_property;
-	gdata_documents_service_set_documents_property;
-	gdata_documents_service_remove_documents_property;
-
-	gdata_documents_entry_get_document_properties;
-	gdata_documents_entry_add_documents_property;
-	gdata_documents_entry_remove_documents_property;
 local:
 	*;
 };

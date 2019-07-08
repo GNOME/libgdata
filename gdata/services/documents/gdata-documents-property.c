@@ -33,12 +33,11 @@
  */
 
 #include <glib.h>
+#include <gdata/gdata-parsable.h>
 #include <json-glib/json-glib.h>
-#include "gdata-documents-property.h"
-#include "gdata-parsable.h"
-#include "gdata-parser.h"
-#include "gdata-private.h"
 
+#include "gdata-documents-property.h"
+#include "gdata-parser.h"
 #include "gdata-comparable.h"
 
 static void gdata_documents_property_comparable_init (GDataComparableIface *iface);
