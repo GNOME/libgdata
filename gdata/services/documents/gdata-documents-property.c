@@ -18,8 +18,8 @@
  */
 
 /**
- * SECTION:gdata-property
- * @short_description: GData property object class
+ * SECTION:gdata-documents-property
+ * @short_description: GData Documents property object
  * @stability: Unstable
  * @include: gdata/gdata-property.h
  *
@@ -56,7 +56,7 @@ static void get_json (GDataParsable *parsable, JsonBuilder *builder);
 struct _GDataDocumentsPropertyPrivate {
 	gchar *key;
 	gchar *etag;
-	gchar *value;		/* default - "" empty string */
+	gchar *value;		/* default - empty string ("") */
 	gchar *visibility;	/* default - "PRIVATE" */
 };
 
@@ -130,7 +130,7 @@ gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 	g_object_class_install_property (gobject_class, PROP_VALUE,
 					 g_param_spec_string ("value",
 							      "Value", "The value of this property.",
-							      "",
+							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -224,10 +224,10 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 	json_builder_set_member_name (builder, "key");
 	json_builder_add_string_value (builder, priv->key);
 
-	/* if (gdata_documents_property_get_etag (GDATA_DOCUMENTS_PROPERTY (parsable)) != NULL) {
-	 *         json_builder_set_member_name (builder, "etag");
-	 *         json_builder_add_string_value (builder, priv->etag);
-	 * } */
+	if (gdata_documents_property_get_etag (GDATA_DOCUMENTS_PROPERTY (parsable)) != NULL) {
+		json_builder_set_member_name (builder, "etag");
+		json_builder_add_string_value (builder, priv->etag);
+	}
 
 	/* Setting the "value" field of a Property Resource deletes that Property Resource */
 	json_builder_set_member_name (builder, "value");
@@ -257,6 +257,7 @@ gdata_documents_property_finalize (GObject *object)
 	g_free (priv->key);
 	g_free (priv->etag);
 	g_free (priv->value);
+	g_free (priv->visibility);
 
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_documents_property_parent_class)->finalize (object);
@@ -319,20 +320,26 @@ gdata_documents_property_set_property (GObject *object, guint property_id, const
  * Creates a new #GDataEntry with the given ID and default properties.
  *
  * Return value: (transfer full): a new #GDataDocumentsProperty; unref with g_object_unref()
+ *
+ * Since: 0.18.0
  */
-GDataDocumentsProperty *gdata_documents_property_new (const gchar *key)
+GDataDocumentsProperty *
+gdata_documents_property_new (const gchar *key)
 {
+	GDataDocumentsProperty *property = NULL;
+
 	/* GDataDocumentsProperty must have a non NULL key at initilization time,
 	 * rest of the properties can be NULL or take their default values. */
 	g_return_val_if_fail (key != NULL && key[0] != '\0', NULL);
 
+	property = GDATA_DOCUMENTS_PROPERTY (g_object_new (GDATA_TYPE_DOCUMENTS_PROPERTY, "key", key, NULL));
+
 	/* Google Drive sets the default value of a Property Resource to be an empty string (""),
 	 * and visibility is %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE by default */
-	return g_object_new (GDATA_TYPE_DOCUMENTS_PROPERTY,
-			     "key", key,
-			     "value", "",
-			     "visibility", GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE,
-			     NULL);
+	property->priv->value = g_strdup ("");
+	property->priv->visibility = g_strdup (GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
+
+	return property;
 }
 
 /**
@@ -342,6 +349,8 @@ GDataDocumentsProperty *gdata_documents_property_new (const gchar *key)
  * Returns the key of the property. This will never be %NULL or an empty string ("").
  *
  * Return value: (transfer none): the property's key
+ *
+ * Since: 0.18.0
  */
 const gchar *
 gdata_documents_property_get_key (GDataDocumentsProperty *self)
@@ -370,6 +379,8 @@ _gdata_documents_property_set_key (GDataDocumentsProperty *self, const gchar *ke
  * Returns the ETag of the property.
  *
  * Return value: (transfer none): the property's ETag. The ETag will never be empty; it's either %NULL or a valid ETag.
+ *
+ * Since: 0.18.0
  */
 const gchar *
 gdata_documents_property_get_etag (GDataDocumentsProperty *self)
@@ -397,6 +408,8 @@ _gdata_documents_property_set_etag (GDataDocumentsProperty *self, const gchar *e
  * In the case that this value is %NULL, the Property Resource corresponding to @self will be deleted from the properties array on a file's metadata, whereas in the case that it's empty string (""), it will be set as it is.
  *
  * Return value: (nullable): the property's value. This can be %NULL or empty.
+ *
+ * Since: 0.18.0
  */
 const gchar *
 gdata_documents_property_get_value (GDataDocumentsProperty *self)
@@ -413,6 +426,8 @@ gdata_documents_property_get_value (GDataDocumentsProperty *self)
  * Sets #GDataDocumentsProperty:value to @value, corresponding to the key.
  *
  * In the case that @value is %NULL, the Property Resource corresponding to @self will be deleted from the properties array on a file's metadata, whereas in the case that it's empty string (""), it will be set as it is.
+ *
+ * Since: 0.18.0
  */
 void
 gdata_documents_property_set_value (GDataDocumentsProperty *self, const gchar *value)
@@ -433,6 +448,8 @@ gdata_documents_property_set_value (GDataDocumentsProperty *self, const gchar *v
  * Return value: %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC if the #GDataDocumentsProperty is publicly visible to other
  * apps, %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE if the #GDataDocumentsProperty is restricted to the application which
  * created it.
+ *
+ * Since: 0.18.0
  */
 const gchar *
 gdata_documents_property_get_visibility (GDataDocumentsProperty *self)
@@ -449,6 +466,8 @@ gdata_documents_property_get_visibility (GDataDocumentsProperty *self)
  * Sets #GDataDocumentsProperty:visibility to %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC for
  * public properties and %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE for
  * private properties (default).
+ *
+ * Since: 0.18.0
  */
 void
 gdata_documents_property_set_visibility (GDataDocumentsProperty *self, const gchar *visibility)
@@ -457,6 +476,7 @@ gdata_documents_property_set_visibility (GDataDocumentsProperty *self, const gch
 	g_return_if_fail (g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC) == 0 ||
 			  g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE) == 0);
 
+	g_free (self->priv->visibility);
 	self->priv->visibility = g_strdup (visibility);
 	g_object_notify (G_OBJECT (self), "visibility");
 }

@@ -120,9 +120,10 @@ goffset gdata_documents_entry_get_file_size (GDataDocumentsEntry *self) G_GNUC_P
 
 gboolean gdata_documents_entry_is_deleted (GDataDocumentsEntry *self) G_GNUC_PURE;
 
-GList *gdata_documents_entry_get_properties (GDataDocumentsEntry *self);
-void gdata_documents_entry_add_property (GDataDocumentsEntry *entry, GDataDocumentsProperty *property);
-gboolean gdata_documents_entry_remove_property (GDataDocumentsEntry *entry, GDataDocumentsProperty *property);
+GList *gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self);
+
+void gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property);
+gboolean gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property);
 
 G_END_DECLS
 

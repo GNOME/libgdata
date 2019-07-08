@@ -488,7 +488,6 @@ static void get_key_value_and_visibility (JsonReader *reader, gchar **out_key, g
 		}
 
 		if (gdata_parser_string_from_json_member (reader, "visibility", P_REQUIRED | P_NON_EMPTY, &visibility, &success, &child_error) == TRUE) {
-			// TODO: Test if this is always present in the response body
 			if (!success && child_error != NULL) {
 				g_propagate_prefixed_error (error, child_error,
 							    /* Translators: the parameter is an error message */
@@ -941,7 +940,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			gdata_documents_property_set_visibility (property, visibility);
 			gdata_documents_property_set_value (property, value);
 
-			gdata_documents_entry_add_property (GDATA_DOCUMENTS_ENTRY (parsable), property);
+			gdata_documents_entry_add_documents_property (GDATA_DOCUMENTS_ENTRY (parsable), property);
 
 		continue_properties:
 			g_object_unref (property);
@@ -1028,7 +1027,7 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
         json_builder_set_member_name (builder, "properties");
 	json_builder_begin_array (builder);
 
-	documents_properties_list = gdata_documents_entry_get_properties (GDATA_DOCUMENTS_ENTRY (parsable));
+	documents_properties_list = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (parsable));
 	for (i = documents_properties_list; i != NULL; i = i->next) {
 		GDataDocumentsProperty *property = GDATA_DOCUMENTS_PROPERTY (i->data);
 		const gchar *key = NULL;
@@ -1059,8 +1058,7 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		}
 	}
 
-        json_builder_end_array (builder); 
-	g_list_free (documents_properties_list);
+        json_builder_end_array (builder);
 }
 
 static void
@@ -1340,26 +1338,37 @@ gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
 
 
 /**
- * gdata_documents_entry_get_properties:
- * @self: a #GDataEntry
+ * gdata_documents_entry_get_document_properties:
+ * @self: a #GDataDocumentsEntry
  *
- * Gets a list of the #GDataDocumentsProperty<!-- -->s containing this entry.
+ * Gets a list of the #GDataDocumentsProperty<!-- -->s for this entry.
  *
- * TODO: What's the element type below?
- * Return value: (transfer none): a #GList of #GDataDocumentsProperty<!-- -->s
+ * Return value: (transfer none) (element-type *GDataDocumentsProperty): a #GList of pointers to #GDataDocumentsProperty<!-- -->s
  *
  * Since: 0.18.0
  */
 GList *
-gdata_documents_entry_get_properties (GDataDocumentsEntry *self)
+gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
 	return self->priv->properties;
 }
 
-//TODO: Add documentation
+/**
+ * gdata_documents_entry_add_documents_property:
+ * @self: a #GDataDocumentsEntry
+ * @property: a #GDataDocumentsProperty
+ *
+ * Inserts/updates @property on "properties" list in @self. Since, a GDataDocumentsProperty is uniquely identified by #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility, if no such property exists in the "properties" list, then a @property will be appended to the list after incrementing the reference count.
+ *
+ * In case that there already exists a @property in "properties", the #GDataDocumentsProperty inside the list will be updated to @property. Note that #GDataDocumentsProperty:value has no role in determining the uniqueness of a #GDataDocumentsProperty.
+ *
+ * The changes made by this function will be local only and you need to explicity update @self by calling gdata_service_update_entry().
+ *
+ * Since: 0.18.0
+ */
 void
-gdata_documents_entry_add_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
+gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
 	GList *l = NULL;
 
 	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self));
@@ -1376,9 +1385,23 @@ gdata_documents_entry_add_property (GDataDocumentsEntry *self, GDataDocumentsPro
 	return;
 }
 
-//TODO: Add documentation
+/**
+ * gdata_documents_entry_remove_documents_property:
+ * @self: a #GDataDocumentsEntry
+ * @property: a #GDataDocumentsProperty
+ *
+ * The property specified by @property will be removed from the "properties" list on @self.
+ *
+ * Only #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility will be used to find @property in "properties" list. #GDataDocumentsProperty:value has no role in determining the uniqueness of a #GDataDocumentsProperty.
+ *
+ * The changes made by this function will be local only and you need to explicity update @self by calling gdata_service_update_entry().
+ *
+ * Return value: %TRUE if @property has been successfully removed from "properties" list on @self, %FALSE otherwise.
+ *
+ * Since: 0.18.0
+ */
 gboolean
-gdata_documents_entry_remove_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
+gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
 	GList *l;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
@@ -1402,9 +1425,6 @@ gdata_documents_entry_remove_property (GDataDocumentsEntry *self, GDataDocuments
 	 * properties array.
 	 */
 	gdata_documents_property_set_value ((GDataDocumentsProperty *) l->data, NULL);
-
-	/* TODO: Doubt: Are we leaking memory this way? */
-	g_object_unref (property);
 
 	return TRUE;
 }
