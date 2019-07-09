@@ -33,28 +33,24 @@
 #include <gdata/gdata.h>
 #include <goa/goa.h>
 
-enum {
-	UNSET_DUMMY_PROPERTIES = 0,
-	SET_DUMMY_PROPERTIES
-};
+#define SET_DUMMY_PROPERTIES TRUE
 
-static void print_documents_property (GDataDocumentsProperty *property);
+static void print_documents_properties (GDataDocumentsEntry *entry);
 static void set_dummy_properties (GDataDocumentsEntry *entry);
 static void unset_dummy_properties (GDataDocumentsEntry *entry);
 static gboolean is_owner (GDataService *service, GDataEntry *entry);
 
-static void test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQuery *query, GCancellable *cancellable, GError **error);
+static void test_dummy_properties (GDataDocumentsService *service, gint set, GCancellable *cancellable, GError **error);
 
 gint
 main (void)
 {
-	GDataDocumentsQuery *query = NULL;
 	GDataDocumentsService *service = NULL;
 	GError *error = NULL;
 	GList *accounts = NULL;
 	GList *l = NULL;
 	GoaClient *client = NULL;
-	gint retval;
+	gint retval = 0;
 
 	setlocale (LC_ALL, "");
 
@@ -62,8 +58,7 @@ main (void)
 	if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
-		retval = 1;
-		goto out;
+		return 1;
 	}
 
 	accounts = goa_client_get_accounts (client);
@@ -88,37 +83,25 @@ main (void)
 				goto out;
 			}
 
-			g_object_unref (authorizer);
-			query = gdata_documents_query_new_with_limits (NULL, 1, 10);
-			gdata_documents_query_set_show_folders (query, TRUE);
-
 			g_message ("Setting dummy properties on the files owned by user - %s", account_identity);
-			test_dummy_properties (service, SET_DUMMY_PROPERTIES, query, NULL, &error);
+			test_dummy_properties (service, SET_DUMMY_PROPERTIES, NULL, &error);
 			if (error != NULL) {
 				g_warning ("Error: %s", error->message);
 				retval = 1;
 				goto out;
 			}
-
-			g_clear_object (&query);
-
-			/* After setting query to NULL, we perform a new query to fetch the updated
-			 * documents */
-			query = gdata_documents_query_new_with_limits (NULL, 1, 10);
-			gdata_documents_query_set_show_folders (query, TRUE);
 
 			g_message ("Removing dummy properties from the files owned by user - %s", account_identity);
-			test_dummy_properties (service, UNSET_DUMMY_PROPERTIES, query, NULL, &error);
+			test_dummy_properties (service, !SET_DUMMY_PROPERTIES, NULL, &error);
 			if (error != NULL) {
 				g_warning ("Error: %s", error->message);
 				retval = 1;
 				goto out;
 			}
 
-			retval = 0;
+			g_object_unref (authorizer);
 		}
-	 out:
-		g_clear_object (&query);
+	out:
 		g_clear_object (&service);
 	}
 
@@ -129,76 +112,69 @@ main (void)
 }
 
 static void
-test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQuery *query, GCancellable *cancellable, GError **error)
+test_dummy_properties (GDataDocumentsService *service, gint set, GCancellable *cancellable, GError **error)
 {
+	GDataDocumentsQuery *query = NULL;
 	GDataDocumentsFeed *feed = NULL;
 	GError *child_error = NULL;
 	GList *entries;
 	GList *l;
-	guint i;
+
+	query = gdata_documents_query_new_with_limits (NULL, 1, 10);
+	gdata_documents_query_set_show_folders (query, TRUE);
 
 	/* Since our query supports fetching 10 results in one go, we just
-	 * perform 1 iteration over the list of files. The below 'for' loop can be
-	 * changed from to a `while (TRUE)` loop to fetch all the files in the
-	 * user's drive. */
-	for (i = 0; i < 1; i++) {
-		feed = gdata_documents_service_query_documents (service, query, NULL, NULL, NULL, &child_error);
+	 * perform fetch a single page of query. You can use pagination here
+	 * and call gdata_query_next_page (GDATA_QUERY (query)) inside a  while
+	 * loop to set/unset properties on all the files.
+	 * */
+	feed = gdata_documents_service_query_documents (service, query, NULL, NULL, NULL, &child_error);
+	if (child_error != NULL) {
+		g_propagate_error (error, child_error);
+		goto out_func;
+	}
+
+	entries = gdata_feed_get_entries (GDATA_FEED (feed));
+	if (entries == NULL) {
+		goto out_func;
+	}
+
+	for (l = entries; l != NULL; l = l->next) {
+		const gchar *title;
+		GDataEntry *new_entry = NULL;
+		GDataEntry *entry = GDATA_ENTRY (l->data);
+
+		title = gdata_entry_get_title (entry);
+		g_message ("File = %s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
+
+		if (!is_owner (GDATA_SERVICE (service), entry)) {
+			g_message ("\t**NOT OWNED**");
+			continue;
+		}
+
+		if (set) {
+			set_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry));
+		} else {
+			unset_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry));
+		}
+
+		new_entry = gdata_service_update_entry (GDATA_SERVICE (service),
+							gdata_documents_service_get_primary_authorization_domain(),
+							entry,
+							NULL,
+							&child_error);
+
 		if (child_error != NULL) {
 			g_propagate_error (error, child_error);
 			goto out_func;
 		}
 
-		entries = gdata_feed_get_entries (GDATA_FEED (feed));
-		if (entries == NULL) {
-			goto out_func;
-		}
+		print_documents_properties (GDATA_DOCUMENTS_ENTRY (new_entry));
 
-		for (l = entries; l != NULL; l = l->next) {
-			const gchar *title;
-			GList *properties = NULL, *p = NULL;
-			GDataEntry *new_entry = NULL;
-			GDataEntry *entry = GDATA_ENTRY (l->data);
-
-			title = gdata_entry_get_title (entry);
-			g_message ("File = %s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
-
-			if (!is_owner (GDATA_SERVICE (service), entry)) {
-				g_message ("\t**NOT OWNED**");
-				continue;
-			}
-
-			if (set) {
-				set_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry));
-			} else {
-				unset_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry));
-			}
-
-			new_entry = gdata_service_update_entry (GDATA_SERVICE (service),
-								gdata_documents_service_get_primary_authorization_domain(),
-								entry,
-								NULL,
-								&child_error);
-
-			if (child_error != NULL) {
-				g_propagate_error (error, child_error);
-				g_clear_object (&new_entry);
-				goto out_func;
-			}
-
-			properties = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (new_entry));
-
-			for (p = properties; p != NULL; p = p->next) {
-				print_documents_property (GDATA_DOCUMENTS_PROPERTY (p->data));
-			}
-
-			g_clear_object (&new_entry);
-		}
-
-		gdata_query_next_page (GDATA_QUERY (query));
-		g_clear_object (&feed);
+		g_clear_object (&new_entry);
 	}
 
- out_func:
+out_func:
 	g_clear_object (&feed);
 }
 
@@ -225,15 +201,23 @@ is_owner (GDataService *service, GDataEntry *entry) {
 }
 
 static void
-print_documents_property (GDataDocumentsProperty *property)
+print_documents_properties (GDataDocumentsEntry *entry)
 {
-	g_return_if_fail (GDATA_IS_DOCUMENTS_PROPERTY (property));
+	GList *l, *properties;
 
-	g_message ("\tkey = %s, value = %s, %s",
-		   gdata_documents_property_get_key (GDATA_DOCUMENTS_PROPERTY (property)),
-		   gdata_documents_property_get_value (GDATA_DOCUMENTS_PROPERTY (property)),
-		   gdata_documents_property_get_visibility (GDATA_DOCUMENTS_PROPERTY (property))
-	);
+	g_return_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry));
+
+	properties = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (entry));
+	for (l = properties; l != NULL; l = l->next) {
+		GDataDocumentsProperty *property = GDATA_DOCUMENTS_PROPERTY (l->data);
+
+		g_message ("\tkey = %s, value = %s, %s",
+			   gdata_documents_property_get_key (GDATA_DOCUMENTS_PROPERTY (property)),
+			   gdata_documents_property_get_value (GDATA_DOCUMENTS_PROPERTY (property)),
+			   gdata_documents_property_get_visibility (GDATA_DOCUMENTS_PROPERTY (property))
+		);
+	}
+
 }
 
 static void
@@ -246,26 +230,26 @@ set_dummy_properties (GDataDocumentsEntry *entry)
 		gdata_documents_property_set_visibility (p1, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
 		gdata_documents_property_set_value (p1, "ONE");
 		gdata_documents_entry_add_documents_property (entry, p1);
-	};
+	}
 
 	p2 = gdata_documents_property_new ("2");
 	if (p2 != NULL) {
 		gdata_documents_property_set_visibility (p2, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
 		gdata_documents_property_set_value (p2, "TWO");
 		gdata_documents_entry_add_documents_property (entry, p2);
-	};
+	}
 
 	p3 = gdata_documents_property_new ("3");
 	if (p3 != NULL) {
 		gdata_documents_property_set_visibility (p3, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
 		gdata_documents_entry_add_documents_property (entry, p3);
-	};
+	}
 
 	p4 = gdata_documents_property_new ("4");
 	if (p4 != NULL) {
 		gdata_documents_property_set_visibility (p4, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
 		gdata_documents_entry_add_documents_property (entry, p4);
-	};
+	}
 
 	g_clear_object (&p1);
 	g_clear_object (&p2);
@@ -282,25 +266,25 @@ unset_dummy_properties (GDataDocumentsEntry *entry)
 	if (p1 != NULL) {
 		gdata_documents_property_set_visibility (p1, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
 		gdata_documents_entry_remove_documents_property (entry, p1);
-	};
+	}
 
 	p2 = gdata_documents_property_new ("2");
 	if (p2 != NULL) {
 		gdata_documents_property_set_visibility (p2, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
 		gdata_documents_entry_remove_documents_property (entry, p2);
-	};
+	}
 
 	p3 = gdata_documents_property_new ("3");
 	if (p3 != NULL) {
 		gdata_documents_property_set_visibility (p3, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC);
 		gdata_documents_entry_remove_documents_property (entry, p3);
-	};
+	}
 
 	p4 = gdata_documents_property_new ("4");
 	if (p4 != NULL) {
 		gdata_documents_property_set_visibility (p4, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE);
 		gdata_documents_entry_remove_documents_property (entry, p4);
-	};
+	}
 
 	g_clear_object (&p1);
 	g_clear_object (&p2);

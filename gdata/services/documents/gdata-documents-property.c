@@ -115,7 +115,7 @@ gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 					 g_param_spec_string ("etag",
 							      "ETag", "ETag of the property.",
 							      NULL,
-							      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataDocumentsProperty:value:
@@ -166,22 +166,20 @@ static gboolean
 parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GError **error)
 {
 	gchar *output_val = NULL;
-	gboolean success = TRUE;
+	gboolean success = TRUE, is_key_parsed = FALSE;
 
 	if (gdata_parser_string_from_json_member (reader, "key", P_DEFAULT, &output_val, &success, error) == TRUE) {
 		if (success && output_val != NULL && output_val[0] != '\0') {
 			_gdata_documents_property_set_key (GDATA_DOCUMENTS_PROPERTY (parsable), output_val);
 		}
 
-		g_free (output_val);
-		return success;
+		is_key_parsed = TRUE;
 	} else if (gdata_parser_string_from_json_member (reader, "etag", P_DEFAULT, &output_val, &success, error) == TRUE) {
 		if (success && output_val != NULL && output_val[0] != '\0') {
 			_gdata_documents_property_set_etag (GDATA_DOCUMENTS_PROPERTY (parsable), output_val);
 		}
 
-		g_free (output_val);
-		return success;
+		is_key_parsed = TRUE;
 	} else if (gdata_parser_string_from_json_member (reader, "value", P_DEFAULT, &output_val, &success, error) == TRUE) {
 
 		/* A Property can have a value field to be an empty string, but
@@ -190,10 +188,14 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			gdata_documents_property_set_value (GDATA_DOCUMENTS_PROPERTY (parsable), output_val);
 		}
 
-		g_free (output_val);
-		return success;
+		is_key_parsed = TRUE;
 	} else if (gdata_parser_string_from_json_member (reader, "visibility", P_REQUIRED | P_NON_EMPTY, &output_val, &success, error) == TRUE) {
 		gdata_documents_property_set_visibility (GDATA_DOCUMENTS_PROPERTY (parsable), output_val);
+
+		is_key_parsed = TRUE;
+	}
+
+	if (is_key_parsed) {
 		g_free (output_val);
 		return success;
 	}

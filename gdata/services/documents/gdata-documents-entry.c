@@ -931,10 +931,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 				goto continue_properties;
 			}
 
-			if (key == NULL) {
-				success = FALSE;
-				goto continue_properties;
-			}
+			g_assert (key != NULL);
 
 			property = gdata_documents_property_new (key);
 			gdata_documents_property_set_visibility (property, visibility);
@@ -944,8 +941,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 		continue_properties:
 			g_object_unref (property);
-                        g_free (key);
-                        g_free (value);
+			g_free (key);
+			g_free (value);
 			g_free (visibility);
 			json_reader_end_element (reader);
 		}
@@ -1021,10 +1018,11 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 	}
 
 	json_builder_end_array (builder);
+
 	g_list_free (parent_folders_list);
 
 	/* Set all the properties */
-        json_builder_set_member_name (builder, "properties");
+	json_builder_set_member_name (builder, "properties");
 	json_builder_begin_array (builder);
 
 	documents_properties_list = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (parsable));
@@ -1058,7 +1056,7 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 		}
 	}
 
-        json_builder_end_array (builder);
+	json_builder_end_array (builder);
 }
 
 static void
@@ -1382,7 +1380,6 @@ gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDo
 		GDataDocumentsProperty *_prop = GDATA_DOCUMENTS_PROPERTY (l->data);
 		gdata_documents_property_set_value (_prop, gdata_documents_property_get_value (property));
 	}
-	return;
 }
 
 /**
