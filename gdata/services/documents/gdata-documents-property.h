@@ -23,8 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "gdata-parsable.h"
-#include "gdata-private.h"
+#include <gdata/gdata-parsable.h>
 
 G_BEGIN_DECLS
 
