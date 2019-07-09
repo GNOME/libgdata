@@ -23,13 +23,6 @@
  *
  * This program is just meant to show how to set/get/remove GDataDocumentsProperty
  * , i.e. the Property Resource on a file.
- *
- * FIXME: Currently, files which are not owned by the user will cause a 403
- * error since only the owner of the file can set properties on it. We need to
- * check the ownership of a file (a simple boolean will suffice) in an
- * efficient manner. We do have GDataDocumentsEntry implementing 
- * GDataAccessHandler but it has to perform an HTTP request for each file,
- * which is very slow.
  */
 
 #include <gio/gio.h>
@@ -48,6 +41,8 @@ enum {
 static void print_documents_property (GDataDocumentsProperty *property);
 static void set_dummy_properties (GDataDocumentsEntry *entry);
 static void unset_dummy_properties (GDataDocumentsEntry *entry);
+static gboolean is_owner (GDataService *service, GDataEntry *entry);
+
 static void test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQuery *query, GCancellable *cancellable, GError **error);
 
 gint
@@ -164,14 +159,19 @@ test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQ
 			GDataEntry *new_entry = NULL;
 			GDataEntry *entry = GDATA_ENTRY (l->data);
 
+			title = gdata_entry_get_title (entry);
+			g_message ("File = %s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
+
+			if (!is_owner (GDATA_SERVICE (service), entry)) {
+				g_message ("\t**NOT OWNED**");
+				continue;
+			}
+
 			if (set) {
 				set_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry));
 			} else {
 				unset_dummy_properties (GDATA_DOCUMENTS_ENTRY (entry));
 			}
-
-			title = gdata_entry_get_title (entry);
-			g_message ("File = %s, id = %s", title, gdata_entry_get_id (GDATA_ENTRY (entry)));
 
 			new_entry = gdata_service_update_entry (GDATA_SERVICE (service),
 								gdata_documents_service_get_primary_authorization_domain(),
@@ -180,9 +180,9 @@ test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQ
 								&child_error);
 
 			if (child_error != NULL) {
-				g_warning ("Error: %s", child_error->message);
+				g_propagate_error (error, child_error);
 				g_clear_object (&new_entry);
-				continue;
+				goto out_func;
 			}
 
 			properties = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (new_entry));
@@ -200,6 +200,28 @@ test_dummy_properties (GDataDocumentsService *service, gint set, GDataDocumentsQ
 
  out_func:
 	g_clear_object (&feed);
+}
+
+static gboolean
+is_owner (GDataService *service, GDataEntry *entry) {
+	GList *l;
+	GDataGoaAuthorizer *goa_authorizer;
+	GoaAccount *account;
+	const gchar *account_identity;
+
+	goa_authorizer = GDATA_GOA_AUTHORIZER (gdata_service_get_authorizer (service));
+	account = goa_object_peek_account (gdata_goa_authorizer_get_goa_object (goa_authorizer));
+	account_identity = goa_account_get_identity (account);
+
+	for (l = gdata_entry_get_authors (entry); l != NULL; l = l->next) {
+		GDataAuthor *author = GDATA_AUTHOR (l->data);
+
+		if (g_strcmp0 (gdata_author_get_email_address (author), account_identity) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 static void
