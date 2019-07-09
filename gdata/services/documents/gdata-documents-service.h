@@ -160,17 +160,5 @@ GDataDocumentsEntry *gdata_documents_service_remove_entry_from_folder_finish (GD
 
 gchar *gdata_documents_service_get_upload_uri (GDataDocumentsFolder *folder) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
-GDataDocumentsProperty *gdata_documents_service_get_documents_property (GDataDocumentsService *self, GDataDocumentsEntry *entry,
-							      const gchar *key, gboolean visibility,
-							      GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
-gboolean gdata_documents_service_set_documents_property (GDataDocumentsService *self, GDataDocumentsEntry *entry,
-					       GDataDocumentsProperty *property, GCancellable *cancellable,
-					       GError **error) G_GNUC_WARN_UNUSED_RESULT;
-
-gboolean gdata_documents_service_remove_documents_property (GDataDocumentsService *self, GDataDocumentsEntry *entry,
-						  GDataDocumentsProperty *property, GCancellable *cancellable,
-						  GError **error) G_GNUC_WARN_UNUSED_RESULT;
-
 G_END_DECLS
 #endif /* !GDATA_DOCUMENTS_SERVICE_H */
