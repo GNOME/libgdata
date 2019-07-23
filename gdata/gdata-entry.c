@@ -787,11 +787,14 @@ gdata_entry_get_id (GDataEntry *self)
 	/* We have to get the actual property since GDataDocumentsEntry overrides it. We then store it in our own ID field so that we can
 	 * free it later on. */
 	g_object_get (G_OBJECT (self), "id", &id, NULL);
+	if (g_strcmp0 (id, self->priv->id) != 0) {
+		g_free (self->priv->id);
+		self->priv->id = id;
+	} else {
+		g_free (id);
+	}
 
-	g_free (self->priv->id);
-	self->priv->id = id;
-
-	return id;
+	return self->priv->id;
 }
 
 /**
