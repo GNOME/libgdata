@@ -150,7 +150,7 @@ is_authorized_for_domain (GDataAuthorizer *self,
  *
  * Creates a new #GDataDummyAuthorizer.
  *
- * The #GDataAuthorizationDomain<!-- -->s for the given @service_type (i.e. as
+ * The #GDataAuthorizationDomains for the given @service_type (i.e. as
  * returned by gdata_service_get_authorization_domains()) will be authorized,
  * and all others will not.
  *
@@ -178,7 +178,7 @@ gdata_dummy_authorizer_new (GType service_type)
 /*
  * gdata_dummy_authorizer_new_for_authorization_domains:
  * @authorization_domains: (element-type GDataAuthorizationDomain) (transfer none):
- * a non-empty list of #GDataAuthorizationDomain<!-- -->s to be authorized
+ * a non-empty list of #GDataAuthorizationDomains to be authorized
  * against by the #GDataDummyAuthorizer
  *
  * Creates a new #GDataDummyAuthorizer. This function is intended to be used

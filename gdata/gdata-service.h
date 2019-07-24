@@ -137,7 +137,7 @@ typedef struct {
  * using the given authorization domain; new in version 0.9.0
  * @parse_error_response: a function to parse error responses to queries from the online service. It should set the error
  * from the status, reason phrase and response body it is passed.
- * @get_authorization_domains: a function to return a newly-allocated list of all the #GDataAuthorizationDomain<!-- -->s the service makes use of;
+ * @get_authorization_domains: a function to return a newly-allocated list of all the #GDataAuthorizationDomains the service makes use of;
  * while the list should be newly-allocated, the individual domains should not be; not implementing this function is equivalent to returning an
  * empty list; new in version 0.9.0
  * @parse_feed: a function to parse feed responses to queries from the online

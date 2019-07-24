@@ -26,10 +26,10 @@
  * #GDataYouTubeComment is a subclass of #GDataComment to represent a comment on a #GDataYouTubeVideo. It is returned by the #GDataCommentable
  * interface implementation on #GDataYouTubeVideo.
  *
- * It's possible to query for and add #GDataYouTubeComment<!-- -->s, but it is not possible to delete #GDataYouTubeComment<!-- -->s from any video
+ * It's possible to query for and add #GDataYouTubeComments, but it is not possible to delete #GDataYouTubeComments from any video
  * using the GData API.
  *
- * Comments on YouTube videos can be arranged in a hierarchy by their #GDataYouTubeComment:parent-comment-uri<!-- -->s. If a
+ * Comments on YouTube videos can be arranged in a hierarchy by their #GDataYouTubeComment:parent-comment-uris. If a
  * #GDataYouTubeComment<!-- -->'s parent comment URI is non-%NULL, it should match the %GDATA_LINK_SELF #GDataLink of another #GDataYouTubeComment on
  * the same video (as retrieved using gdata_entry_look_up_link() on the comments). Comments with #GDataYouTubeComment:parent-comment-uri set to %NULL
  * are top-level comments.

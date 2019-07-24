@@ -470,7 +470,7 @@ is_authorized_for_domain (GDataAuthorizer *self, GDataAuthorizationDomain *domai
  *
  * Creates a new #GDataClientLoginAuthorizer. The @client_id must be unique for your application, and as registered with Google.
  *
- * The #GDataAuthorizationDomain<!-- -->s for the given @service_type (i.e. as returned by gdata_service_get_authorization_domains()) are the ones the
+ * The #GDataAuthorizationDomains for the given @service_type (i.e. as returned by gdata_service_get_authorization_domains()) are the ones the
  * user will be logged in to using the provided username and password when gdata_client_login_authorizer_authenticate() is called. Note that the same
  * username and password will be used for all domains.
  *
@@ -491,7 +491,7 @@ gdata_client_login_authorizer_new (const gchar *client_id, GType service_type)
 /**
  * gdata_client_login_authorizer_new_for_authorization_domains:
  * @client_id: your application's client ID
- * @authorization_domains: (element-type GDataAuthorizationDomain) (transfer none): a non-empty list of #GDataAuthorizationDomain<!-- -->s to be
+ * @authorization_domains: (element-type GDataAuthorizationDomain) (transfer none): a non-empty list of #GDataAuthorizationDomains to be
  * authorized against by the #GDataClientLoginAuthorizer
  *
  * Creates a new #GDataClientLoginAuthorizer. The @client_id must be unique for your application, and as registered with Google. This function is
@@ -499,7 +499,7 @@ gdata_client_login_authorizer_new (const gchar *client_id, GType service_type)
  * isn't suitable. For example, this could be because the #GDataClientLoginAuthorizer will be used with multiple #GDataService subclasses, or because
  * the client requires a specific set of authorization domains.
  *
- * The specified #GDataAuthorizationDomain<!-- -->s are the ones the user will be logged in to using the provided username and password when
+ * The specified #GDataAuthorizationDomains are the ones the user will be logged in to using the provided username and password when
  * gdata_client_login_authorizer_authenticate() is called. Note that the same username and password will be used for all domains.
  *
  * Return value: (transfer full): a new #GDataClientLoginAuthorizer, or %NULL; unref with g_object_unref()
@@ -1075,7 +1075,7 @@ gdata_client_login_authorizer_authenticate_finish (GDataClientLoginAuthorizer *s
  * If the operation was cancelled, the error %G_IO_ERROR_CANCELLED will be returned.
  *
  * If the operation errors or is cancelled part-way through, gdata_authorizer_is_authorized_for_domain() is guaranteed to return %FALSE
- * for all #GDataAuthorizationDomain<!-- -->s, even if authentication has succeeded for some of them already.
+ * for all #GDataAuthorizationDomains, even if authentication has succeeded for some of them already.
  *
  * A %GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_BAD_AUTHENTICATION will be returned if authentication failed due to an incorrect username or password.
  * Other #GDataClientLoginAuthorizerError errors can be returned for other conditions.

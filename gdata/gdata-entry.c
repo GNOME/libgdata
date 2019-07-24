@@ -978,9 +978,9 @@ gdata_entry_add_category (GDataEntry *self, GDataCategory *category)
  * gdata_entry_get_categories:
  * @self: a #GDataEntry
  *
- * Gets a list of the #GDataCategory<!-- -->s containing this entry.
+ * Gets a list of the #GDataCategorys containing this entry.
  *
- * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategorys
  *
  * Since: 0.2.0
  */
@@ -995,9 +995,9 @@ gdata_entry_get_categories (GDataEntry *self)
  * gdata_entry_get_authors:
  * @self: a #GDataEntry
  *
- * Gets a list of the #GDataAuthor<!-- -->s for this entry.
+ * Gets a list of the #GDataAuthors for this entry.
  *
- * Return value: (element-type GData.Author) (transfer none): a #GList of #GDataAuthor<!-- -->s
+ * Return value: (element-type GData.Author) (transfer none): a #GList of #GDataAuthors
  *
  * Since: 0.7.0
  */
@@ -1184,7 +1184,7 @@ gdata_entry_look_up_link (GDataEntry *self, const gchar *rel)
  *
  * If you will only use the first link found, consider calling gdata_entry_look_up_link() instead.
  *
- * Return value: (element-type GData.Link) (transfer container): a #GList of #GDataLink<!-- -->s, or %NULL if none were found; free the list with
+ * Return value: (element-type GData.Link) (transfer container): a #GList of #GDataLinks, or %NULL if none were found; free the list with
  * g_list_free()
  *
  * Since: 0.4.0

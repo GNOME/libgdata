@@ -30,7 +30,7 @@
  * Comments may be queried, added and deleted. Note that they may not be edited.
  *
  * #GDataCommentable objects may not support all operations on comments, on an instance-by-instance basis (i.e. it's an invalid assumption that if,
- * for example, one #GDataYouTubeVideo doesn't support adding comments all other #GDataYouTubeVideo<!-- -->s don't support adding comments either).
+ * for example, one #GDataYouTubeVideo doesn't support adding comments all other #GDataYouTubeVideos don't support adding comments either).
  * Specific documentation for a particular type of #GDataCommentable may state otherwise, though.
  *
  * <example>
@@ -133,13 +133,13 @@ get_comment_type (GDataCommentableInterface *iface)
  * @progress_user_data: (closure): data to pass to the @progress_callback function
  * @error: a #GError, or %NULL
  *
- * Retrieves a #GDataFeed containing the #GDataComment<!-- -->s representing the comments on the #GDataCommentable which match the given @query.
+ * Retrieves a #GDataFeed containing the #GDataComments representing the comments on the #GDataCommentable which match the given @query.
  *
  * If the #GDataCommentable doesn't support commenting, %NULL will be returned and @error will be set to %GDATA_SERVICE_ERROR_FORBIDDEN. This is in
  * contrast to if it does support commenting but hasn't had any comments added yet, in which case an empty #GDataFeed will be returned and no error
  * will be set.
  *
- * Return value: (transfer full) (allow-none): a #GDataFeed of #GDataComment<!-- -->s, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full) (allow-none): a #GDataFeed of #GDataComments, or %NULL; unref with g_object_unref()
  *
  * Since: 0.10.0
  */
@@ -214,7 +214,7 @@ query_comments_async_cb (GDataService *service, GAsyncResult *service_result, gp
  * @callback: a #GAsyncReadyCallback to call when the query is finished
  * @user_data: (closure): data to pass to the @callback function
  *
- * Retrieves a #GDataFeed containing the #GDataComment<!-- -->s representing the comments on the #GDataCommentable which match the given @query.
+ * Retrieves a #GDataFeed containing the #GDataComments representing the comments on the #GDataCommentable which match the given @query.
  * @self, @service and @query are all reffed when this method is called, so can safely be freed after this method returns.
  *
  * For more details, see gdata_commentable_query_comments(), which is the synchronous version of this method.
@@ -278,7 +278,7 @@ gdata_commentable_query_comments_async (GDataCommentable *self, GDataService *se
  *
  * Finishes an asynchronous comment query operation started with gdata_commentable_query_comments_async().
  *
- * Return value: (transfer full) (allow-none): a #GDataFeed of #GDataComment<!-- -->s, or %NULL; unref with g_object_unref()
+ * Return value: (transfer full) (allow-none): a #GDataFeed of #GDataComments, or %NULL; unref with g_object_unref()
  *
  * Since: 0.10.0
  */

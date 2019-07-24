@@ -32,7 +32,7 @@
  * moving the authentication interface to a web page under Google's control.
  *
  * The OAuth 1.0 process as implemented by Google follows the <ulink type="http" url="http://tools.ietf.org/html/rfc5849">OAuth 1.0 protocol as
- * specified by IETF in RFC 5849</ulink>, with a few additions to support scopes (implemented in libgdata by #GDataAuthorizationDomain<!-- -->s),
+ * specified by IETF in RFC 5849</ulink>, with a few additions to support scopes (implemented in libgdata by #GDataAuthorizationDomains),
  * locales and custom domains. Briefly, the process is initiated by requesting an authenticated request token from the Google accounts service
  * (using gdata_oauth1_authorizer_request_authentication_uri()), going to the authentication URI for the request token, authenticating and authorizing
  * access to the desired scopes, then providing the verifier returned by Google to the Google accounts service again (using
@@ -629,7 +629,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
  *
  * Creates a new #GDataOAuth1Authorizer.
  *
- * The #GDataAuthorizationDomain<!-- -->s for the given @service_type (i.e. as returned by gdata_service_get_authorization_domains()) are the ones the
+ * The #GDataAuthorizationDomains for the given @service_type (i.e. as returned by gdata_service_get_authorization_domains()) are the ones the
  * user will be requested to authorize access to on the page at the URI returned by gdata_oauth1_authorizer_request_authentication_uri().
  *
  * The given @application_name will set the value of #GDataOAuth1Authorizer:application-name and will be displayed to the user on authentication pages
@@ -650,14 +650,14 @@ gdata_oauth1_authorizer_new (const gchar *application_name, GType service_type)
 /**
  * gdata_oauth1_authorizer_new_for_authorization_domains:
  * @application_name: (allow-none): a human-readable, translated application name to use on authentication pages, or %NULL
- * @authorization_domains: (element-type GDataAuthorizationDomain) (transfer none): a non-empty list of #GDataAuthorizationDomain<!-- -->s to be
+ * @authorization_domains: (element-type GDataAuthorizationDomain) (transfer none): a non-empty list of #GDataAuthorizationDomains to be
  * authorized against by the #GDataOAuth1Authorizer
  *
  * Creates a new #GDataOAuth1Authorizer. This function is intended to be used only when the default authorization domain list for a single
  * #GDataService, as used by gdata_oauth1_authorizer_new(), isn't suitable. For example, this could be because the #GDataOAuth1Authorizer will be used
  * with multiple #GDataService subclasses, or because the client requires a specific set of authorization domains.
  *
- * The specified #GDataAuthorizationDomain<!-- -->s are the ones the user will be requested to authorize access to on the page at the URI returned by
+ * The specified #GDataAuthorizationDomains are the ones the user will be requested to authorize access to on the page at the URI returned by
  * gdata_oauth1_authorizer_request_authentication_uri().
  *
  * The given @application_name will set the value of #GDataOAuth1Authorizer:application-name and will be displayed to the user on authentication pages
@@ -701,7 +701,7 @@ gdata_oauth1_authorizer_new_for_authorization_domains (const gchar *application_
  *
  * Requests a fresh unauthenticated token from the Google accounts service and builds and returns the URI of an authentication page for that token.
  * This should then be presented to the user (e.g. in an embedded or stand alone web browser). The authentication page will ask the user to log in
- * using their Google account, then ask them to grant access to the #GDataAuthorizationDomain<!-- -->s passed to the constructor of the
+ * using their Google account, then ask them to grant access to the #GDataAuthorizationDomains passed to the constructor of the
  * #GDataOAuth1Authorizer. If the user grants access, they will be given a verifier, which can then be passed to
  * gdata_oauth1_authorizer_request_authorization() (along with the @token and @token_secret values returned by this method) to authorize the token.
  *
@@ -1004,7 +1004,7 @@ gdata_oauth1_authorizer_request_authentication_uri_finish (GDataOAuth1Authorizer
  * as were returned by gdata_oauth1_authorizer_request_authentication_uri() if it was successful.
  *
  * If the verifier is valid (i.e. the user granted access to the application and the Google accounts service has no reason to distrust the client),
- * %TRUE will be returned and any operations performed from that point onwards on #GDataService<!-- -->s using this #GDataAuthorizer will be
+ * %TRUE will be returned and any operations performed from that point onwards on #GDataServices using this #GDataAuthorizer will be
  * authorized.
  *
  * If the user denies access to the application or the Google accounts service distrusts it, a bogus verifier could be returned. In this case, %FALSE

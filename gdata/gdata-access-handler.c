@@ -24,15 +24,15 @@
  * @stability: Stable
  * @include: gdata/gdata-access-handler.h
  *
- * #GDataAccessHandler is an interface which can be implemented by #GDataEntry<!-- -->s which can have their permissions controlled by an
- * access control list (ACL). It has a set of methods which allow the #GDataAccessRule<!-- -->s for the access handler/entry to be retrieved,
+ * #GDataAccessHandler is an interface which can be implemented by #GDataEntrys which can have their permissions controlled by an
+ * access control list (ACL). It has a set of methods which allow the #GDataAccessRules for the access handler/entry to be retrieved,
  * added, modified and deleted, with immediate effect.
  *
  * For an example of inserting an access rule into an ACL, see the documentation for #GDataAccessRule.
  *
  * When implementing the interface, classes must implement an <function>is_owner_rule</function> function. It's optional to implement a
  * <function>get_authorization_domain</function> function, but if it's not implemented, any operations on the access handler's
- * #GDataAccessRule<!-- -->s will be performed unauthorized (i.e. as if by a non-logged-in user). This will not usually work.
+ * #GDataAccessRules will be performed unauthorized (i.e. as if by a non-logged-in user). This will not usually work.
  *
  * Since: 0.3.0
  */

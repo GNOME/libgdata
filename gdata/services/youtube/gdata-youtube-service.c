@@ -1107,7 +1107,7 @@ gdata_youtube_service_get_developer_key (GDataYouTubeService *self)
  * @cancellable: (allow-none): a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
- * Gets a list of the categories currently in use on YouTube. The returned #GDataAPPCategories contains a list of #GDataYouTubeCategory<!-- -->s which
+ * Gets a list of the categories currently in use on YouTube. The returned #GDataAPPCategories contains a list of #GDataYouTubeCategorys which
  * enumerate the current YouTube categories.
  *
  * The category labels (#GDataCategory:label) are localised based on the value of #GDataService:locale.

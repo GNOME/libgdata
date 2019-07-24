@@ -454,11 +454,11 @@ real_parse_error_response (GDataService *self, GDataOperationType operation_type
  * gdata_service_is_authorized:
  * @self: a #GDataService
  *
- * Determines whether the service is authorized for all the #GDataAuthorizationDomain<!-- -->s it belongs to (as returned by
+ * Determines whether the service is authorized for all the #GDataAuthorizationDomains it belongs to (as returned by
  * gdata_service_get_authorization_domains()). If the service's #GDataService:authorizer is %NULL, %FALSE is always returned.
  *
  * This is basically a convenience method for checking that the service's #GDataAuthorizer is authorized for all the service's
- * #GDataAuthorizationDomain<!-- -->s.
+ * #GDataAuthorizationDomains.
  *
  * Return value: %TRUE if the service is authorized for all its domains, %FALSE otherwise
  *
@@ -545,13 +545,13 @@ gdata_service_set_authorizer (GDataService *self, GDataAuthorizer *authorizer)
  * gdata_service_get_authorization_domains:
  * @service_type: the #GType of the #GDataService subclass to retrieve the authorization domains for
  *
- * Retrieves the full list of #GDataAuthorizationDomain<!-- -->s which relate to the specified @service_type. All the
- * #GDataAuthorizationDomain<!-- -->s are unique and interned, so can be compared with other domains by simple pointer comparison.
+ * Retrieves the full list of #GDataAuthorizationDomains which relate to the specified @service_type. All the
+ * #GDataAuthorizationDomains are unique and interned, so can be compared with other domains by simple pointer comparison.
  *
  * Note that in addition to this method, #GDataService subclasses may expose some or all of their authorization domains individually by means of
  * individual accessor functions.
  *
- * Return value: (transfer container) (element-type GDataAuthorizationDomain): an unordered list of #GDataAuthorizationDomain<!-- -->s; free with
+ * Return value: (transfer container) (element-type GDataAuthorizationDomain): an unordered list of #GDataAuthorizationDomains; free with
  * g_list_free()
  *
  * Since: 0.9.0
@@ -832,7 +832,7 @@ query_thread (GTask *task, gpointer source_object, gpointer task_data, GCancella
  * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
+ * @entry_type: a #GType for the #GDataEntrys to build from the XML
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
@@ -1052,7 +1052,7 @@ real_parse_feed (GDataService *self,
  * @domain: (allow-none): the #GDataAuthorizationDomain the query falls under, or %NULL
  * @feed_uri: the feed URI to query, including the host name and protocol
  * @query: (allow-none): a #GDataQuery with the query parameters, or %NULL
- * @entry_type: a #GType for the #GDataEntry<!-- -->s to build from the XML
+ * @entry_type: a #GType for the #GDataEntrys to build from the XML
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @progress_callback: (allow-none) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
  * @progress_user_data: (closure): data to pass to the @progress_callback function
