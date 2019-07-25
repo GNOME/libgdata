@@ -10,7 +10,10 @@ demos = [
 ]
 
 if enable_goa
-  demos += [['docs-list', 'docs-list', {'sources': 'docs-list/docs-list.c'}]]
+  demos += [
+    ['docs-list', 'docs-list', {'sources': 'docs-list/docs-list.c'}],
+    ['docs-property', 'docs-property', {'sources': 'docs-property/docs-property.c'}]
+  ]
 endif
 
 if gtk_dep.found()
