@@ -156,6 +156,7 @@
 		<chapter>
 			<title>Google Documents/Drive API</title>
 			<xi:include href="xml/gdata-documents-service.xml"/>
+			<xi:include href="xml/gdata-documents-property.xml"/>
 			<xi:include href="xml/gdata-documents-feed.xml"/>
 			<xi:include href="xml/gdata-documents-query.xml"/>
 			<xi:include href="xml/gdata-documents-upload-query.xml"/>

@@ -1572,6 +1572,32 @@ GDataDocumentsEntryPrivate
 </SECTION>
 
 <SECTION>
+<FILE>gdata-documents-property</FILE>
+<TITLE>GDataDocumentsProperty</TITLE>
+GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC
+GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE
+GDataDocumentsProperty
+GDataDocumentsPropertyClass
+gdata_documents_property_new
+gdata_documents_property_get_key
+gdata_documents_property_get_etag
+gdata_documents_property_get_value
+gdata_documents_property_set_value
+gdata_documents_property_get_visibility
+gdata_documents_property_set_visibility
+<SUBSECTION Standard>
+gdata_documents_property_get_type
+GDATA_DOCUMENTS_PROPERTY
+GDATA_DOCUMENTS_PROPERTY_CLASS
+GDATA_DOCUMENTS_PROPERTY_GET_CLASS
+GDATA_IS_DOCUMENTS_PROPERTY
+GDATA_IS_DOCUMENTS_PROPERTY_CLASS
+GDATA_TYPE_DOCUMENTS_PROPERTY
+<SUBSECTION Private>
+GDataDocumentsPropertyPrivate
+</SECTION>
+
+<SECTION>
 <FILE>gdata-documents-feed</FILE>
 <TITLE>GDataDocumentsFeed</TITLE>
 GDataDocumentsFeed

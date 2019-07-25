@@ -332,6 +332,14 @@ global:
 	gdata_documents_pdf_new;
 	gdata_documents_presentation_get_type;
 	gdata_documents_presentation_new;
+	gdata_documents_property_get_etag;
+	gdata_documents_property_get_key;
+	gdata_documents_property_get_type;
+	gdata_documents_property_get_value;
+	gdata_documents_property_get_visibility;
+	gdata_documents_property_new;
+	gdata_documents_property_set_value;
+	gdata_documents_property_set_visibility;
 	gdata_documents_query_add_collaborator;
 	gdata_documents_query_add_reader;
 	gdata_documents_query_get_collaborator_addresses;
