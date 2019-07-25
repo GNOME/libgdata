@@ -26,6 +26,7 @@
 #include <gdata/gdata-service.h>
 #include <gdata/gdata-upload-stream.h>
 #include <gdata/services/documents/gdata-documents-query.h>
+#include <gdata/services/documents/gdata-documents-property.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
 #include <gdata/services/documents/gdata-documents-metadata.h>
 
