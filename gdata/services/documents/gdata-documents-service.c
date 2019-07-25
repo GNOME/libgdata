@@ -258,6 +258,7 @@
 #include <libsoup/soup.h>
 #include <string.h>
 
+#include "gdata-documents-property.h"
 #include "gdata-documents-service.h"
 #include "gdata-documents-utils.h"
 #include "gdata-batchable.h"
@@ -1193,6 +1194,7 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	gchar *uri;
 	SoupMessage *message;
 	guint status;
+	GList *l;
 
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (entry), NULL);
@@ -1225,6 +1227,18 @@ gdata_documents_service_add_entry_to_folder (GDataDocumentsService *self, GDataD
 	local_entry = g_object_new (entry_type, "etag", etag, "title", title, NULL);
 	gdata_documents_utils_add_content_type (local_entry, content_type);
 	add_folder_link_to_entry (local_entry, folder);
+
+	for (l = gdata_documents_entry_get_document_properties (entry); l != NULL; l = l->next) {
+		GDataDocumentsProperty *old_prop;
+		g_autoptr(GDataDocumentsProperty) new_prop;
+
+		old_prop = GDATA_DOCUMENTS_PROPERTY (l->data);
+
+		new_prop = gdata_documents_property_new (gdata_documents_property_get_key (old_prop));
+		gdata_documents_property_set_value (new_prop, gdata_documents_property_get_value (old_prop));
+		gdata_documents_property_set_visibility (new_prop, gdata_documents_property_get_visibility (old_prop));
+		gdata_documents_entry_add_documents_property (local_entry, new_prop);
+	}
 
 	message = _gdata_service_build_message (GDATA_SERVICE (self), get_documents_authorization_domain (), SOUP_METHOD_POST, uri, NULL, FALSE);
 	g_free (uri);
