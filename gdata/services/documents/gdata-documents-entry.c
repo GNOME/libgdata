@@ -98,6 +98,7 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+#include "gdata-comparable.h"
 #include "gdata-documents-entry.h"
 #include "gdata-documents-entry-private.h"
 #include "gdata-parser.h"
@@ -133,6 +134,7 @@ struct _GDataDocumentsEntryPrivate {
 	GDataAuthor *last_modified_by;
 	goffset quota_used; /* bytes */
 	goffset file_size; /* bytes */
+	GList *properties; /* GDataDocumentsProperty */
 };
 
 enum {
@@ -384,6 +386,9 @@ gdata_entry_dispose (GObject *object)
 		g_object_unref (priv->last_modified_by);
 	priv->last_modified_by = NULL;
 
+	g_list_free_full (priv->properties, g_object_unref);
+	priv->properties = NULL;
+
 	/* Chain up to the parent class */
 	G_OBJECT_CLASS (gdata_documents_entry_parent_class)->dispose (object);
 }
@@ -455,6 +460,69 @@ gdata_documents_entry_set_property (GObject *object, guint property_id, const GV
 			/* We don't have any other property... */
 			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 			break;
+	}
+}
+
+static void
+get_key_value_and_visibility (JsonReader *reader, gchar **out_key, gchar **out_value, gchar **out_visibility, GError **error)
+{
+	g_autoptr(GError) child_error = NULL;
+	g_autofree gchar *key = NULL;
+	g_autofree gchar *value = NULL;
+	g_autofree gchar *visibility = NULL;
+	gboolean success = FALSE;
+	guint i, members;
+
+	for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+		json_reader_read_element (reader, i);
+
+		if (gdata_parser_string_from_json_member (reader, "key", P_REQUIRED | P_NON_EMPTY, &key, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, g_steal_pointer (&child_error),
+							    /* Translators: the parameter is an error message */
+							    _("Error parsing JSON: %s"),
+							    "Failed to find ‘key’.");
+				json_reader_end_element (reader);
+				return;
+			}
+		}
+
+		if (gdata_parser_string_from_json_member (reader, "visibility", P_REQUIRED | P_NON_EMPTY, &visibility, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, g_steal_pointer (&child_error),
+							    /* Translators: the parameter is an error message */
+							    _("Error parsing JSON: %s"),
+							    "Failed to find ‘visibility’.");
+				json_reader_end_element (reader);
+				return;
+			}
+		}
+
+		/* A Property can have a value field to be an empty string */
+		if (gdata_parser_string_from_json_member (reader, "value", P_DEFAULT, &value, &success, &child_error) == TRUE) {
+			if (!success && child_error != NULL) {
+				g_propagate_prefixed_error (error, g_steal_pointer (&child_error),
+							    /* Translators: the parameter is an error message */
+							    _("Error parsing JSON: %s"),
+							    "Failed to find ‘value’.");
+				json_reader_end_element (reader);
+				return;
+			}
+		}
+
+		json_reader_end_element (reader);
+	}
+
+	if (out_key != NULL) {
+		*out_key = g_steal_pointer (&key);
+	}
+
+	if (out_visibility != NULL) {
+		*out_visibility = g_steal_pointer (&visibility);
+	}
+
+	if (out_value != NULL) {
+		*out_value = g_steal_pointer (&value);
 	}
 }
 
@@ -807,6 +875,66 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		}
 
 		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "properties") == 0) {
+		guint i, elements;
+
+		if (!json_reader_is_array (reader)) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+				     /* Translators: the parameter is an error message */
+				     _("Error parsing JSON: %s"),
+				     "JSON node ‘properties’ is not an array.");
+			return FALSE;
+		}
+
+		/* Loop through the properties array. */
+		for (i = 0, elements = (guint) json_reader_count_elements (reader); success && i < elements; i++) {
+			g_autofree gchar *key = NULL;
+			g_autofree gchar *value = NULL;
+			g_autofree gchar *visibility = NULL;
+			g_autoptr(GDataDocumentsProperty) property = NULL;
+
+			json_reader_read_element (reader, i);
+
+			if (!json_reader_is_object (reader)) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+					     /* Translators: the parameter is an error message */
+					     _("Error parsing JSON: %s"),
+					     "JSON node inside ‘properties’ is not an object.");
+				success = FALSE;
+				goto continue_properties;
+			}
+
+			get_key_value_and_visibility (reader, &key, &value, &visibility, &child_error);
+
+			if (child_error != NULL) {
+				g_propagate_error (error, child_error);
+				success = FALSE;
+				goto continue_properties;
+			}
+
+			if (g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC) &&
+			    g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE)) {
+				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+					     /* Translators: the parameter is the invalid value of visibility variable */
+					     _("Invalid visibility: unrecognised value ‘%s’"),
+					     visibility);
+				success = FALSE;
+				goto continue_properties;
+			}
+
+			g_assert (key != NULL);
+
+			property = gdata_documents_property_new (key);
+			gdata_documents_property_set_visibility (property, visibility);
+			gdata_documents_property_set_value (property, value);
+
+			gdata_documents_entry_add_documents_property (GDATA_DOCUMENTS_ENTRY (parsable), property);
+
+		continue_properties:
+			json_reader_end_element (reader);
+		}
+
+		return success;
 	}
 
 	return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_json (parsable, reader, user_data, error);
@@ -842,7 +970,7 @@ static void
 get_json (GDataParsable *parsable, JsonBuilder *builder)
 {
 	GList *i;
-	GList *parent_folders_list;
+	GList *parent_folders_list, *documents_properties_list;
 	const gchar *mime_type;
 
 	GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->get_json (parsable, builder);
@@ -880,6 +1008,42 @@ get_json (GDataParsable *parsable, JsonBuilder *builder)
 
 	g_list_free (parent_folders_list);
 
+	/* Set all the properties */
+	json_builder_set_member_name (builder, "properties");
+	json_builder_begin_array (builder);
+
+	documents_properties_list = gdata_documents_entry_get_document_properties (GDATA_DOCUMENTS_ENTRY (parsable));
+	for (i = documents_properties_list; i != NULL; i = i->next) {
+		GDataDocumentsProperty *property = GDATA_DOCUMENTS_PROPERTY (i->data);
+		const gchar *key = NULL;
+		const gchar *value = NULL;
+		const gchar *visibility = NULL;
+
+		if (property != NULL) {
+			key = gdata_documents_property_get_key (property);
+			value = gdata_documents_property_get_value (property);
+			visibility = gdata_documents_property_get_visibility (property);
+
+			json_builder_begin_object (builder);
+
+			json_builder_set_member_name (builder, "key");
+			json_builder_add_string_value (builder, key);
+
+			json_builder_set_member_name (builder, "visibility");
+			json_builder_add_string_value (builder, visibility);
+
+			json_builder_set_member_name (builder, "value");
+			if (value == NULL) {
+				json_builder_add_null_value (builder);
+			} else {
+				json_builder_add_string_value (builder, value);
+			}
+
+			json_builder_end_object (builder);
+		}
+	}
+
+	json_builder_end_array (builder);
 }
 
 static void
@@ -1155,4 +1319,103 @@ gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
 {
 	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
 	return self->priv->is_deleted;
+}
+
+
+/**
+ * gdata_documents_entry_get_document_properties:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets a list of the #GDataDocumentsPropertys for this entry.
+ *
+ * Return value: (transfer none) (element-type GDataDocumentsProperty): a #GList of pointers to #GDataDocumentsPropertys
+ *
+ * Since: 0.18.0
+ */
+GList *
+gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
+	return self->priv->properties;
+}
+
+/**
+ * gdata_documents_entry_add_documents_property:
+ * @self: a #GDataDocumentsEntry
+ * @property: a #GDataDocumentsProperty
+ *
+ * Inserts/updates @property on "properties" list in @self. Since, a GDataDocumentsProperty is uniquely identified by #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility, if no such property exists in the "properties" list, then a @property will be appended to the list after incrementing the reference count.
+ *
+ * In case that there already exists a @property in "properties", the #GDataDocumentsProperty inside the list will be updated to @property. Note that #GDataDocumentsProperty:value has no role in determining the uniqueness of a #GDataDocumentsProperty.
+ *
+ * The changes made by this function will be local only and you need to explicity update @self by calling gdata_service_update_entry().
+ *
+ * Return value: %TRUE if the @property doesn't exist in the "properties" list, or that #GDataDocumentsProperty:value  of @property has been set to %NULL by a call to gdata_documents_entry_remove_documents_property(). %FALSE if @property exists in "properties" list, or in the case that @self or @property aren't of proper types.
+ *
+ * Since: 0.18.0
+ */
+gboolean
+gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
+	GList *l = NULL;
+	gboolean ret_val = TRUE;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_PROPERTY (property), FALSE);
+
+	l = g_list_find_custom (self->priv->properties, property, (GCompareFunc) gdata_comparable_compare);
+
+	if (l == NULL) {
+		self->priv->properties = g_list_prepend (self->priv->properties, g_object_ref (property));
+	} else {
+		GDataDocumentsProperty *_prop = GDATA_DOCUMENTS_PROPERTY (l->data);
+		if (gdata_documents_property_get_value (_prop) != NULL)
+			ret_val = FALSE;
+		gdata_documents_property_set_value (_prop, gdata_documents_property_get_value (property));
+	}
+
+	return ret_val;
+}
+
+/**
+ * gdata_documents_entry_remove_documents_property:
+ * @self: a #GDataDocumentsEntry
+ * @property: a #GDataDocumentsProperty
+ *
+ * The property specified by @property will be removed from the "properties" list on @self.
+ *
+ * Only #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility will be used to find @property in "properties" list. #GDataDocumentsProperty:value has no role in determining the uniqueness of a #GDataDocumentsProperty.
+ *
+ * The changes made by this function will be local only and you need to explicity update @self by calling gdata_service_update_entry().
+ *
+ * Return value: %TRUE if @property has been successfully removed from "properties" list on @self, %FALSE otherwise.
+ *
+ * Since: 0.18.0
+ */
+gboolean
+gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
+	GList *l;
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_PROPERTY (property), FALSE);
+
+	l = g_list_find_custom (self->priv->properties, property, (GCompareFunc) gdata_comparable_compare);
+
+	if (l == NULL) {
+		return FALSE;
+	}
+
+	/* Google Drive has this weird behaviour that setting the properties
+	 * array to empty with file/update method doesn't empties the array.
+	 * For eg. Suppose we initially did an update with properties array
+	 * with value [1, 2, 3]. If we again update the properties array with
+	 * [1, 5, 6], the final resulting properties array will be [1, 2, 3, 5,
+	 * 6] meaning that the values get appended on subsequent updates.
+	 *
+	 * The way to counter this is to set the "value" field in the Property
+	 * Resource to NULL, which removes that Property Resource from the
+	 * properties array.
+	 */
+	gdata_documents_property_set_value ((GDataDocumentsProperty *) l->data, NULL);
+
+	return TRUE;
 }
