@@ -2084,7 +2084,7 @@ gdata_contacts_contact_add_phone_number (GDataContactsContact *self, GDataGDPhon
  *
  * Gets a list of the phone numbers owned by the contact.
  *
- * Return value: (element-type GData.GDPhoneNumber) (transfer none): a #GList of #GDataGDPhoneNumber<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDPhoneNumber) (transfer none): a #GList of #GDataGDPhoneNumbers, or %NULL
  *
  * Since: 0.2.0
  */
@@ -2256,7 +2256,7 @@ gdata_contacts_contact_add_organization (GDataContactsContact *self, GDataGDOrga
  *
  * Gets a list of the organizations to which the contact belongs.
  *
- * Return value: (element-type GData.GDOrganization) (transfer none): a #GList of #GDataGDOrganization<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDOrganization) (transfer none): a #GList of #GDataGDOrganizations, or %NULL
  *
  * Since: 0.2.0
  */
@@ -2337,7 +2337,7 @@ gdata_contacts_contact_add_jot (GDataContactsContact *self, GDataGContactJot *jo
  *
  * Gets a list of the jots attached to the contact.
  *
- * Return value: (element-type GData.GContactJot) (transfer none): a #GList of #GDataGContactJot<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactJot) (transfer none): a #GList of #GDataGContactJots, or %NULL
  *
  * Since: 0.7.0
  */
@@ -2394,7 +2394,7 @@ gdata_contacts_contact_add_relation (GDataContactsContact *self, GDataGContactRe
  *
  * Gets a list of the relations of the contact.
  *
- * Return value: (element-type GData.GContactRelation) (transfer none): a #GList of #GDataGContactRelation<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactRelation) (transfer none): a #GList of #GDataGContactRelations, or %NULL
  *
  * Since: 0.7.0
  */
@@ -2431,7 +2431,7 @@ gdata_contacts_contact_remove_all_relations (GDataContactsContact *self)
  *
  * Adds a website to the contact's list of websites and increments its reference count.
  *
- * Duplicate websites will not be added to the list, though the same URI may appear in several #GDataGContactWebsite<!-- -->s with different
+ * Duplicate websites will not be added to the list, though the same URI may appear in several #GDataGContactWebsites with different
  * relation types or labels.
  *
  * Since: 0.7.0
@@ -2452,7 +2452,7 @@ gdata_contacts_contact_add_website (GDataContactsContact *self, GDataGContactWeb
  *
  * Gets a list of the websites of the contact.
  *
- * Return value: (element-type GData.GContactWebsite) (transfer none): a #GList of #GDataGContactWebsite<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactWebsite) (transfer none): a #GList of #GDataGContactWebsites, or %NULL
  *
  * Since: 0.7.0
  */
@@ -2534,7 +2534,7 @@ gdata_contacts_contact_add_event (GDataContactsContact *self, GDataGContactEvent
  *
  * Gets a list of the events of the contact.
  *
- * Return value: (element-type GData.GContactEvent) (transfer none): a #GList of #GDataGContactEvent<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactEvent) (transfer none): a #GList of #GDataGContactEvents, or %NULL
  *
  * Since: 0.7.0
  */
@@ -2571,7 +2571,7 @@ gdata_contacts_contact_remove_all_events (GDataContactsContact *self)
  *
  * Adds a calendar to the contact's list of calendars and increments its reference count.
  *
- * Duplicate calendars will not be added to the list, though the same URI may appear in several #GDataGContactCalendar<!-- -->s with different
+ * Duplicate calendars will not be added to the list, though the same URI may appear in several #GDataGContactCalendars with different
  * relation types or labels.
  *
  * Since: 0.7.0
@@ -2592,7 +2592,7 @@ gdata_contacts_contact_add_calendar (GDataContactsContact *self, GDataGContactCa
  *
  * Gets a list of the calendars of the contact.
  *
- * Return value: (element-type GData.GContactCalendar) (transfer none): a #GList of #GDataGContactCalendar<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactCalendar) (transfer none): a #GList of #GDataGContactCalendars, or %NULL
  *
  * Since: 0.7.0
  */
@@ -2674,7 +2674,7 @@ gdata_contacts_contact_add_external_id (GDataContactsContact *self, GDataGContac
  *
  * Gets a list of the external IDs of the contact.
  *
- * Return value: (element-type GData.GContactExternalID) (transfer none): a #GList of #GDataGContactExternalID<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactExternalID) (transfer none): a #GList of #GDataGContactExternalIDs, or %NULL
  *
  * Since: 0.7.0
  */
@@ -2788,7 +2788,7 @@ gdata_contacts_contact_add_language (GDataContactsContact *self, GDataGContactLa
  *
  * Gets a list of the languages of the contact.
  *
- * Return value: (element-type GData.GContactLanguage) (transfer none): a #GList of #GDataGContactLanguage<!-- -->s, or %NULL
+ * Return value: (element-type GData.GContactLanguage) (transfer none): a #GList of #GDataGContactLanguages, or %NULL
  *
  * Since: 0.7.0
  */

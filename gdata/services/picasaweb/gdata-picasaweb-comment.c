@@ -26,7 +26,7 @@
  * #GDataPicasaWebComment is a subclass of #GDataComment to represent a comment on a #GDataPicasaWebFile. It is returned by the #GDataCommentable
  * interface implementation on #GDataPicasaWebFile.
  *
- * It's possible to query for, add and delete #GDataPicasaWebComment<!-- -->s from #GDataPicasaWebFile<!-- -->s.
+ * It's possible to query for, add and delete #GDataPicasaWebComments from #GDataPicasaWebFiles.
  *
  * Since: 0.10.0
  */

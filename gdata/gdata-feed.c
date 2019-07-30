@@ -763,7 +763,7 @@ _gdata_feed_new_from_json (GType feed_type, const gchar *json, gint length, GTyp
  *
  * Returns a list of the entries contained in this feed.
  *
- * Return value: (element-type GData.Entry) (transfer none): a #GList of #GDataEntry<!-- -->s
+ * Return value: (element-type GData.Entry) (transfer none): a #GList of #GDataEntrys
  */
 GList *
 gdata_feed_get_entries (GDataFeed *self)
@@ -809,7 +809,7 @@ gdata_feed_look_up_entry (GDataFeed *self, const gchar *id)
  *
  * Returns a list of the categories listed in this feed.
  *
- * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategorys
  */
 GList *
 gdata_feed_get_categories (GDataFeed *self)
@@ -830,7 +830,7 @@ _gdata_feed_add_category (GDataFeed *self, GDataCategory *category)
  *
  * Returns a list of the links listed in this feed.
  *
- * Return value: (element-type GData.Link) (transfer none): a #GList of #GDataLink<!-- -->s
+ * Return value: (element-type GData.Link) (transfer none): a #GList of #GDataLinks
  */
 GList *
 gdata_feed_get_links (GDataFeed *self)
@@ -882,7 +882,7 @@ _gdata_feed_add_link (GDataFeed *self, GDataLink *_link)
  *
  * Returns a list of the authors listed in this feed.
  *
- * Return value: (element-type GData.Author) (transfer none): a #GList of #GDataAuthor<!-- -->s
+ * Return value: (element-type GData.Author) (transfer none): a #GList of #GDataAuthors
  */
 GList *
 gdata_feed_get_authors (GDataFeed *self)

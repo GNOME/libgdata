@@ -529,9 +529,9 @@ gdata_media_group_look_up_content (GDataMediaGroup *self, const gchar *type)
  * gdata_media_group_get_contents:
  * @self: a #GDataMediaGroup
  *
- * Returns a list of #GDataMediaContent<!-- -->s, giving the content enclosed by the group.
+ * Returns a list of #GDataMediaContents, giving the content enclosed by the group.
  *
- * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContent<!-- -->s,  or %NULL
+ * Return value: (element-type GData.MediaContent) (transfer none): a #GList of #GDataMediaContents,  or %NULL
  */
 GList *
 gdata_media_group_get_contents (GDataMediaGroup *self)
@@ -649,7 +649,7 @@ gdata_media_group_get_media_rating (GDataMediaGroup *self, const gchar *rating_t
  *
  * Gets a list of the thumbnails available for the group.
  *
- * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnails, or %NULL
  */
 GList *
 gdata_media_group_get_thumbnails (GDataMediaGroup *self)

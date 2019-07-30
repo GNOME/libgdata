@@ -35,10 +35,10 @@
  *	GDataFeed *album_feed;
  *	GList *album_entries;
  *
- *	/<!-- -->* Query for a feed of GDataPicasaWebAlbum<!-- -->s owned by user "libgdata.picasaweb" *<!-- -->/
+ *	/<!-- -->* Query for a feed of GDataPicasaWebAlbums owned by user "libgdata.picasaweb" *<!-- -->/
  *	album_feed = gdata_picasaweb_service_query_all_albums (service, NULL, "libgdata.picasaweb", NULL, NULL, NULL, NULL);
  *
- *	/<!-- -->* Get a list of GDataPicasaWebAlbum<!-- -->s from the query's feed *<!-- -->/
+ *	/<!-- -->* Get a list of GDataPicasaWebAlbums from the query's feed *<!-- -->/
  *	for (album_entries = gdata_feed_get_entries (album_feed); album_entries != NULL; album_entries = album_entries->next) {
  *		GDataPicasaWebAlbum *album;
  *		guint num_photos;
@@ -63,7 +63,7 @@
  *
  *			thumbnail = GDATA_MEDIA_THUMBNAIL (thumbnails->data);
  *			/<!-- -->* Do something fun with the thumbnails, like download and display them. We could just as easily download them into
- *			 * files using g_file_create() and g_output_stream_splice(), rather than create GdkPixbuf<!-- -->s directly from them.
+ *			 * files using g_file_create() and g_output_stream_splice(), rather than create GdkPixbufs directly from them.
  *			 * Note that this is a blocking operation. *<!-- -->/
  *			download_stream = gdata_media_thumbnail_download (thumbnail, GDATA_SERVICE (service), NULL, NULL);
  *			pixbuf = gdk_pixbuf_new_from_stream (G_INPUT_STREAM (download_stream), NULL, NULL);
@@ -173,7 +173,7 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	/**
 	 * GDataPicasaWebAlbum:album-id:
 	 *
-	 * The ID of the album. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebAlbum<!-- -->s; for example,
+	 * The ID of the album. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebAlbums; for example,
 	 * if gdata_entry_get_id() returned "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249" for a
 	 * particular #GDataPicasaWebAlbum, the #GDataPicasaWebAlbum:album-id property would be "5328889949261497249".
 	 *
@@ -1208,7 +1208,7 @@ gdata_picasaweb_album_get_contents (GDataPicasaWebAlbum *self)
  *
  * Returns a list of thumbnails, often at different sizes, for this album.
  *
- * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnails, or %NULL
  *
  * Since: 0.4.0
  */

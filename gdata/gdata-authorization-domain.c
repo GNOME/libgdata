@@ -24,19 +24,19 @@
  * @include: gdata/gdata-authorization-domain.h
  *
  * A #GDataAuthorizationDomain represents a single data domain which a user can authorize libgdata to access. This might be a domain covering the
- * whole of the user's Google Contacts account, for example. Typically, #GDataService<!-- -->s map to #GDataAuthorizationDomains in a one-to-one
+ * whole of the user's Google Contacts account, for example. Typically, #GDataServices map to #GDataAuthorizationDomains in a one-to-one
  * fashion, though some services (such as #GDataDocumentsService) use multiple authorization domains.
  *
- * The #GDataAuthorizationDomains<!-- -->s used by a service can be retrieved using gdata_service_get_authorization_domains(). The set of domains
+ * The #GDataAuthorizationDomainss used by a service can be retrieved using gdata_service_get_authorization_domains(). The set of domains
  * used by a given service is static and will never change at runtime.
  *
- * #GDataAuthorizationDomain<!-- -->s are used by a #GDataAuthorizer instance to request authorization to interact with data in those domains when
+ * #GDataAuthorizationDomains are used by a #GDataAuthorizer instance to request authorization to interact with data in those domains when
  * first authenticating and authorizing with the online service. Typically, a given #GDataAuthorizer will be passed a set of domains (or a service
  * type, from which it can retrieve the service's set of domains) at construction time, and will use those domains when initially asking the user for
  * authorization and whenever the authorization is refreshed afterwards. It's not expected that the set of domains used by a #GDataAuthorizer will
  * change after construction time.
  *
- * Note that it's not expected that #GDataAuthorizationDomain<!-- -->s will have to be constructed manually. All #GDataService<!-- -->s should provide
+ * Note that it's not expected that #GDataAuthorizationDomains will have to be constructed manually. All #GDataServices should provide
  * accessor functions to return instances of all the authorization domains they support.
  *
  * Since: 0.9.0
