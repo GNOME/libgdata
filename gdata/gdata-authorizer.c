@@ -23,14 +23,14 @@
  * @stability: Stable
  * @include: gdata/gdata-authorizer.h
  *
- * The #GDataAuthorizer interface provides a uniform way to implement authentication and authorization processes for use by #GDataService<!-- -->s.
+ * The #GDataAuthorizer interface provides a uniform way to implement authentication and authorization processes for use by #GDataServices.
  * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataClientLoginAuthorizer or #GDataOAuth2Authorizer, for
- * the #GDataService<!-- -->s which will be used by the client, then authenticates and authorizes with the #GDataAuthorizer instead of the
+ * the #GDataServices which will be used by the client, then authenticates and authorizes with the #GDataAuthorizer instead of the
  * #GDataService. The #GDataService then uses the #GDataAuthorizer to authorize individual network requests using whatever authorization token was
  * returned to the #GDataAuthorizer by the Google Accounts service.
  *
- * All #GDataAuthorizer implementations are expected to operate against a set of #GDataAuthorizationDomain<!-- -->s which are provided to the
- * authorizer at construction time. These domains specify which data domains the client expects to access using the #GDataService<!-- -->s they
+ * All #GDataAuthorizer implementations are expected to operate against a set of #GDataAuthorizationDomains which are provided to the
+ * authorizer at construction time. These domains specify which data domains the client expects to access using the #GDataServices they
  * have using the #GDataAuthorizer instance. Following the principle of least privilege, the set of domains should be the minimum such set of domains
  * which still allows the client to operate normally. Note that implementations of #GDataAuthorizationDomain may display the list of requested
  * authorization domains to the user for verification before authorization is granted.

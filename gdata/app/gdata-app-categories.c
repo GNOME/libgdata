@@ -226,7 +226,7 @@ get_content_type (void)
  *
  * Returns a list of the categories in this category list.
  *
- * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategory<!-- -->s
+ * Return value: (element-type GData.Category) (transfer none): a #GList of #GDataCategorys
  *
  * Since: 0.7.0
  */

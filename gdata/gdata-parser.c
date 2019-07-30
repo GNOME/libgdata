@@ -618,7 +618,7 @@ gdata_parser_int64_from_element (xmlNode *element, const gchar *element_name, GD
  * together in a large "or" statement based on their return values, for the purposes of determining whether any of the calls matched
  * a given @element. If any of the calls to gdata_parser_object_from_element_setter() return %TRUE, the value of @success can be examined.
  *
- * @_setter and @_parent_parsable are both #gpointer<!-- -->s to avoid casts having to be put into calls to gdata_parser_object_from_element_setter().
+ * @_setter and @_parent_parsable are both #gpointers to avoid casts having to be put into calls to gdata_parser_object_from_element_setter().
  * @_setter is actually of type #GDataParserSetterFunc, and @_parent_parsable should be a subclass of #GDataParsable.
  * Neither parameter should be %NULL. No checks are implemented against these conditions (for efficiency reasons), so calling code must be correct.
  *

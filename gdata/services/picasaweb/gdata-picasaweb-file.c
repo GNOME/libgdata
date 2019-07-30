@@ -39,10 +39,10 @@
  *	GDataFeed *photo_feed;
  *	GList *photo_entries;
  *
- *	/<!-- -->* Query for a feed of GDataPicasaWebFile<!-- -->s belonging to the given GDataPicasaWebAlbum album *<!-- -->/
+ *	/<!-- -->* Query for a feed of GDataPicasaWebFiles belonging to the given GDataPicasaWebAlbum album *<!-- -->/
  *	photo_feed = gdata_picasaweb_service_query_files (service, album, NULL, NULL, NULL, NULL, NULL);
  *
- *	/<!-- -->* Get a list of GDataPicasaWebFile<!-- -->s from the query's feed *<!-- -->/
+ *	/<!-- -->* Get a list of GDataPicasaWebFiles from the query's feed *<!-- -->/
  *	for (photo_entries = gdata_feed_get_entries (photo_feed); photo_entries != NULL; photo_entries = photo_entries->next) {
  *		GDataPicasaWebFile *photo;
  *		guint height, width;
@@ -207,7 +207,7 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	/**
 	 * GDataPicasaWebFile:file-id:
 	 *
-	 * The ID of the file. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebFile<!-- -->s; for example,
+	 * The ID of the file. This is a substring of the ID returned by gdata_entry_get_id() for #GDataPicasaWebFiles; for example,
 	 * if gdata_entry_get_id() returned
 	 * "http://picasaweb.google.com/data/entry/user/libgdata.picasaweb/albumid/5328889949261497249/photoid/5328890138794566386" for a
 	 * particular #GDataPicasaWebFile, the #GDataPicasaWebFile:file-id property would be "5328890138794566386".
@@ -1588,7 +1588,7 @@ gdata_picasaweb_file_get_contents (GDataPicasaWebFile *self)
  * not be larger than the actual image, so thumbnails may be smaller
  * than the widths listed above.
  *
- * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnails, or %NULL
  *
  * Since: 0.4.0
  */

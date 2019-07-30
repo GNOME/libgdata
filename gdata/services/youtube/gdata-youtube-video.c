@@ -50,7 +50,7 @@
  * 	published = gdata_entry_get_published (GDATA_ENTRY (video)); /<!-- -->* Date and time the video was originally published *<!-- -->/
  * 	updated = gdata_entry_get_updated (GDATA_ENTRY (video)); /<!-- -->* When the video was most recently updated by the author *<!-- -->/
  *
- * 	/<!-- -->* Get a list of GDataMediaThumbnail<!-- -->s for the video *<!-- -->/
+ * 	/<!-- -->* Get a list of GDataMediaThumbnails for the video *<!-- -->/
  * 	for (thumbnails = gdata_youtube_video_get_thumbnails (video); thumbnails != NULL; thumbnails = thumbnails->next)
  * 		download_and_do_something_with_thumbnail (gdata_media_thumbnail_get_uri (thumbnail));
  *
@@ -2043,7 +2043,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
  *
  * Gets a list of the thumbnails available for the video.
  *
- * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnail<!-- -->s, or %NULL
+ * Return value: (element-type GData.MediaThumbnail) (transfer none): a #GList of #GDataMediaThumbnails, or %NULL
  */
 GList *
 gdata_youtube_video_get_thumbnails (GDataYouTubeVideo *self)

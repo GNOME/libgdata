@@ -1595,7 +1595,7 @@ gdata_calendar_event_add_person (GDataCalendarEvent *self, GDataGDWho *who)
  *
  * Gets a list of the people attending the event.
  *
- * Return value: (element-type GData.GDWho) (transfer none): a #GList of #GDataGDWho<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDWho) (transfer none): a #GList of #GDataGDWhos, or %NULL
  *
  * Since: 0.2.0
  */
@@ -1631,7 +1631,7 @@ gdata_calendar_event_add_place (GDataCalendarEvent *self, GDataGDWhere *where)
  *
  * Gets a list of the locations associated with the event.
  *
- * Return value: (element-type GData.GDWhere) (transfer none): a #GList of #GDataGDWhere<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDWhere) (transfer none): a #GList of #GDataGDWheres, or %NULL
  *
  * Since: 0.2.0
  */
@@ -1677,7 +1677,7 @@ gdata_calendar_event_add_time (GDataCalendarEvent *self, GDataGDWhen *when)
  *
  * Gets a list of the time periods associated with the event.
  *
- * Return value: (element-type GData.GDWhen) (transfer none): a #GList of #GDataGDWhen<!-- -->s, or %NULL
+ * Return value: (element-type GData.GDWhen) (transfer none): a #GList of #GDataGDWhens, or %NULL
  *
  * Since: 0.2.0
  */
