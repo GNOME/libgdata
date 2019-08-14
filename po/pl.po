@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-07-30 15:46+0000\n"
-"PO-Revision-Date: 2019-08-03 12:48+0200\n"
+"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"PO-Revision-Date: 2019-08-14 15:42+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -483,7 +483,7 @@ msgstr "Nieznany lub nieobsługiwany format eksportu dokumentów „%s”."
 #. Translators: the parameter is the invalid value of visibility variable
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
-msgid "Invalid visibility: unrecognised value ‘%s’"
+msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Nieprawidłowa widoczność: nieznana wartość „%s”"
 
 #: gdata/services/documents/gdata-documents-service.c:581
