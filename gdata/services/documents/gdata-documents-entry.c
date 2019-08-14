@@ -916,7 +916,7 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 			    g_strcmp0 (visibility, GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE)) {
 				g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
 					     /* Translators: the parameter is the invalid value of visibility variable */
-					     _("Invalid visibility: unrecognised value ‘%s’"),
+					     _("Invalid visibility: unrecognized value ‘%s’"),
 					     visibility);
 				success = FALSE;
 				goto continue_properties;
