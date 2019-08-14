@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-07-30 15:46+0000\n"
-"PO-Revision-Date: 2019-08-03 14:18+0200\n"
+"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"PO-Revision-Date: 2019-08-14 11:09+0200\n"
 "Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -486,7 +486,7 @@ msgstr "Format de exportare de document necunoscut sau nesuportat „%s”."
 #. Translators: the parameter is the invalid value of visibility variable
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
-msgid "Invalid visibility: unrecognised value ‘%s’"
+msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Vizibilitate nevalidă: valoare nerecunoscută „%s”"
 
 #: gdata/services/documents/gdata-documents-service.c:581
