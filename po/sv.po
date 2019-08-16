@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-07-30 15:46+0000\n"
-"PO-Revision-Date: 2019-08-04 21:10+0200\n"
+"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"PO-Revision-Date: 2019-08-16 11:42+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -484,7 +484,7 @@ msgstr "Dokumentexportformatet ”%s” är okänt eller stöds inte."
 #. Translators: the parameter is the invalid value of visibility variable
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
-msgid "Invalid visibility: unrecognised value ‘%s’"
+msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Ogiltig synlighet: okänt värde ”%s”"
 
 #: gdata/services/documents/gdata-documents-service.c:581
