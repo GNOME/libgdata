@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-07-30 15:46+0000\n"
-"PO-Revision-Date: 2019-08-06 17:15+0700\n"
+"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"PO-Revision-Date: 2019-08-16 15:29+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: GNOME Indonesian Translation Team <gnome@i15n.org>\n"
 "Language: id\n"
@@ -483,7 +483,7 @@ msgstr "Format ekspor dokumen '%s' yang tak dikenal atau tak didukung."
 #. Translators: the parameter is the invalid value of visibility variable
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
-msgid "Invalid visibility: unrecognised value ‘%s’"
+msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Visibilitas tidak valid: nilai tidak dikenal ‘%s’"
 
 #: gdata/services/documents/gdata-documents-service.c:581
