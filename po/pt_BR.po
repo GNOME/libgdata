@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-07-30 15:46+0000\n"
-"PO-Revision-Date: 2019-08-01 15:27-0300\n"
+"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"PO-Revision-Date: 2019-08-17 23:28-0300\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -489,7 +489,8 @@ msgstr "Formato de exportação de documento “%s” sem suporte ou desconhecid
 #. Translators: the parameter is the invalid value of visibility variable
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
-msgid "Invalid visibility: unrecognised value ‘%s’"
+#| msgid "Invalid visibility: unrecognised value ‘%s’"
+msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Visibilidade inválida: valor não reconhecido “%s”"
 
 #: gdata/services/documents/gdata-documents-service.c:581
