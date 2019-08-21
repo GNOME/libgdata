@@ -1,6 +1,6 @@
 project(
   'libgdata', 'c',
-  version: '0.17.10',
+  version: '0.17.11',
   license: 'LGPL2+',
   default_options: 'buildtype=debugoptimized',
   meson_version: '>= 0.50.0',
@@ -34,9 +34,9 @@ gdata_include_subdir = gdata_name / 'gdata'
 #  4. If any interfaces have been removed or changed since the last public release, then set age to 0.
 #
 # Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata library, whose maximum version was 1:0:0
-current = 26
+current = 27
 revision = 0
-age = 4
+age = 5
 gdata_soversion = '@0@.@1@.@2@'.format(current - age, age, revision)
 
 top_inc_dir = include_directories('.')
