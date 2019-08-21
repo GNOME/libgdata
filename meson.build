@@ -83,6 +83,11 @@ gdata_deps = [
   dependency('libxml-2.0'),
 ]
 
+common_c_args = [
+  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
+  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_60',
+]
+
 # Private dependencies for libgdata (specifically used for pkgconfig)
 gdata_private_deps = [
   dependency('gthread-2.0'),
