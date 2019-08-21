@@ -183,7 +183,7 @@ parse_xml (GDataParsable *parsable, xmlDoc *doc, xmlNode *node, gpointer user_da
 					end -= 2;
 
 					/* Shift the remainder of the string downwards */
-					g_memmove (comma, comma + 2, end - comma);
+					memmove (comma, comma + 2, end - comma);
 					*end = '\0';
 				}
 			}
