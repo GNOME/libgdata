@@ -34,7 +34,7 @@ G_BEGIN_DECLS
  * on a Drive Property Resource
  * set to "PUBLIC". This makes the Property Resource visible to other apps.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 #define GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PUBLIC "PUBLIC"
 
@@ -44,7 +44,7 @@ G_BEGIN_DECLS
  * The #GDataDocumentsProperty having the visibility set to FALSE (default) corresponds to having the visibility property on a Drive Property Resource
  * set to "PRIVATE". This makes the Property Resource accessible only by the app that created it.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 #define GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE "PRIVATE"
 
@@ -62,7 +62,7 @@ typedef struct _GDataDocumentsPropertyPrivate	GDataDocumentsPropertyPrivate;
  *
  * All the fields in the #GDataDocumentsProperty structure are private and should never be accessed directly.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 typedef struct {
 	GDataParsable parent;
@@ -74,7 +74,7 @@ typedef struct {
  *
  * All the fields in the #GDataDocumentsPropertyClass structure are private and should never be accessed directly.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 typedef struct {
 	/*< private >*/

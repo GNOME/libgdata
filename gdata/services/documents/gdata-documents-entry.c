@@ -1330,7 +1330,7 @@ gdata_documents_entry_is_deleted (GDataDocumentsEntry *self)
  *
  * Return value: (transfer none) (element-type GDataDocumentsProperty): a #GList of pointers to #GDataDocumentsPropertys
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 GList *
 gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self)
@@ -1352,7 +1352,7 @@ gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self)
  *
  * Return value: %TRUE if the @property doesn't exist in the "properties" list, or that #GDataDocumentsProperty:value  of @property has been set to %NULL by a call to gdata_documents_entry_remove_documents_property(). %FALSE if @property exists in "properties" list, or in the case that @self or @property aren't of proper types.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 gboolean
 gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {
@@ -1389,7 +1389,7 @@ gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDo
  *
  * Return value: %TRUE if @property has been successfully removed from "properties" list on @self, %FALSE otherwise.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 gboolean
 gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property) {

@@ -29,7 +29,7 @@
  *
  * Each #GDataDocumentsProperty is characterized by a key-value pair (where value is optional, and takes empty string "" by default) and a visibility parameter. The visibility can take values "PUBLIC" for public properties and "PRIVATE" for private properties (default). Private properties are accessible only by the application which set them, but public properties can be read/written by other applications as well.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 
 #include <glib.h>
@@ -91,7 +91,7 @@ gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 	 *
 	 * For more information, see the <ulink type="http" url="https://developers.google.com/drive/api/v2/reference/properties">Properties Resource</ulink>
 	 *
-	 * Since: 0.18.0
+	 * Since: 0.17.11
 	 */
 	g_object_class_install_property (gobject_class, PROP_KEY,
 					 g_param_spec_string ("key",
@@ -106,7 +106,7 @@ gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 	 *
 	 * For more information, see the <ulink type="http" url="https://developers.google.com/drive/api/v2/reference/properties">Properties Resource</ulink>
 	 *
-	 * Since: 0.18.0
+	 * Since: 0.17.11
 	 */
 	g_object_class_install_property (gobject_class, PROP_ETAG,
 					 g_param_spec_string ("etag",
@@ -121,7 +121,7 @@ gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 	 *
 	 * For more information, see the <ulink type="http" url="https://developers.google.com/drive/api/v2/reference/properties">Properties Resource</ulink>
 	 *
-	 * Since: 0.18.0
+	 * Since: 0.17.11
 	 */
 	g_object_class_install_property (gobject_class, PROP_VALUE,
 					 g_param_spec_string ("value",
@@ -139,7 +139,7 @@ gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 	 *
 	 * For more information, see the <ulink type="http" url="https://developers.google.com/drive/api/v2/reference/properties">Properties Resource</ulink>
 	 *
-	 * Since: 0.18.0
+	 * Since: 0.17.11
 	 */
 	g_object_class_install_property (gobject_class, PROP_VISIBILITY,
 					 g_param_spec_string ("visibility",
@@ -314,7 +314,7 @@ gdata_documents_property_set_property (GObject *object, guint property_id, const
  *
  * Return value: (transfer full): a new #GDataDocumentsProperty; unref with g_object_unref()
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 GDataDocumentsProperty *
 gdata_documents_property_new (const gchar *key)
@@ -334,7 +334,7 @@ gdata_documents_property_new (const gchar *key)
  *
  * Return value: (transfer none): the property's key
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 const gchar *
 gdata_documents_property_get_key (GDataDocumentsProperty *self)
@@ -364,7 +364,7 @@ _gdata_documents_property_set_key (GDataDocumentsProperty *self, const gchar *ke
  *
  * Return value: (transfer none): the property's ETag. The ETag will never be empty; it's either %NULL or a valid ETag.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 const gchar *
 gdata_documents_property_get_etag (GDataDocumentsProperty *self)
@@ -395,7 +395,7 @@ _gdata_documents_property_set_etag (GDataDocumentsProperty *self, const gchar *e
  *
  * Return value: (nullable): the property's value. This can be %NULL or empty.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 const gchar *
 gdata_documents_property_get_value (GDataDocumentsProperty *self)
@@ -413,7 +413,7 @@ gdata_documents_property_get_value (GDataDocumentsProperty *self)
  *
  * In the case that @value is %NULL, the Property Resource corresponding to @self will be deleted from the properties array on a file's metadata, whereas in the case that it's empty string (""), it will be set as it is.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 void
 gdata_documents_property_set_value (GDataDocumentsProperty *self, const gchar *value)
@@ -437,7 +437,7 @@ gdata_documents_property_set_value (GDataDocumentsProperty *self, const gchar *v
  * apps, %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE if the #GDataDocumentsProperty is restricted to the application which
  * created it.
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 const gchar *
 gdata_documents_property_get_visibility (GDataDocumentsProperty *self)
@@ -455,7 +455,7 @@ gdata_documents_property_get_visibility (GDataDocumentsProperty *self)
  * public properties and %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE for
  * private properties (default).
  *
- * Since: 0.18.0
+ * Since: 0.17.11
  */
 void
 gdata_documents_property_set_visibility (GDataDocumentsProperty *self, const gchar *visibility)
