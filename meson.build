@@ -53,7 +53,6 @@ config_h.set_quoted('VERSION', gdata_version)
 config_h.set('_GNU_SOURCE', true)
 
 config_h.set_quoted('GETTEXT_PACKAGE', 'gdata')
-config_h.set_quoted('G_LOG_DOMAIN', gdata_name)
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
@@ -82,6 +81,11 @@ gdata_deps = [
   dependency('gio-unix-2.0'),
   dependency('json-glib-1.0', version: '>= 0.15'),
   dependency('libxml-2.0'),
+]
+
+common_c_args = [
+  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
+  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_60',
 ]
 
 # Private dependencies for libgdata (specifically used for pkgconfig)
