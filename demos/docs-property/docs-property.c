@@ -42,12 +42,16 @@ static gboolean is_owner (GDataService *service, GDataEntry *entry);
 
 static void test_dummy_properties (GDataDocumentsService *service, gboolean set, GCancellable *cancellable, GError **error);
 
+/* FIXME: Work around https://gitlab.gnome.org/GNOME/gnome-online-accounts/issues/73 */
+typedef GoaObject AutoGoaObject;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(AutoGoaObject, g_object_unref)
+
 gint
 main (void)
 {
 	g_autoptr(GDataDocumentsService) service = NULL;
 	g_autoptr(GError) error = NULL;
-	g_autolist(GoaObject) accounts = NULL;
+	g_autolist(AutoGoaObject) accounts = NULL;
 	GList *l = NULL;
 	g_autoptr(GoaClient) client = NULL;
 	gint retval = 0;
