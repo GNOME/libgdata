@@ -17,6 +17,7 @@
  * License along with GData Client.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 #include <glib.h>
 #include <gdata/gdata.h>
 
@@ -476,6 +477,7 @@ test_oauth1_authorizer_request_authentication_uri_sync (OAuth1AuthorizerData *da
 	gdata_test_mock_server_start_trace (mock_server, "oauth1-authorizer-request-authentication-uri-sync");
 
 	authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (data->authorizer, &token, &token_secret, NULL, &error);
+#if ENABLE_OAUTH1
 	g_assert_no_error (error);
 	g_assert (authentication_uri != NULL && *authentication_uri != '\0');
 	g_assert (token != NULL && *token != '\0');
@@ -488,6 +490,11 @@ test_oauth1_authorizer_request_authentication_uri_sync (OAuth1AuthorizerData *da
 	g_free (authentication_uri);
 	g_free (token);
 	g_free (token_secret);
+#else
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE);
+	g_assert_null (authentication_uri);
+	g_clear_error (&error);
+#endif
 
 	uhm_server_end_trace (mock_server);
 }
@@ -566,6 +573,7 @@ test_oauth1_authorizer_request_authentication_uri_async_cb (GDataOAuth1Authorize
 	GError *error = NULL;
 
 	authentication_uri = gdata_oauth1_authorizer_request_authentication_uri_finish (authorizer, async_result, &token, &token_secret, &error);
+#if ENABLE_OAUTH1
 	g_assert_no_error (error);
 	g_assert (authentication_uri != NULL && *authentication_uri != '\0');
 	g_assert (token != NULL && *token != '\0');
@@ -578,6 +586,11 @@ test_oauth1_authorizer_request_authentication_uri_async_cb (GDataOAuth1Authorize
 	g_free (authentication_uri);
 	g_free (token);
 	g_free (token_secret);
+#else
+	g_assert_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE);
+	g_assert_null (authentication_uri);
+	g_clear_error (&error);
+#endif
 
 	g_main_loop_quit (data->main_loop);
 }
@@ -676,6 +689,7 @@ set_up_oauth1_authorizer_interactive_data (OAuth1AuthorizerInteractiveData *data
 	uhm_server_end_trace (mock_server);
 }
 
+#if ENABLE_OAUTH1
 static void
 set_up_oauth1_authorizer_interactive_data_bad_credentials (OAuth1AuthorizerInteractiveData *data, gconstpointer user_data)
 {
@@ -698,6 +712,7 @@ set_up_oauth1_authorizer_interactive_data_bad_credentials (OAuth1AuthorizerInter
 
 	uhm_server_end_trace (mock_server);
 }
+#endif  /* ENABLE_OAUTH1 */
 
 static void
 tear_down_oauth1_authorizer_interactive_data (OAuth1AuthorizerInteractiveData *data, gconstpointer user_data)
@@ -743,6 +758,7 @@ test_oauth1_authorizer_request_authorization_sync (OAuth1AuthorizerInteractiveDa
 	uhm_server_end_trace (mock_server);
 }
 
+#if ENABLE_OAUTH1
 /* Test that synchronously authorizing a request token fails if an invalid verifier is provided. */
 static void
 test_oauth1_authorizer_request_authorization_sync_bad_credentials (OAuth1AuthorizerInteractiveData *data, gconstpointer user_data)
@@ -769,6 +785,7 @@ test_oauth1_authorizer_request_authorization_sync_bad_credentials (OAuth1Authori
 
 	uhm_server_end_trace (mock_server);
 }
+#endif  /* ENABLE_OAUTH1 */
 
 /* Test that cancellation of synchronously authorizing a request token works. Note that this test has to be interactive, as the user has to visit the
  * authentication URI to retrieve a verifier for the request token. */
@@ -826,6 +843,7 @@ set_up_oauth1_authorizer_interactive_async_data (OAuth1AuthorizerInteractiveAsyn
 	data->main_loop = g_main_loop_new (NULL, FALSE);
 }
 
+#if ENABLE_OAUTH1
 static void
 set_up_oauth1_authorizer_interactive_async_data_bad_credentials (OAuth1AuthorizerInteractiveAsyncData *data, gconstpointer user_data)
 {
@@ -835,6 +853,7 @@ set_up_oauth1_authorizer_interactive_async_data_bad_credentials (OAuth1Authorize
 	/* Set up the main loop */
 	data->main_loop = g_main_loop_new (NULL, FALSE);
 }
+#endif  /* ENABLE_OAUTH1 */
 
 static void
 tear_down_oauth1_authorizer_interactive_async_data (OAuth1AuthorizerInteractiveAsyncData *data, gconstpointer user_data)
@@ -890,6 +909,7 @@ test_oauth1_authorizer_request_authorization_async (OAuth1AuthorizerInteractiveA
 	uhm_server_end_trace (mock_server);
 }
 
+#if ENABLE_OAUTH1
 static void
 test_oauth1_authorizer_request_authorization_async_bad_credentials_cb (GDataOAuth1Authorizer *authorizer, GAsyncResult *async_result,
                                                                        OAuth1AuthorizerInteractiveAsyncData *data)
@@ -930,6 +950,7 @@ test_oauth1_authorizer_request_authorization_async_bad_credentials (OAuth1Author
 
 	uhm_server_end_trace (mock_server);
 }
+#endif  /* ENABLE_OAUTH1 */
 
 static void
 test_oauth1_authorizer_request_authorization_async_cancellation_cb (GDataOAuth1Authorizer *authorizer, GAsyncResult *async_result,
@@ -1079,9 +1100,11 @@ main (int argc, char *argv[])
 		            tear_down_oauth1_authorizer_interactive_data);
 	}
 
+#if ENABLE_OAUTH1
 	g_test_add ("/oauth1-authorizer/request-authorization/sync/bad-credentials", OAuth1AuthorizerInteractiveData, NULL,
 	            set_up_oauth1_authorizer_interactive_data_bad_credentials,
 	            test_oauth1_authorizer_request_authorization_sync_bad_credentials, tear_down_oauth1_authorizer_interactive_data);
+#endif
 
 	/* Async request-authorization tests */
 	if (gdata_test_interactive () == TRUE) {
@@ -1093,9 +1116,11 @@ main (int argc, char *argv[])
 		            tear_down_oauth1_authorizer_interactive_async_data);
 	}
 
+#if ENABLE_OAUTH1
 	g_test_add ("/oauth1-authorizer/request-authorization/async/bad-credentials", OAuth1AuthorizerInteractiveAsyncData, NULL,
 	            set_up_oauth1_authorizer_interactive_async_data_bad_credentials,
 	            test_oauth1_authorizer_request_authorization_async_bad_credentials, tear_down_oauth1_authorizer_interactive_async_data);
+#endif
 
 	/* Miscellaneous tests */
 	if (gdata_test_interactive () == TRUE) {
