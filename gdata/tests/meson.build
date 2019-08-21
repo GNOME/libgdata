@@ -40,6 +40,7 @@ test_env.set('G_TEST_SRCDIR', meson.current_source_dir())
 test_env.set('G_TEST_BUILDDIR', meson.current_build_dir())
 
 foreach test_name, extra_args: tests
+  should_fail = extra_args.get('should_fail', false)
   exe = executable(
     test_name,
     test_name + '.c',
@@ -47,7 +48,7 @@ foreach test_name, extra_args: tests
     include_directories: top_inc_dir,
     dependencies: common_deps + extra_args.get('dependencies', []),
     sources: tests_sources,
-    install: install_tests,
+    install: install_tests and not should_fail,
     install_dir: tests_execdir,
   )
 
@@ -55,12 +56,13 @@ foreach test_name, extra_args: tests
     test_name,
     exe,
     env: test_env,
-    should_fail: extra_args.get('should_fail', false),
+    should_fail: should_fail,
   )
 endforeach
 
 if install_tests
   foreach test_name, extra_args: tests
+    should_fail = extra_args.get('should_fail', false)
     tests_conf = {
       'TEST_TYPE': 'session',
       'TEST_ABS_PATH': gdata_prefix / tests_execdir / test_name,
@@ -70,7 +72,7 @@ if install_tests
       input: 'template.test.in',
       output: test_name + '.test',
       configuration: tests_conf,
-      install: true,
+      install: not should_fail,
       install_dir: tests_metadir,
     )
   endforeach
