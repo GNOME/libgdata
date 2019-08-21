@@ -557,7 +557,7 @@ gdata_youtube_video_finalize (GObject *object)
 	g_free (priv->player_uri);
 	g_strfreev (priv->region_restriction_allowed);
 	g_strfreev (priv->region_restriction_blocked);
-	g_clear_pointer (&priv->content_ratings, (GDestroyNotify) g_hash_table_unref);
+	g_clear_pointer (&priv->content_ratings, g_hash_table_unref);
 	g_free (priv->rejection_reason);
 	g_free (priv->processing_status);
 	g_free (priv->upload_status);
