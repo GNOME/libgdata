@@ -53,7 +53,6 @@ config_h.set_quoted('VERSION', gdata_version)
 config_h.set('_GNU_SOURCE', true)
 
 config_h.set_quoted('GETTEXT_PACKAGE', 'gdata')
-config_h.set_quoted('G_LOG_DOMAIN', gdata_name)
 
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')

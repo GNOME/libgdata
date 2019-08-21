@@ -138,6 +138,7 @@ libgdata_lib = shared_library(
   'gdata',
   include_directories: incs,
   sources: sources + enum_headers + marshal_files,
+  c_args: ['-DG_LOG_DOMAIN="@0@"'.format(gdata_name)],
   dependencies: gdata_deps + gdata_private_deps,
   link_args: ldflags,
   link_depends: symbol_map,
