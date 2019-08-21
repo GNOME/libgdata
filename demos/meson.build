@@ -1,4 +1,4 @@
-demos_cargs = [
+demos_c_args = [
   '-DLIBGDATA_DISABLE_DEPRECATED',
 ]
 
@@ -25,7 +25,7 @@ foreach demo: demos
 
   executable(
     demo[1],
-    c_args: demos_cargs + ['-DG_LOG_DOMAIN="@0@"'.format(demo[1])],
+    c_args: demos_c_args + common_c_args + ['-DG_LOG_DOMAIN="@0@"'.format(demo[1])],
     include_directories: top_inc_dir,
     kwargs: kwargs,
   )
