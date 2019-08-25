@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2018-06-10 17:46+0000\n"
-"PO-Revision-Date: 2018-11-19 13:04+0100\n"
-"Last-Translator: Charles Monzat <charles.monzat@numericable.fr>\n"
+"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"PO-Revision-Date: 2019-08-25 11:01+0200\n"
+"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
 "Language-Team: français <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -25,6 +25,7 @@ msgstr ""
 "X-Generator: Gtranslator 3.30.0\n"
 
 #: gdata/gdata-batch-operation.c:635
+#, c-format
 msgid "Batch operations are unsupported by this service."
 msgstr "Les opérations par lots ne sont pas prises en charge par ce service."
 
@@ -39,10 +40,12 @@ msgid "The server returned a malformed response."
 msgstr "La réponse du serveur n’est pas conforme."
 
 #: gdata/gdata-client-login-authorizer.c:649 gdata/gdata-service.c:361
+#, c-format
 msgid "Cannot connect to the service’s server."
 msgstr "Impossible de se connecter au serveur du service."
 
 #: gdata/gdata-client-login-authorizer.c:654 gdata/gdata-service.c:366
+#, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Impossible de se connecter au serveur mandataire."
 
@@ -185,6 +188,7 @@ msgstr ""
 #. * or the user denied authorization to the token on the authorization web page.
 #: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
 msgid "Access was denied by the user or server."
 msgstr "L’accès a été refusé par l’utilisateur ou le serveur."
 
@@ -204,17 +208,22 @@ msgstr "Document vide."
 #: gdata/services/documents/gdata-documents-access-rule.c:144
 #: gdata/services/documents/gdata-documents-access-rule.c:154
 #: gdata/services/documents/gdata-documents-document.c:289
-#: gdata/services/documents/gdata-documents-entry.c:478
-#: gdata/services/documents/gdata-documents-entry.c:489
-#: gdata/services/documents/gdata-documents-entry.c:500
-#: gdata/services/documents/gdata-documents-entry.c:547
-#: gdata/services/documents/gdata-documents-entry.c:558
-#: gdata/services/documents/gdata-documents-entry.c:666
-#: gdata/services/documents/gdata-documents-entry.c:701
-#: gdata/services/documents/gdata-documents-entry.c:716
-#: gdata/services/documents/gdata-documents-entry.c:731
-#: gdata/services/documents/gdata-documents-entry.c:761
-#: gdata/services/documents/gdata-documents-entry.c:777
+#: gdata/services/documents/gdata-documents-entry.c:483
+#: gdata/services/documents/gdata-documents-entry.c:494
+#: gdata/services/documents/gdata-documents-entry.c:506
+#: gdata/services/documents/gdata-documents-entry.c:546
+#: gdata/services/documents/gdata-documents-entry.c:557
+#: gdata/services/documents/gdata-documents-entry.c:568
+#: gdata/services/documents/gdata-documents-entry.c:615
+#: gdata/services/documents/gdata-documents-entry.c:626
+#: gdata/services/documents/gdata-documents-entry.c:734
+#: gdata/services/documents/gdata-documents-entry.c:769
+#: gdata/services/documents/gdata-documents-entry.c:784
+#: gdata/services/documents/gdata-documents-entry.c:799
+#: gdata/services/documents/gdata-documents-entry.c:829
+#: gdata/services/documents/gdata-documents-entry.c:845
+#: gdata/services/documents/gdata-documents-entry.c:884
+#: gdata/services/documents/gdata-documents-entry.c:901
 #: gdata/services/documents/gdata-documents-feed.c:81
 #: gdata/services/documents/gdata-documents-feed.c:92
 #: gdata/services/documents/gdata-documents-feed.c:129
@@ -413,6 +422,7 @@ msgstr "L’entrée a déjà été insérée."
 
 #. Resumable upload error.
 #: gdata/gdata-upload-stream.c:794 gdata/gdata-upload-stream.c:876
+#, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "Erreur reçue du serveur après un envoi qui peut être repris."
 
@@ -423,6 +433,7 @@ msgstr "Le flux est déjà fermé"
 #: gdata/services/calendar/gdata-calendar-service.c:302
 #: gdata/services/tasks/gdata-tasks-service.c:195
 #: gdata/services/youtube/gdata-youtube-service.c:541
+#, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
@@ -433,6 +444,7 @@ msgstr ""
 #: gdata/services/calendar/gdata-calendar-service.c:334
 #: gdata/services/tasks/gdata-tasks-service.c:204
 #: gdata/services/youtube/gdata-youtube-service.c:557
+#, c-format
 msgid "You must be authenticated to do this."
 msgstr "Vous devez vous authentifier pour faire cela."
 
@@ -475,46 +487,52 @@ msgstr "Vous devez vous authentifier pour télécharger des documents."
 msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "Format d’export de document « %s » inconnu ou non pris en charge."
 
-#: gdata/services/documents/gdata-documents-service.c:580
-#: gdata/services/documents/gdata-documents-service.c:633
+#. Translators: the parameter is the invalid value of visibility variable
+#: gdata/services/documents/gdata-documents-entry.c:919
+#, c-format
+msgid "Invalid visibility: unrecognized value ‘%s’"
+msgstr "Visibilité non valide : value « %s » non reconnue"
+
+#: gdata/services/documents/gdata-documents-service.c:581
+#: gdata/services/documents/gdata-documents-service.c:634
 msgid "You must be authenticated to query documents."
 msgstr "Vous devez vous authentifier pour interroger des documents."
 
-#: gdata/services/documents/gdata-documents-service.c:696
+#: gdata/services/documents/gdata-documents-service.c:697
 msgid "You must be authenticated to upload documents."
 msgstr "Vous devez vous authentifier pour envoyer des documents."
 
-#: gdata/services/documents/gdata-documents-service.c:702
+#: gdata/services/documents/gdata-documents-service.c:703
 msgid "The document has already been uploaded."
 msgstr "Le document a déjà été envoyé."
 
-#: gdata/services/documents/gdata-documents-service.c:847
+#: gdata/services/documents/gdata-documents-service.c:848
 msgid "You must be authenticated to update documents."
 msgstr "Vous devez vous authentifier pour mettre à jour des documents."
 
-#: gdata/services/documents/gdata-documents-service.c:1014
+#: gdata/services/documents/gdata-documents-service.c:1015
 #, c-format
 msgid ""
 "The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
 "Le type de contenu du document fourni (« %s ») n’a pas pu être identifié."
 
-#: gdata/services/documents/gdata-documents-service.c:1054
+#: gdata/services/documents/gdata-documents-service.c:1055
 msgid "You must be authenticated to copy documents."
 msgstr "Vous devez vous authentifier pour copier des documents."
 
-#: gdata/services/documents/gdata-documents-service.c:1073
-#: gdata/services/documents/gdata-documents-service.c:1414
+#: gdata/services/documents/gdata-documents-service.c:1074
+#: gdata/services/documents/gdata-documents-service.c:1439
 msgid "Parent folder not found"
 msgstr "Dossier parent introuvable"
 
-#: gdata/services/documents/gdata-documents-service.c:1206
+#: gdata/services/documents/gdata-documents-service.c:1208
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour insérer ou déplacer des documents et des "
 "dossiers."
 
-#: gdata/services/documents/gdata-documents-service.c:1392
+#: gdata/services/documents/gdata-documents-service.c:1412
 msgid "You must be authenticated to move documents and folders."
 msgstr ""
 "Vous devez vous authentifier pour déplacer des documents et des dossiers."
@@ -570,6 +588,7 @@ msgid "You must be authenticated to query your own tasks."
 msgstr "Vous devez vous authentifier pour interroger vos propres tâches."
 
 #: gdata/services/youtube/gdata-youtube-service.c:548
+#, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
