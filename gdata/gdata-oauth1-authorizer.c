@@ -23,6 +23,8 @@
  * @stability: Stable
  * @include: gdata/gdata-oauth1-authorizer.h
  *
+ * OAuth 1.0 has been deprecated since 2012, and OAuth 2.0 (#GDataOAuth2Authorizer) should be used instead.
+ *
  * #GDataOAuth1Authorizer provides an implementation of the #GDataAuthorizer interface for authentication and authorization using the
  * <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> process,
  * which was preferred by Google until OAuth 2.0 was released — it is now
@@ -140,9 +142,12 @@
 
 #include <config.h>
 #include <string.h>
-#include <oauth.h>
 #include <glib.h>
 #include <glib/gi18n-lib.h>
+
+#ifdef ENABLE_OAUTH1
+#include <oauth.h>
+#endif
 
 #include "gdata-oauth1-authorizer.h"
 #include "gdata-private.h"
@@ -457,6 +462,7 @@ is_authorized_for_domain (GDataAuthorizer *self, GDataAuthorizationDomain *domai
 static void
 sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *token, const gchar *token_secret, GHashTable *parameters)
 {
+#ifdef ENABLE_OAUTH1
 	GHashTableIter iter;
 	const gchar *key, *value, *consumer_key, *consumer_secret, *signature_method;
 	gsize params_length = 0;
@@ -620,6 +626,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	free (signature);
 	g_free (timestamp);
 	free (nonce);
+#endif  /* ENABLE_OAUTH1 */
 }
 
 /**
@@ -729,6 +736,7 @@ gchar *
 gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self, gchar **token, gchar **token_secret,
                                                     GCancellable *cancellable, GError **error)
 {
+#ifdef ENABLE_OAUTH1
 	GDataOAuth1AuthorizerPrivate *priv;
 	SoupMessage *message;
 	guint status;
@@ -741,6 +749,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 	GHashTable *response_details;
 	const gchar *callback_uri, *_token, *_token_secret, *callback_confirmed;
 	SoupURI *_uri;
+#endif
 
 	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), NULL);
 	g_return_val_if_fail (token != NULL, NULL);
@@ -748,6 +757,7 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
+#ifdef ENABLE_OAUTH1
 	priv = self->priv;
 
 	/* This implements OAuthGetRequestToken and returns the URI for OAuthAuthorizeToken, which the client must then use themselves (e.g. in an
@@ -862,6 +872,16 @@ gdata_oauth1_authorizer_request_authentication_uri (GDataOAuth1Authorizer *self,
 	g_hash_table_destroy (response_details);
 
 	return g_string_free (authentication_uri, FALSE);
+#else  /* if !ENABLE_OAUTH1 */
+	*token = NULL;
+	*token_secret = NULL;
+
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error))
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
+		                     _("OAuth 1.0 support is disabled."));
+
+	return NULL;
+#endif
 }
 
 typedef struct {
@@ -1025,6 +1045,7 @@ gboolean
 gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, const gchar *token, const gchar *token_secret, const gchar *verifier,
                                                GCancellable *cancellable, GError **error)
 {
+#ifdef ENABLE_OAUTH1
 	GDataOAuth1AuthorizerPrivate *priv;
 	SoupMessage *message;
 	guint status;
@@ -1033,6 +1054,7 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	GHashTable *response_details;
 	const gchar *_token, *_token_secret;
 	SoupURI *_uri;
+#endif
 
 	g_return_val_if_fail (GDATA_IS_OAUTH1_AUTHORIZER (self), FALSE);
 	g_return_val_if_fail (token != NULL && *token != '\0', FALSE);
@@ -1041,6 +1063,7 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
+#ifdef ENABLE_OAUTH1
 	/* This implements OAuthGetAccessToken using the request token returned by OAuthGetRequestToken and the verification code returned by
 	 * OAuthAuthorizeToken. See:
 	 *  • http://code.google.com/apis/accounts/docs/OAuth_ref.html#AccessToken
@@ -1125,6 +1148,13 @@ gdata_oauth1_authorizer_request_authorization (GDataOAuth1Authorizer *self, cons
 	g_hash_table_destroy (response_details);
 
 	return TRUE;
+#else  /* if !ENABLE_OAUTH1 */
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error))
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_UNAVAILABLE,
+		                     _("OAuth 1.0 support is disabled."));
+
+	return FALSE;
+#endif
 }
 
 typedef struct {
