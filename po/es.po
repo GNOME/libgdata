@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-08-14 08:41+0000\n"
-"PO-Revision-Date: 2019-08-20 12:17+0200\n"
+"POT-Creation-Date: 2019-09-03 09:39+0000\n"
+"PO-Revision-Date: 2019-09-03 15:11+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -25,7 +25,7 @@ msgid "Batch operations are unsupported by this service."
 msgstr "Este servicio no soporta operaciones por lotes."
 
 #: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
 #: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
 #: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
 #: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
@@ -173,13 +173,17 @@ msgstr "Puede que no se elimine este comentario."
 msgid "Invalid seek request"
 msgstr "Solicitud de búsqueda no válida"
 
-#: gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
 msgstr "El servidor rechazó la solicitud de credenciales temporales."
 
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "El soporte de OAuth 1.0 está desactivado."
+
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
@@ -483,7 +487,6 @@ msgstr "Formato de exportación de documento «%s» desconocido o no soportado."
 #. Translators: the parameter is the invalid value of visibility variable
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
-#| msgid "Invalid visibility: unrecognised value ‘%s’"
 msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Visibilidad no válida: valor «%s» no reconocido"
 
