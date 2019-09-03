@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-08-14 08:41+0000\n"
-"PO-Revision-Date: 2019-08-14 11:09+0200\n"
+"POT-Creation-Date: 2019-09-03 09:39+0000\n"
+"PO-Revision-Date: 2019-09-03 20:16+0200\n"
 "Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -25,7 +25,7 @@ msgid "Batch operations are unsupported by this service."
 msgstr "Operațiile în serie nu sunt suportate de acest serviciu."
 
 #: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
 #: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
 #: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
 #: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
@@ -172,13 +172,17 @@ msgstr "Este posibil ca acest comentariu să nu fie șters."
 msgid "Invalid seek request"
 msgstr "Cerere de căutare nevalidă"
 
-#: gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
 msgstr "Serverul a respins cererea de autorizări temporare."
 
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "Suportul pentru OAuth 1.0 a fost dezactivat."
+
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
