@@ -7,22 +7,22 @@
 # Nicolas Repentin <nicolas@shivaserv.fr>, 2009.
 # Julien Hardelin <jhardlin{AT}wanadoo{POINT}fr, 2010.
 # Bruno Brouard <annoa.b@gmail.com>, 2010-2011.
-# Charles Monzat <charles.monzat@numericable.fr>, 2018.
+# Charles Monzat <charles.monzat@free.fr>, 2018-2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-08-14 08:41+0000\n"
-"PO-Revision-Date: 2019-08-25 11:01+0200\n"
-"Last-Translator: Claude Paroz <claude@2xlibre.net>\n"
-"Language-Team: français <gnomefr@traduc.org>\n"
+"POT-Creation-Date: 2019-09-03 09:39+0000\n"
+"PO-Revision-Date: 2019-09-05 13:16+0200\n"
+"Last-Translator: Charles Monzat <charles.monzat@free.fr>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 3.30.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 3.32.1\n"
 
 #: gdata/gdata-batch-operation.c:635
 #, c-format
@@ -30,7 +30,7 @@ msgid "Batch operations are unsupported by this service."
 msgstr "Les opérations par lots ne sont pas prises en charge par ce service."
 
 #: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
 #: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
 #: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
 #: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
@@ -179,14 +179,18 @@ msgstr "Ce commentaire ne peut pas être supprimé."
 msgid "Invalid seek request"
 msgstr "Requête de positionnement non valide"
 
-#: gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
 msgstr ""
 "Le serveur a rejeté la requête de données d’authentification provisoires."
 
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "La prise en charge d’OAuth 1.0 est désactivée."
+
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
@@ -491,7 +495,7 @@ msgstr "Format d’export de document « %s » inconnu ou non pris en charge."
 #: gdata/services/documents/gdata-documents-entry.c:919
 #, c-format
 msgid "Invalid visibility: unrecognized value ‘%s’"
-msgstr "Visibilité non valide : value « %s » non reconnue"
+msgstr "Visibilité non valide : valeur « %s » non reconnue"
 
 #: gdata/services/documents/gdata-documents-service.c:581
 #: gdata/services/documents/gdata-documents-service.c:634
