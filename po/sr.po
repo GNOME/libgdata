@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-08-14 08:41+0000\n"
-"PO-Revision-Date: 2019-08-21 23:55+0200\n"
+"POT-Creation-Date: 2019-09-03 09:39+0000\n"
+"PO-Revision-Date: 2019-09-13 22:02+0200\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
@@ -24,7 +24,7 @@ msgid "Batch operations are unsupported by this service."
 msgstr "Серијске радње нису подржане од стране ове услуге."
 
 #: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
 #: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
 #: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
 #: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
@@ -173,13 +173,17 @@ msgstr "Овај налог не може бити избрисан."
 msgid "Invalid seek request"
 msgstr "Неисправан захтев претраге"
 
-#: gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
 msgstr "Сервер је одбацио привремени захтев за акредитивима."
 
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "Подршка за О-Аут (OAuth) 1.0 је онемогућена."
+
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
