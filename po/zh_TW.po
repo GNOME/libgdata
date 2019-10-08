@@ -1,31 +1,32 @@
 # Chinese (Taiwan) translation of libgdata.
 # 2008. Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
+#
 # Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>, 2009.
 # Tryneeds translation team, 2009.
-#
+# pan93412 <pan93412@gmail.com>, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata 0.9.0\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=libgdata&keywords=I18N+L10N&component=General\n"
-"POT-Creation-Date: 2018-03-16 20:11+0000\n"
-"PO-Revision-Date: 2018-03-26 16:30+0800\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) <zh-l10n@lists.linux.org.tw>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
+"POT-Creation-Date: 2019-09-25 10:37+0000\n"
+"PO-Revision-Date: 2019-10-08 18:59+0800\n"
+"Last-Translator: pan93412 <pan93412@gmail.com>\n"
+"Language-Team: Chinese <zh-l10n@linux.org.tw>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Lokalize 19.08.1\n"
 
 #: gdata/gdata-batch-operation.c:635
+#, c-format
 msgid "Batch operations are unsupported by this service."
 msgstr "這個服務不支援批次操作。"
 
 #: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
 #: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
 #: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
 #: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
@@ -35,10 +36,12 @@ msgid "The server returned a malformed response."
 msgstr "伺服器傳回格式錯誤的回應。"
 
 #: gdata/gdata-client-login-authorizer.c:649 gdata/gdata-service.c:361
+#, c-format
 msgid "Cannot connect to the service’s server."
 msgstr "無法連接服務的伺服器。"
 
 #: gdata/gdata-client-login-authorizer.c:654 gdata/gdata-service.c:366
+#, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "無法連接代理伺服器。"
 
@@ -168,14 +171,19 @@ msgstr "這個評論不能刪除。"
 msgid "Invalid seek request"
 msgstr "無效的搜尋要求"
 
-#: gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
 msgstr "伺服器拒絕了暫時性憑證要求。"
 
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "OAuth 1.0 支援已停用。"
+
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
 msgid "Access was denied by the user or server."
 msgstr "存取被使用者或伺服器拒絕。"
 
@@ -195,17 +203,22 @@ msgstr "文件是空白。"
 #: gdata/services/documents/gdata-documents-access-rule.c:144
 #: gdata/services/documents/gdata-documents-access-rule.c:154
 #: gdata/services/documents/gdata-documents-document.c:289
-#: gdata/services/documents/gdata-documents-entry.c:478
-#: gdata/services/documents/gdata-documents-entry.c:489
-#: gdata/services/documents/gdata-documents-entry.c:500
-#: gdata/services/documents/gdata-documents-entry.c:547
-#: gdata/services/documents/gdata-documents-entry.c:558
-#: gdata/services/documents/gdata-documents-entry.c:666
-#: gdata/services/documents/gdata-documents-entry.c:701
-#: gdata/services/documents/gdata-documents-entry.c:716
-#: gdata/services/documents/gdata-documents-entry.c:731
-#: gdata/services/documents/gdata-documents-entry.c:761
-#: gdata/services/documents/gdata-documents-entry.c:777
+#: gdata/services/documents/gdata-documents-entry.c:483
+#: gdata/services/documents/gdata-documents-entry.c:494
+#: gdata/services/documents/gdata-documents-entry.c:506
+#: gdata/services/documents/gdata-documents-entry.c:546
+#: gdata/services/documents/gdata-documents-entry.c:557
+#: gdata/services/documents/gdata-documents-entry.c:568
+#: gdata/services/documents/gdata-documents-entry.c:615
+#: gdata/services/documents/gdata-documents-entry.c:626
+#: gdata/services/documents/gdata-documents-entry.c:734
+#: gdata/services/documents/gdata-documents-entry.c:769
+#: gdata/services/documents/gdata-documents-entry.c:784
+#: gdata/services/documents/gdata-documents-entry.c:799
+#: gdata/services/documents/gdata-documents-entry.c:829
+#: gdata/services/documents/gdata-documents-entry.c:845
+#: gdata/services/documents/gdata-documents-entry.c:884
+#: gdata/services/documents/gdata-documents-entry.c:901
 #: gdata/services/documents/gdata-documents-feed.c:81
 #: gdata/services/documents/gdata-documents-feed.c:92
 #: gdata/services/documents/gdata-documents-feed.c:129
@@ -401,6 +414,7 @@ msgstr "該項目已經插入了。"
 
 #. Resumable upload error.
 #: gdata/gdata-upload-stream.c:794 gdata/gdata-upload-stream.c:876
+#, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr "在上傳可繼續上載區塊後從伺服器收到錯誤。"
 
@@ -411,6 +425,7 @@ msgstr "串流已經關閉"
 #: gdata/services/calendar/gdata-calendar-service.c:302
 #: gdata/services/tasks/gdata-tasks-service.c:195
 #: gdata/services/youtube/gdata-youtube-service.c:541
+#, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
 "again."
@@ -419,6 +434,7 @@ msgstr "您最近進行太多次 API 呼叫。請稍等幾分鐘後再試一次�
 #: gdata/services/calendar/gdata-calendar-service.c:334
 #: gdata/services/tasks/gdata-tasks-service.c:204
 #: gdata/services/youtube/gdata-youtube-service.c:557
+#, c-format
 msgid "You must be authenticated to do this."
 msgstr "您必須通過核對才能這麼做。"
 
@@ -461,43 +477,49 @@ msgstr "您必須通過核對才能下載文件。"
 msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "不明或不支援的文件匯出格式「%s」。"
 
-#: gdata/services/documents/gdata-documents-service.c:580
-#: gdata/services/documents/gdata-documents-service.c:633
+#. Translators: the parameter is the invalid value of visibility variable
+#: gdata/services/documents/gdata-documents-entry.c:919
+#, c-format
+msgid "Invalid visibility: unrecognized value ‘%s’"
+msgstr "可見度無效：無法識別的數值「%s」"
+
+#: gdata/services/documents/gdata-documents-service.c:581
+#: gdata/services/documents/gdata-documents-service.c:634
 msgid "You must be authenticated to query documents."
 msgstr "您必須通過核對才能查詢文件。"
 
-#: gdata/services/documents/gdata-documents-service.c:696
+#: gdata/services/documents/gdata-documents-service.c:697
 msgid "You must be authenticated to upload documents."
 msgstr "您必須通過核對才能上傳文件。"
 
-#: gdata/services/documents/gdata-documents-service.c:702
+#: gdata/services/documents/gdata-documents-service.c:703
 msgid "The document has already been uploaded."
 msgstr "該文件已經更新。"
 
-#: gdata/services/documents/gdata-documents-service.c:847
+#: gdata/services/documents/gdata-documents-service.c:848
 msgid "You must be authenticated to update documents."
 msgstr "您必須通過核對才能更新文件。"
 
-#: gdata/services/documents/gdata-documents-service.c:1014
+#: gdata/services/documents/gdata-documents-service.c:1015
 #, c-format
 msgid ""
 "The content type of the supplied document (‘%s’) could not be recognized."
 msgstr "無法辨識提供文件 (「%s」) 的內容類型。"
 
-#: gdata/services/documents/gdata-documents-service.c:1054
+#: gdata/services/documents/gdata-documents-service.c:1055
 msgid "You must be authenticated to copy documents."
 msgstr "您必須通過核對才能複製文件。"
 
-#: gdata/services/documents/gdata-documents-service.c:1073
-#: gdata/services/documents/gdata-documents-service.c:1414
+#: gdata/services/documents/gdata-documents-service.c:1074
+#: gdata/services/documents/gdata-documents-service.c:1439
 msgid "Parent folder not found"
 msgstr "找不到上層資料夾"
 
-#: gdata/services/documents/gdata-documents-service.c:1206
+#: gdata/services/documents/gdata-documents-service.c:1208
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr "您必須通過核對才能插入或移動文件和資料夾。"
 
-#: gdata/services/documents/gdata-documents-service.c:1392
+#: gdata/services/documents/gdata-documents-service.c:1412
 msgid "You must be authenticated to move documents and folders."
 msgstr "您必須通過核對才能移動文件和資料夾。"
 
@@ -547,6 +569,7 @@ msgid "You must be authenticated to query your own tasks."
 msgstr "您必須通過核對才能查詢自己的工作。"
 
 #: gdata/services/youtube/gdata-youtube-service.c:548
+#, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
 msgstr "您已經超過了您的項目配額。請刪除一些項目後再試一次。"
