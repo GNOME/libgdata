@@ -12,16 +12,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata-master-po-gl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-09-03 09:39+0000\n"
-"PO-Revision-Date: 2019-09-06 22:02+0200\n"
-"Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
+"POT-Creation-Date: 2019-09-25 10:37+0000\n"
+"PO-Revision-Date: 2019-12-27 13:43+0100\n"
+"Last-Translator: Fran Diéguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: gdata/gdata-batch-operation.c:635
 #, c-format
@@ -100,7 +100,7 @@ msgstr "O CAPTCHA debe ser completado para iniciar sesión."
 #: gdata/gdata-client-login-authorizer.c:826
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
-msgstr "Esta conta require un contrasinal específico de aplicativos. (%s)"
+msgstr "Esta conta require un contrasinal específico de aplicación. (%s)"
 
 #: gdata/gdata-client-login-authorizer.c:833
 msgid "Your username or password were incorrect."
@@ -610,30 +610,3 @@ msgstr ""
 #: gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
 msgstr "Debe estar autenticado para enviar un vídeo."
-
-#~ msgid "A '%s' element was missing required content."
-#~ msgstr "Ao elemento «%s» fáltanlle contidos requiridos."
-
-#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-#~ msgstr "O contido dun elemento %s (\"%s\") non estaba no formato ISO 8601."
-
-#~ msgid "The calendar did not have a content URI."
-#~ msgstr "O calendario non ten unha URI de contido."
-
-#~ msgid "This service is not available at the moment."
-#~ msgstr "Este servizo non está dispoñíbel neste momento."
-
-#~ msgid ""
-#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-#~ msgstr ""
-#~ "Código de erro \"%s\" descoñecido no dominio \"%s\" recibido coa "
-#~ "localización \"%s\"."
-
-#~ msgid "Unknown and unparsable error received."
-#~ msgstr "Recibiuse un erro descoñecido e non analizábel."
-
-#~ msgid "The video did not have a related videos <link>."
-#~ msgstr "O vídeo non ten vídeos relacionados <link>."
-
-#~ msgid "The supplied document had an invalid content type."
-#~ msgstr "O documento proporcionado ten un tipo de contido incorrecto."
