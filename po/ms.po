@@ -1,0 +1,606 @@
+# Malay translation for libgdata.
+# Copyright (C) 2019 libgdata's COPYRIGHT HOLDER
+# This file is distributed under the same license as the libgdata package.
+# abuyop <abuyop@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgdata master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
+"POT-Creation-Date: 2019-10-28 18:36+0000\n"
+"PO-Revision-Date: 2019-12-25 13:54+0800\n"
+"Language-Team: Malay <ms@li.org>\n"
+"Language: ms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: abuyop <abuyop@gmail.com>\n"
+"X-Generator: Poedit 2.0.6\n"
+
+#: gdata/gdata-batch-operation.c:635
+#, c-format
+msgid "Batch operations are unsupported by this service."
+msgstr "Operasi kelompok tidak disokong oleh perkhidmatan ini."
+
+#: gdata/gdata-client-login-authorizer.c:629
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
+#: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
+#: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
+#: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
+#: gdata/gdata-oauth2-authorizer.c:1087 gdata/gdata-oauth2-authorizer.c:1102
+#: gdata/gdata-oauth2-authorizer.c:1118
+msgid "The server returned a malformed response."
+msgstr "Pelayan mengembalikan satu respons cacat."
+
+#: gdata/gdata-client-login-authorizer.c:649 gdata/gdata-service.c:361
+#, c-format
+msgid "Cannot connect to the service’s server."
+msgstr "Tidak dapat bersambung dengan pelayan perkhidmatan."
+
+#: gdata/gdata-client-login-authorizer.c:654 gdata/gdata-service.c:366
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Tidak dapat bersambung dengan pelayan proksi."
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: gdata/gdata-client-login-authorizer.c:660 gdata/gdata-service.c:372
+#: gdata/services/calendar/gdata-calendar-service.c:325
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"URI atau pengepala permintaan tidak sah, atau parameter bukan-piawai tidak "
+"disokong: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:666 gdata/gdata-service.c:378
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Pengesahihan diperlukan: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:671 gdata/gdata-service.c:383
+#: gdata/services/calendar/gdata-calendar-service.c:313
+#: gdata/services/youtube/gdata-youtube-video.c:1013
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "Sumber dipinta tidak ditemui: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:677 gdata/gdata-service.c:389
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Masukan telah diubah suai semenjak ia telah dimuat turun: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:689 gdata/gdata-service.c:403
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Kod ralat %u ketika mengesahihkan: %s"
+
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
+#: gdata/gdata-client-login-authorizer.c:788
+msgid "A CAPTCHA must be filled out to log in."
+msgstr "Satu CAPTCHA mesti diisi untuk mendaftar keluar."
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:826
+#, c-format
+msgid "This account requires an application-specific password. (%s)"
+msgstr "Akaun ini memerlukan satu kata laluan khusus-aplikasi. (%s)"
+
+#: gdata/gdata-client-login-authorizer.c:833
+msgid "Your username or password were incorrect."
+msgstr "Nama pengguna atau kata laluan anda tidak betul."
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:854
+#, c-format
+msgid "Your account’s e-mail address has not been verified. (%s)"
+msgstr "Alamat e-mel akaun anda belum disahkan. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:859
+#, c-format
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
+msgstr "Anda tidak menyetujui terma dan syarat perkhidmatan. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:865
+#, c-format
+msgid ""
+"This account has been migrated. Please log in online to receive your new "
+"username and password. (%s)"
+msgstr ""
+"Akaun ini telah dipindahkan. Sila daftar masuk secara dalam talian untuk "
+"menerima nama pengguna dan kata laluan baharu anda. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:870
+#, c-format
+msgid "This account has been deleted. (%s)"
+msgstr "Akaun ini telah dipadamkan. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:875
+#, c-format
+msgid "This account has been disabled. (%s)"
+msgstr "Akaun ini telah dilumpuhkan. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:880
+#, c-format
+msgid "This account’s access to this service has been disabled. (%s)"
+msgstr "Capaian akaun ini ke perkhidmatan ini telah dilumpuhkan. (%s)"
+
+#. Translators: the parameter is a URI for further information.
+#: gdata/gdata-client-login-authorizer.c:885
+#, c-format
+msgid "This service is not available at the moment. (%s)"
+msgstr "Perkhidmatan ini tidak tersedia buat masa ini. (%s)"
+
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. * support comments.
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:172 gdata/gdata-commentable.c:258
+msgid "This entry does not support comments."
+msgstr "Masukan ini tidak menyokong ulasan."
+
+#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. * comments.
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:338 gdata/gdata-commentable.c:420
+msgid "Comments may not be added to this entry."
+msgstr "Ulasan-ulasan tidak ditambah ke dalam masukan ini."
+
+#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#: gdata/gdata-commentable.c:494 gdata/gdata-commentable.c:563
+msgid "This comment may not be deleted."
+msgstr "Ulasan ini mungkin tidak dipadamkan."
+
+#. Tried to seek too far
+#: gdata/gdata-download-stream.c:763
+msgid "Invalid seek request"
+msgstr "Permintaan jangkau tidak sah"
+
+#: gdata/gdata-oauth1-authorizer.c:825
+msgid "The server rejected the temporary credentials request."
+msgstr "Pelayan menolak permintaan kelayakan sementara."
+
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "Sokongan OAuth 1.0 dilumpuhkan."
+
+#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web page.
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
+msgid "Access was denied by the user or server."
+msgstr "Capaian telah dinafikan oleh pengguna atau pelayan."
+
+#. Translators: the parameter is an error message
+#: gdata/gdata-parsable.c:352 gdata/gdata-parsable.c:363
+#, c-format
+msgid "Error parsing XML: %s"
+msgstr "Ralat menghurai XML: %s"
+
+#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#: gdata/gdata-parsable.c:365
+msgid "Empty document."
+msgstr "Dokumen kosong."
+
+#. Translators: the parameter is an error message
+#: gdata/gdata-parsable.c:483 gdata/gdata-parsable.c:521
+#: gdata/services/documents/gdata-documents-access-rule.c:144
+#: gdata/services/documents/gdata-documents-access-rule.c:154
+#: gdata/services/documents/gdata-documents-document.c:289
+#: gdata/services/documents/gdata-documents-entry.c:483
+#: gdata/services/documents/gdata-documents-entry.c:494
+#: gdata/services/documents/gdata-documents-entry.c:506
+#: gdata/services/documents/gdata-documents-entry.c:546
+#: gdata/services/documents/gdata-documents-entry.c:557
+#: gdata/services/documents/gdata-documents-entry.c:568
+#: gdata/services/documents/gdata-documents-entry.c:615
+#: gdata/services/documents/gdata-documents-entry.c:626
+#: gdata/services/documents/gdata-documents-entry.c:734
+#: gdata/services/documents/gdata-documents-entry.c:769
+#: gdata/services/documents/gdata-documents-entry.c:784
+#: gdata/services/documents/gdata-documents-entry.c:799
+#: gdata/services/documents/gdata-documents-entry.c:829
+#: gdata/services/documents/gdata-documents-entry.c:845
+#: gdata/services/documents/gdata-documents-entry.c:884
+#: gdata/services/documents/gdata-documents-entry.c:901
+#: gdata/services/documents/gdata-documents-feed.c:81
+#: gdata/services/documents/gdata-documents-feed.c:92
+#: gdata/services/documents/gdata-documents-feed.c:129
+#: gdata/services/documents/gdata-documents-feed.c:147
+#, c-format
+msgid "Error parsing JSON: %s"
+msgstr "Ralat menghurai JSON: %s"
+
+#: gdata/gdata-parsable.c:522
+msgid "Outermost JSON node is not an object."
+msgstr "Nod JSON paling luar bukanlah satu objek."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A <title> element was missing required content.
+#: gdata/gdata-parser.c:69
+#, c-format
+msgid "A %s element was missing required content."
+msgstr "Satu unsur %s telah hilang kandungan yang diperlukan."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:85
+#, c-format
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
+msgstr "Kandungan bagi unsur %s ('%s') bukan dalam format ISO 8601."
+
+#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. *
+#. * For example:
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
+#: gdata/gdata-parser.c:105
+#, c-format
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
+msgstr "Nilai bagi sifat %s pada unsur %s ('%s') tidak diketahui."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second parameter is the unknown content of that element.
+#. *
+#. * For example:
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
+#: gdata/gdata-parser.c:123
+#, c-format
+msgid "The content of a %s element (‘%s’) was unknown."
+msgstr "Kandungan bagi unsur %s ('%s') tidak diketahui."
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have contained.
+#. *
+#. * For example:
+#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#: gdata/gdata-parser.c:143
+#, c-format
+msgid "A required property of a %s element (%s) was not present."
+msgstr "Sifat yang diperlukan bagi unrus %s (%s) tidak hadir."
+
+#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. * parameter (including the angle brackets ("<" and ">")).
+#. *
+#. * For example:
+#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  two is allowed.
+#: gdata/gdata-parser.c:166
+#, c-format
+msgid ""
+"Values were present for properties %s and %s of a %s element when only one "
+"of the two is allowed."
+msgstr ""
+"Nilai yang hadir untuk sifat %s dan %s bagi unsur %s hanya satu daripada dua "
+"dibenarkan."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A required element (<entry/title>) was not present.
+#: gdata/gdata-parser.c:185
+#, c-format
+msgid "A required element (%s) was not present."
+msgstr "Satu unsur (%s) diperlukan tidak hadir."
+
+#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. *
+#. * For example:
+#. *  A singleton element (<feed/title>) was duplicated.
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A singleton element (title) was duplicated.
+#: gdata/gdata-parser.c:200 gdata/gdata-parser.c:287
+#, c-format
+msgid "A singleton element (%s) was duplicated."
+msgstr "Satu unsur tunggal (%s) mempunyai pendua."
+
+#. Translators: the parameter is the name of an JSON element.
+#. *
+#. * For example:
+#. *  A ‘title’ element was missing required content.
+#: gdata/gdata-parser.c:273
+#, c-format
+msgid "A ‘%s’ element was missing required content."
+msgstr "Satu unsur '%s' telah kehilangan kandungan yang diperlukan."
+
+#. Translators: the first parameter is the name of an JSON element,
+#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. *
+#. * For example:
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:303
+#, c-format
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
+msgstr "Kandungan bagi satu unsur '%s' ('%s') bukan dalam format ISO 8601."
+
+#. Translators: the parameter is an error message.
+#: gdata/gdata-parser.c:314
+#, c-format
+msgid "Invalid JSON was received from the server: %s"
+msgstr "JSON tidak sah telah diterima melalui pelayan: %s"
+
+#. Translators: the first parameter is the name of an XML element (including the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. * RGB format).
+#. *
+#. * For example:
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
+#: gdata/gdata-parser.c:1193
+#, c-format
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
+msgstr ""
+"Kandungan bagi satu unsur %s ('%s') bukan dalam format RGB heksadesimal."
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:409
+#, c-format
+msgid "Error code %u when querying: %s"
+msgstr "Kod ralat %u bila dipinta: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:415
+#, c-format
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Kod ralat %u ketika menyisip satu masukan: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:421
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Kod ralat %u ketika mengemas kini satu masukan: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:427
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Kod ralat %u ketika memadam satu masukan: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:433
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Kod ralat %u ketika memuat turun: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:439
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Kod ralat %u ketika memuat naik: %s"
+
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:445
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Kod ralat %u ketika menjalankan satu operasi kelompok: %s"
+
+#. Translators: the parameter is the URI which is invalid.
+#: gdata/gdata-service.c:739
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "URI arah-semula tidak sah: %s"
+
+#: gdata/gdata-service.c:1432
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: gdata/services/youtube/gdata-youtube-service.c:1022
+msgid "The entry has already been inserted."
+msgstr "Masukan sudah disisipkan."
+
+#. Resumable upload error.
+#: gdata/gdata-upload-stream.c:794 gdata/gdata-upload-stream.c:876
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr ""
+"Ralat ketika menerima daripada pelayan selepas memuat naik satu cebisan muat "
+"naik boleh-sambung-semula."
+
+#: gdata/gdata-upload-stream.c:942
+msgid "Stream is already closed"
+msgstr "Strim sudah ditutup"
+
+#: gdata/services/calendar/gdata-calendar-service.c:302
+#: gdata/services/tasks/gdata-tasks-service.c:195
+#: gdata/services/youtube/gdata-youtube-service.c:541
+#, c-format
+msgid ""
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
+msgstr ""
+"Anda telah membuat terlalu banyak panggilan API baru-baru ini. Tunggu "
+"sebentar beberapa minit dan cuba lagi."
+
+#: gdata/services/calendar/gdata-calendar-service.c:334
+#: gdata/services/tasks/gdata-tasks-service.c:204
+#: gdata/services/youtube/gdata-youtube-service.c:557
+#, c-format
+msgid "You must be authenticated to do this."
+msgstr "Anda mesti disahihkan untuk membuatnya."
+
+#: gdata/services/calendar/gdata-calendar-service.c:465
+#: gdata/services/calendar/gdata-calendar-service.c:519
+msgid "You must be authenticated to query all calendars."
+msgstr "Anda mesti disahihkan untuk menanya semua kalendar."
+
+#: gdata/services/calendar/gdata-calendar-service.c:563
+#: gdata/services/calendar/gdata-calendar-service.c:617
+#: gdata/services/calendar/gdata-calendar-service.c:677
+#: gdata/services/calendar/gdata-calendar-service.c:739
+msgid "You must be authenticated to query your own calendars."
+msgstr "Anda mesti disahihkan untuk menanya kalendar anda sendiri."
+
+#: gdata/services/contacts/gdata-contacts-service.c:258
+#: gdata/services/contacts/gdata-contacts-service.c:311
+msgid "You must be authenticated to query contacts."
+msgstr "Anda mesti disahihkan untuk menanya hubungan."
+
+#: gdata/services/contacts/gdata-contacts-service.c:425
+#: gdata/services/contacts/gdata-contacts-service.c:478
+msgid "You must be authenticated to query contact groups."
+msgstr "Anda mesti disahihkan untuk menanya sekumpulan hubungan."
+
+#: gdata/services/contacts/gdata-contacts-service.c:516
+msgid "The group has already been inserted."
+msgstr "Kumpulan sudah disisipkan."
+
+#: gdata/services/contacts/gdata-contacts-service.c:523
+msgid "You must be authenticated to insert a group."
+msgstr "Anda mesti disahihkan untuk menyisip satu kumpulan."
+
+#: gdata/services/documents/gdata-documents-document.c:412
+msgid "You must be authenticated to download documents."
+msgstr "Anda mesti disahihkan untuk memuat turun dokumen-dokumen."
+
+#: gdata/services/documents/gdata-documents-document.c:421
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Format eksport dokumen '%s' tidak diketahui atau tidak disokong."
+
+#. Translators: the parameter is the invalid value of visibility variable
+#: gdata/services/documents/gdata-documents-entry.c:919
+#, c-format
+msgid "Invalid visibility: unrecognized value ‘%s’"
+msgstr "Ketampakan tidak sah: nilai '%s' tidak dikenali"
+
+#: gdata/services/documents/gdata-documents-service.c:581
+#: gdata/services/documents/gdata-documents-service.c:634
+msgid "You must be authenticated to query documents."
+msgstr "Anda mesti disahihkan untuk menanya dokumen-dokumen."
+
+#: gdata/services/documents/gdata-documents-service.c:697
+msgid "You must be authenticated to upload documents."
+msgstr "Anda mesti disahihkan untuk memuat naik dokumen."
+
+#: gdata/services/documents/gdata-documents-service.c:703
+msgid "The document has already been uploaded."
+msgstr "Dokumen sudah dimuat naik."
+
+#: gdata/services/documents/gdata-documents-service.c:848
+msgid "You must be authenticated to update documents."
+msgstr "Anda mesti disahihkan untuk mengemas kini dokumen-dokumen."
+
+#: gdata/services/documents/gdata-documents-service.c:1015
+#, c-format
+msgid ""
+"The content type of the supplied document (‘%s’) could not be recognized."
+msgstr "Jenis kandungan bagi dokumen yang dibekal ('%s') tidak dikenal pasti."
+
+#: gdata/services/documents/gdata-documents-service.c:1055
+msgid "You must be authenticated to copy documents."
+msgstr "Anda mesti disahihkan untuk menyalin dokumen-dokumen."
+
+#: gdata/services/documents/gdata-documents-service.c:1074
+#: gdata/services/documents/gdata-documents-service.c:1439
+msgid "Parent folder not found"
+msgstr "Folder induk tidak ditemui"
+
+#: gdata/services/documents/gdata-documents-service.c:1208
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Anda mesti disahihkan untuk menyisip atau mengalih dokumen-dokumen dan "
+"folder-folder."
+
+#: gdata/services/documents/gdata-documents-service.c:1412
+msgid "You must be authenticated to move documents and folders."
+msgstr ""
+"Anda mesti disahihkan untuk mengalih dokumen-dokumen dan folder-folder."
+
+#: gdata/services/freebase/gdata-freebase-service.c:497
+#, c-format
+msgid "Property ‘%s’ does not hold an image"
+msgstr "Sifat '%s' tidak memegang satu imej"
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr ""
+"Anda mesti nyatakan satu nama pengguna atau disahihkan untuk menanya seorang "
+"pengguna."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:372
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:432
+msgid "Query parameter not allowed for albums."
+msgstr "Parameter tanya tidak dibenarkan untuk album."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:379
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr ""
+"Anda mesti nyatakan satu nama pengguna atau disahihkan untuk menanya semua "
+"album."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:463
+msgid "The album did not have a feed link."
+msgstr "Album tidak mempunyai satu pautan suapan."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:619
+msgid "You must be authenticated to upload a file."
+msgstr "Anda mesti disahihkan untuk memuat naik satu fail."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:695
+msgid "The album has already been inserted."
+msgstr "Album sudah disisipkan."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:702
+msgid "You must be authenticated to insert an album."
+msgstr "Anda mesti disahihkan untuk menyisip satu album."
+
+#: gdata/services/tasks/gdata-tasks-service.c:330
+#: gdata/services/tasks/gdata-tasks-service.c:384
+msgid "You must be authenticated to query all tasklists."
+msgstr "Anda mesti disahihkan untuk menanya semua senarai tugas."
+
+#: gdata/services/tasks/gdata-tasks-service.c:431
+#: gdata/services/tasks/gdata-tasks-service.c:491
+msgid "You must be authenticated to query your own tasks."
+msgstr "Anda mesti disahihkan untuk menanya tugas anda sendiri."
+
+#: gdata/services/youtube/gdata-youtube-service.c:548
+#, c-format
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Anda telah melangkaui kuota masukan anda. Sila padam beberapa masukan dan "
+"cuba lagi."
+
+#. Translators: the parameter is a URI.
+#: gdata/services/youtube/gdata-youtube-service.c:565
+#, c-format
+msgid ""
+"Your Google Account must be associated with a YouTube channel to do this. "
+"Visit %s to create one."
+msgstr ""
+"Akaun Google anda mesti dikaitkan dengan satu saluran YouTube supaya dapat "
+"membuatnya. Lawati %s untuk cipta satu."
+
+#: gdata/services/youtube/gdata-youtube-service.c:1031
+msgid "You must be authenticated to upload a video."
+msgstr "Anda mesti disahihkan untuk memuat naik satu video."
