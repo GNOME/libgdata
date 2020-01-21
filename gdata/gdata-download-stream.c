@@ -855,11 +855,24 @@ static gpointer
 download_thread (GDataDownloadStream *self)
 {
 	GDataDownloadStreamPrivate *priv = self->priv;
+	GDataAuthorizer *authorizer;
 
 	g_object_ref (self);
 
 	g_assert (priv->network_cancellable != NULL);
 
+	/* FIXME: Refresh authorization before sending message in order to prevent authorization errors during transfer.
+	 * See: https://gitlab.gnome.org/GNOME/libgdata/issues/23 */
+	authorizer = gdata_service_get_authorizer (priv->service);
+	if (authorizer) {
+		g_autoptr(GError) error = NULL;
+
+		gdata_authorizer_refresh_authorization (authorizer, priv->cancellable, &error);
+		if (error != NULL)
+			g_debug ("Error returned when refreshing authorization: %s", error->message);
+		else
+			gdata_authorizer_process_request (authorizer, priv->authorization_domain, priv->message);
+	}
 	/* Connect to the got-headers signal so we can notify clients of the values of content-type and content-length */
 	g_signal_connect (priv->message, "got-headers", (GCallback) got_headers_cb, self);
 	g_signal_connect (priv->message, "got-chunk", (GCallback) got_chunk_cb, self);

@@ -1147,8 +1147,22 @@ static gpointer
 upload_thread (GDataUploadStream *self)
 {
 	GDataUploadStreamPrivate *priv = self->priv;
+	GDataAuthorizer *authorizer;
 
 	g_assert (priv->cancellable != NULL);
+
+	/* FIXME: Refresh authorization before sending message in order to prevent authorization errors during transfer.
+	 * See: https://gitlab.gnome.org/GNOME/libgdata/issues/23 */
+	authorizer = gdata_service_get_authorizer (priv->service);
+	if (authorizer) {
+		g_autoptr(GError) error = NULL;
+
+		gdata_authorizer_refresh_authorization (authorizer, priv->cancellable, &error);
+		if (error != NULL)
+			g_debug ("Error returned when refreshing authorization: %s", error->message);
+		else
+			gdata_authorizer_process_request (authorizer, priv->authorization_domain, priv->message);
+	}
 
 	while (TRUE) {
 		GDataServiceClass *klass;
