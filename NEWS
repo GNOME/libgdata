@@ -1,3 +1,45 @@
+Overview of changes from libgdata 0.17.11 to libgdata 0.17.12
+=============================================================
+
+* Make OAuth 1 support optional and disabled by default; this makes the `oauth`
+  dependency optional on `-Doauth1=enabled` (#1)
+
+* Bugs fixed:
+ - #1 Consider loosening the liboauth dependency
+ - #23 Authentication errors with Google Drive
+ - #36 Clarify license in meson.build
+
+* Translation updates:
+ - Basque
+ - Catalan
+ - Chinese (Taiwan)
+ - Croatian
+ - Czech
+ - Danish
+ - Dutch
+ - Finnish
+ - French
+ - Friulian
+ - Galician
+ - German
+ - Hungarian
+ - Indonesian
+ - Italian
+ - Japanese
+ - Korean
+ - Latvian
+ - Lithuanian
+ - Malay
+ - Polish
+ - Portuguese (Brazil)
+ - Romanian
+ - Serbian
+ - Slovenian
+ - Spanish
+ - Swedish
+ - Turkish
+
+
 Overview of changes from libgdata 0.17.10 to libgdata 0.17.11
 =============================================================
 

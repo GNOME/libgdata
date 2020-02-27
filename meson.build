@@ -1,6 +1,6 @@
 project(
   'libgdata', 'c',
-  version: '0.17.11',
+  version: '0.17.12',
   license: 'LGPL2.1+',
   default_options: 'buildtype=debugoptimized',
   meson_version: '>= 0.50.0',
@@ -35,7 +35,7 @@ gdata_include_subdir = gdata_name / 'gdata'
 #
 # Note that versioning started at 2:0:0 to ensure no conflicts with e-d-s' libgdata library, whose maximum version was 1:0:0
 current = 27
-revision = 0
+revision = 1
 age = 5
 gdata_soversion = '@0@.@1@.@2@'.format(current - age, age, revision)
 
