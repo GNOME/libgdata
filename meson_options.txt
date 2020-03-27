@@ -36,7 +36,7 @@ option('man',
 
 option('gtk_doc',
   type: 'boolean',
-  value: true,
+  value: false,
   description: 'use gtk-doc to build documentation (default: false)')
 
 option('introspection',
