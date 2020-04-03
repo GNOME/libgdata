@@ -21,12 +21,12 @@ option('oauth1',
 option('always_build_tests',
   type: 'boolean',
   value: true,
-  description: 'Enable always building tests (default: true)')
+  description: 'Enable always building tests')
 
 option('installed_tests',
   type: 'boolean',
   value: false,
-  description: 'Install test programs (default: false)')
+  description: 'Install test programs')
 
 option('man',
   type: 'boolean',
@@ -36,7 +36,7 @@ option('man',
 option('gtk_doc',
   type: 'boolean',
   value: false,
-  description: 'use gtk-doc to build documentation (default: false)')
+  description: 'use gtk-doc to build documentation')
 
 option('introspection',
   type: 'boolean',
