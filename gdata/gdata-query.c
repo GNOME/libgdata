@@ -76,7 +76,7 @@ struct _GDataQueryPrivate {
 	 * The next_uri, previous_uri or next_page_token are set by
 	 * #GDataService if a query returns a new #GDataFeed containing them. If
 	 * the user then calls next_page() or previous_page(), use_next_page or
-	 * use_previous_page are set as appopriate, and the next call to
+	 * use_previous_page are set as appropriate, and the next call to
 	 * get_uri() will return a URI for the next or previous page. This might
 	 * be next_uri, previous_uri, or a constructed URI which appends the
 	 * next_page_token.

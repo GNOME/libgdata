@@ -990,7 +990,7 @@ gdata_youtube_service_query_related_async (GDataYouTubeService *self, GDataYouTu
  * If @video has already been inserted, a %GDATA_SERVICE_ERROR_ENTRY_ALREADY_INSERTED error will be returned. If no user is authenticated
  * with the service, %GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED will be returned.
  *
- * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asynchronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_youtube_service_finish_video_upload() should be called on it to parse and return the updated
  * #GDataYouTubeVideo for the uploaded video. This must be done, as @video isn't updated in-place.
  *

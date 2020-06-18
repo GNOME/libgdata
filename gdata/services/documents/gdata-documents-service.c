@@ -727,7 +727,7 @@ _upload_checks (GDataDocumentsService *self, GDataDocumentsDocument *document, G
  *
  * If @document is %NULL, only the document data will be uploaded. The new document entry will be named using @slug, and will have default metadata.
  *
- * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asynchronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *
@@ -798,7 +798,7 @@ gdata_documents_service_upload_document (GDataDocumentsService *self, GDataDocum
  * If @query is non-%NULL and #GDataDocumentsUploadQuery:convert is %FALSE, @document must be an instance of #GDataDocumentsDocument. Otherwise,
  * @document must be a subclass of it, such as #GDataDocumentsPresentation.
  *
- * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asynchronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *
@@ -868,7 +868,7 @@ _update_checks (GDataDocumentsService *self, GError **error)
  * upload to fail, and the entire document will have to be re-uploaded. It is recommended that gdata_documents_service_update_document_resumable()
  * be used instead.
  *
- * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asynchronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *
@@ -931,7 +931,7 @@ gdata_documents_service_update_document (GDataDocumentsService *self, GDataDocum
  * <ulink type="http" url="http://code.google.com/apis/gdata/docs/resumable_upload.html">resumable upload</ulink> which allows for correction of
  * transmission errors without re-uploading the entire file. Use of this method is preferred over gdata_documents_service_update_document().
  *
- * The stream returned by this function should be written to using the standard #GOutputStream methods, asychronously or synchronously. Once the stream
+ * The stream returned by this function should be written to using the standard #GOutputStream methods, asynchronously or synchronously. Once the stream
  * is closed (using g_output_stream_close()), gdata_documents_service_finish_upload() should be called on it to parse and return the updated
  * #GDataDocumentsDocument for the document. This must be done, as @document isn't updated in-place.
  *

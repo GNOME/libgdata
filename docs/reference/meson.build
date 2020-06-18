@@ -23,7 +23,7 @@ ignore_headers = [
   'gdata-youtube-enums.h',
   'mock-resolver.h',
   'mock-server.h',
-  # FIXME: theses files are created by enums workaround
+  # FIXME: these files are created by enums workaround
   'gdata-documents-enums-in.h',
   'gdata-enums-in.h',
   'gdata-freebase-enums-in.h',

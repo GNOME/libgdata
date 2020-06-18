@@ -1790,7 +1790,7 @@ test_album_new (void)
 	g_assert (GDATA_IS_PICASAWEB_ALBUM (album));
 
 	/* Check the XML: match it against the regex built above, then check that the timestamp is within 100ms of the current time at the start of
-	 * the test function. We can't check it exactly, as a few milliseconds may have passed inbetween building the expected XML and building the XML
+	 * the test function. We can't check it exactly, as a few milliseconds may have passed between building the expected XML and building the XML
 	 * for the photo. */
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);

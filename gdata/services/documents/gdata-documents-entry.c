@@ -1348,7 +1348,7 @@ gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self)
  *
  * In case that there already exists a @property in "properties", the #GDataDocumentsProperty inside the list will be updated to @property. Note that #GDataDocumentsProperty:value has no role in determining the uniqueness of a #GDataDocumentsProperty.
  *
- * The changes made by this function will be local only and you need to explicity update @self by calling gdata_service_update_entry().
+ * The changes made by this function will be local only and you need to explicitly update @self by calling gdata_service_update_entry().
  *
  * Return value: %TRUE if the @property doesn't exist in the "properties" list, or that #GDataDocumentsProperty:value  of @property has been set to %NULL by a call to gdata_documents_entry_remove_documents_property(). %FALSE if @property exists in "properties" list, or in the case that @self or @property aren't of proper types.
  *
@@ -1385,7 +1385,7 @@ gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDo
  *
  * Only #GDataDocumentsProperty:key and #GDataDocumentsProperty:visibility will be used to find @property in "properties" list. #GDataDocumentsProperty:value has no role in determining the uniqueness of a #GDataDocumentsProperty.
  *
- * The changes made by this function will be local only and you need to explicity update @self by calling gdata_service_update_entry().
+ * The changes made by this function will be local only and you need to explicitly update @self by calling gdata_service_update_entry().
  *
  * Return value: %TRUE if @property has been successfully removed from "properties" list on @self, %FALSE otherwise.
  *
