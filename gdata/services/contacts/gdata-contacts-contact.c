@@ -1433,7 +1433,7 @@ gdata_contacts_contact_get_birthday (GDataContactsContact *self, GDate *birthday
  * @birthday_has_year: %TRUE if @birthday's year is relevant, %FALSE otherwise
  *
  * Sets the #GDataContactsContact:birthday property to @birthday and the #GDataContactsContact:birthday-has-year property to @birthday_has_year.
- * See gdata_contacts_contact_get_birthday() for an explanation of the interation between these two properties.
+ * See gdata_contacts_contact_get_birthday() for an explanation of the interaction between these two properties.
  *
  * If @birthday is %NULL, the contact's birthday will be removed.
  *

@@ -319,7 +319,7 @@ gdata_documents_property_set_property (GObject *object, guint property_id, const
 GDataDocumentsProperty *
 gdata_documents_property_new (const gchar *key)
 {
-	/* GDataDocumentsProperty must have a non NULL key at initilization time,
+	/* GDataDocumentsProperty must have a non NULL key at initialization time,
 	 * rest of the properties can be NULL or take their default values. */
 	g_return_val_if_fail (key != NULL && key[0] != '\0', NULL);
 

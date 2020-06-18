@@ -196,7 +196,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	/**
 	 * GDataGDPostalAddress:usage:
 	 *
-	 * The context in which this addess can be used. For example: %GDATA_GD_ADDRESS_USAGE_GENERAL or %GDATA_GD_ADDRESS_USAGE_LOCAL.
+	 * The context in which this address can be used. For example: %GDATA_GD_ADDRESS_USAGE_GENERAL or %GDATA_GD_ADDRESS_USAGE_LOCAL.
 	 *
 	 * For more information, see the
 	 * <ulink type="http" url="http://code.google.com/apis/gdata/docs/2.0/elements.html#gdStructuredPostalAddress">GData specification</ulink>.
@@ -205,7 +205,7 @@ gdata_gd_postal_address_class_init (GDataGDPostalAddressClass *klass)
 	 */
 	g_object_class_install_property (gobject_class, PROP_USAGE,
 	                                 g_param_spec_string ("usage",
-	                                                      "Usage", "The context in which this addess can be used.",
+	                                                      "Usage", "The context in which this address can be used.",
 	                                                      GDATA_GD_ADDRESS_USAGE_GENERAL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 

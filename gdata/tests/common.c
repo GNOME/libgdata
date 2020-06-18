@@ -909,7 +909,7 @@ output_log_message (const gchar *message)
 		xmlChar *xml_buff;
 		int buffer_size;
 		xmlDocPtr xml_doc;
-		/* we need to cut to the begining of XML string */
+		/* we need to cut to the beginning of XML string */
 		message = message + 2;
 		/* create xml document and dump it to string buffer */
 		xml_doc = xmlParseDoc ((const xmlChar*) message);
