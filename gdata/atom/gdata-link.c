@@ -386,7 +386,7 @@ gdata_link_new (const gchar *uri, const gchar *relation_type)
  * specified by the Atom protocol. Common relationship values such as <literal>alternate</literal>
  * are returned as <literal>http://www.iana.org/assignments/relation/alternate</literal>.
  *
- * For more information, see the <ulink type="http" uri="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#rel_attribute">
+ * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/syndication/atom-format-spec.php#rel_attribute">
  * Atom specification</ulink>.
  *
  * Return value: the link's URI
