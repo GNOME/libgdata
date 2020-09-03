@@ -1,3 +1,23 @@
+Overview of changes from libgdata 0.17.12 to libgdata 0.17.13
+=============================================================
+
+* Default to not installing installed-tests (see !24)
+
+* Default to not building documentation (see !23) (thanks Debarshi Ray)
+
+* Bugs fixed:
+ - !23 build: Disable the gtk-doc documentation by default
+ - !24 Various minor fixes to meson_options.txt
+ - !25 all: Fix various typos and incorrect terminology
+ - !26 core: Add g_autoptr() support for GDataUploadStream
+
+* Translation updates:
+ - Chinese (China)
+ - English (United Kingdom)
+ - Latvian
+ - Ukrainian
+
+
 Overview of changes from libgdata 0.17.11 to libgdata 0.17.12
 =============================================================
 
