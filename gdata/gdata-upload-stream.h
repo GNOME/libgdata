@@ -98,6 +98,7 @@ typedef struct {
 } GDataUploadStreamClass;
 
 GType gdata_upload_stream_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataUploadStream, g_object_unref)
 
 GOutputStream *gdata_upload_stream_new (GDataService *service, GDataAuthorizationDomain *domain, const gchar *method, const gchar *upload_uri,
                                         GDataEntry *entry, const gchar *slug, const gchar *content_type,
