@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-08-14 08:41+0000\n"
+"POT-Creation-Date: 2020-06-18 12:58+0000\n"
 "PO-Revision-Date: 2017-08-22 13:22+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -26,7 +26,7 @@ msgid "Batch operations are unsupported by this service."
 msgstr "Les operacions massives no són compatibles amb aquest servei."
 
 #: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:840 gdata/gdata-oauth1-authorizer.c:1105
+#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
 #: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
 #: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
 #: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
@@ -52,7 +52,8 @@ msgstr "No es pot connectar al servidor intermediari."
 #: gdata/gdata-client-login-authorizer.c:660 gdata/gdata-service.c:372
 #: gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgid ""
+"Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 "L'URI de sol·licitud o la capçalera no són vàlids, o era un paràmetre no "
 "estàndard i no compatible: %s"
@@ -88,7 +89,8 @@ msgstr "S'ha modificat l'entrada des que es va baixar: %s"
 msgid "Error code %u when authenticating: %s"
 msgstr "Codi d'error %u en autenticar: %s"
 
-#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about
+#. CAPTCHAs
 #: gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "S'ha d'emplenar un CAPTCHA per entrar."
@@ -150,23 +152,28 @@ msgstr "S'ha inhabilitat l'accés a aquest servei des d'aquest compte. (%s)"
 msgid "This service is not available at the moment. (%s)"
 msgstr "Aquest servei no està disponible actualment. (%s)"
 
-#. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
+#. Translators: This is an error message for if a user attempts to retrieve
+#. comments from an entry (such as a video) which doesn't
 #. * support comments.
-#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. Translators: This is an error message for if a user attempts to retrieve
+#. comments from an entry
 #. * (such as a video) which doesn't support comments.
 #: gdata/gdata-commentable.c:172 gdata/gdata-commentable.c:258
 msgid "This entry does not support comments."
 msgstr "Aquesta entrada no permet fer-hi comentaris."
 
-#. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
+#. Translators: This is an error message for if a user attempts to add a
+#. comment to an entry (such as a video) which doesn't support
 #. * comments.
-#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. Translators: This is an error message for if a user attempts to add a
+#. comment to an entry
 #. * (such as a video) which doesn't support comments.
 #: gdata/gdata-commentable.c:338 gdata/gdata-commentable.c:420
 msgid "Comments may not be added to this entry."
 msgstr "No podeu afegir comentaris a aquesta entrada."
 
-#. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
+#. Translators: This is an error message for if a user attempts to delete a
+#. comment they're not allowed to delete.
 #: gdata/gdata-commentable.c:494 gdata/gdata-commentable.c:563
 msgid "This comment may not be deleted."
 msgstr "No podeu suprimir aquest missatge."
@@ -176,13 +183,19 @@ msgstr "No podeu suprimir aquest missatge."
 msgid "Invalid seek request"
 msgstr "La sol·licitud de cerca no és vàlida"
 
-#: gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
 msgstr "El servidor ha rebutjat la sol·licitud de credencials temporal."
 
-#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
-#. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1079 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
+msgid "OAuth 1.0 support is disabled."
+msgstr "La compatibilitat amb OAuth 1.0 està desactivada."
+
+#. Server returned an error. This either means that there was a server error
+#. or, more likely, the server doesn't trust the client
+#. * or the user denied authorization to the token on the authorization web
+#. page.
+#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
 #: gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
@@ -194,7 +207,8 @@ msgstr "S'ha denegat l'accés per l'usuari o el servidor."
 msgid "Error parsing XML: %s"
 msgstr "S'ha produït un error en analitzar l'XML: %s"
 
-#. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
+#. Translators: this is a dummy error message to be substituted into "Error
+#. parsing XML: %s".
 #: gdata/gdata-parsable.c:365
 msgid "Empty document."
 msgstr "Document buit."
@@ -232,7 +246,8 @@ msgstr "S'ha produït un error en analitzar el JSON: %s"
 msgid "Outermost JSON node is not an object."
 msgstr "El node JSON de primer nivell no és un objecte."
 
-#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. Translators: the parameter is the name of an XML element, including the
+#. angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
@@ -241,27 +256,34 @@ msgstr "El node JSON de primer nivell no és un objecte."
 msgid "A %s element was missing required content."
 msgstr "A un element %s l'hi falta el contingut necessari."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
-#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. Translators: the first parameter is the name of an XML element (including
+#. the angle brackets ("<" and ">")),
+#. * and the second parameter is the erroneous value (which was not in ISO
+#. 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06
+#. 26:30Z’) was not in ISO 8601 format.
 #: gdata/gdata-parser.c:85
 #, c-format
 msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr "El contingut d'un element %s («%s») no estava en el format ISO 8601."
 
-#. Translators: the first parameter is the name of an XML property, the second is the name of an XML element
-#. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
+#. Translators: the first parameter is the name of an XML property, the second
+#. is the name of an XML element
+#. * (including the angle brackets ("<" and ">")) to which the property
+#. belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
+#. *  The value of the @time property of a <media:group/media:thumbnail>
+#. element (‘00:01:42.500’) was unknown.
 #: gdata/gdata-parser.c:105
 #, c-format
 msgid "The value of the %s property of a %s element (‘%s’) was unknown."
 msgstr "Es desconeixia el valor de la propietat %s de l'element %s («%s»)."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
+#. Translators: the first parameter is the name of an XML element (including
+#. the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
@@ -271,21 +293,26 @@ msgstr "Es desconeixia el valor de la propietat %s de l'element %s («%s»)."
 msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "Es desconeixia el contingut de l'element %s («%s»)."
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
-#. * and the second is the name of an XML property which it should have contained.
+#. Translators: the first parameter is the name of an XML element (including
+#. the angle brackets ("<" and ">")),
+#. * and the second is the name of an XML property which it should have
+#. contained.
 #. *
 #. * For example:
-#. *  A required property of a <entry/gAcl:role> element (@value) was not present.
+#. *  A required property of a <entry/gAcl:role> element (@value) was not
+#. present.
 #: gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "No existia una propietat necessària d'un element %s (%s)."
 
-#. Translators: the first two parameters are the names of XML properties of an XML element given in the third
+#. Translators: the first two parameters are the names of XML properties of an
+#. XML element given in the third
 #. * parameter (including the angle brackets ("<" and ">")).
 #. *
 #. * For example:
-#. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
+#. *  Values were present for properties @rel and @label of a
+#. <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
 #: gdata/gdata-parser.c:166
 #, c-format
@@ -296,7 +323,8 @@ msgstr ""
 "Hi ha valors per a l'element %3$s a les propietats %1$s i %2$s, tot i que "
 "només se'n permet una d'elles."
 
-#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. Translators: the parameter is the name of an XML element, including the
+#. angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
@@ -305,7 +333,8 @@ msgstr ""
 msgid "A required element (%s) was not present."
 msgstr "No existia un element necessari (%s)."
 
-#. Translators: the parameter is the name of an XML element, including the angle brackets ("<" and ">").
+#. Translators: the parameter is the name of an XML element, including the
+#. angle brackets ("<" and ">").
 #. *
 #. * For example:
 #. *  A singleton element (<feed/title>) was duplicated.
@@ -328,10 +357,12 @@ msgid "A ‘%s’ element was missing required content."
 msgstr "A un element %s l'hi falta el contingut necessari."
 
 #. Translators: the first parameter is the name of an JSON element,
-#. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
+#. * and the second parameter is the erroneous value (which was not in ISO
+#. 8601 format).
 #. *
 #. * For example:
-#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO
+#. 8601 format.
 #: gdata/gdata-parser.c:303
 #, c-format
 msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
@@ -343,12 +374,15 @@ msgstr "El contingut d'un element %s («%s») no estava en el format ISO 8601."
 msgid "Invalid JSON was received from the server: %s"
 msgstr "S'han rebut unes dades JSON no vàlides del servidor: %s"
 
-#. Translators: the first parameter is the name of an XML element (including the angle brackets
-#. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
+#. Translators: the first parameter is the name of an XML element (including
+#. the angle brackets
+#. * ("<" and ">"), and the second parameter is the erroneous value (which was
+#. not in hexadecimal
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in
+#. hexadecimal RGB format.
 #: gdata/gdata-parser.c:1193
 #, c-format
 msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
@@ -433,8 +467,8 @@ msgstr "El flux ja està tancat"
 #: gdata/services/youtube/gdata-youtube-service.c:541
 #, c-format
 msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try "
-"again."
+"You have made too many API calls recently. Please wait a few minutes and try"
+" again."
 msgstr ""
 "Heu realitzat massa crides a l'API últimament. Espereu uns minuts i torneu-"
 "ho a intentar."
@@ -585,7 +619,8 @@ msgstr "Heu d'estar autenticat per consultar les vostres tasques."
 #: gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
 msgid ""
-"You have exceeded your entry quota. Please delete some entries and try again."
+"You have exceeded your entry quota. Please delete some entries and try "
+"again."
 msgstr ""
 "Heu excedit la vostra quota d'entrades. Suprimiu-ne algunes i torneu-ho a "
 "intentar."
@@ -617,8 +652,7 @@ msgstr "Heu d'estar autenticat per pujar un vídeo."
 #~ msgid "This service is not available at the moment."
 #~ msgstr "Aquest servei no està disponible actualment."
 
-#~ msgid ""
-#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 #~ msgstr ""
 #~ "S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació "
 #~ "«%s»."
