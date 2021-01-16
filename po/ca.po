@@ -52,8 +52,7 @@ msgstr "No es pot connectar al servidor intermediari."
 #: gdata/gdata-client-login-authorizer.c:660 gdata/gdata-service.c:372
 #: gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
-msgid ""
-"Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
 "L'URI de sol·licitud o la capçalera no són vàlids, o era un paràmetre no "
 "estàndard i no compatible: %s"
@@ -93,7 +92,7 @@ msgstr "Codi d'error %u en autenticar: %s"
 #. CAPTCHAs
 #: gdata/gdata-client-login-authorizer.c:788
 msgid "A CAPTCHA must be filled out to log in."
-msgstr "S'ha d'emplenar un CAPTCHA per entrar."
+msgstr "S'ha d'emplenar un CAPTCHA per a entrar."
 
 #. Translators: the parameter is a URI for further information.
 #: gdata/gdata-client-login-authorizer.c:826
@@ -125,7 +124,7 @@ msgid ""
 "This account has been migrated. Please log in online to receive your new "
 "username and password. (%s)"
 msgstr ""
-"Aquest compte s'ha migrat. Entreu en línia per rebre el nom d'usuari i la "
+"Aquest compte s'ha migrat. Entreu en línia per a rebre el nom d'usuari i la "
 "contrasenya nous. (%s)"
 
 #. Translators: the parameter is a URI for further information.
@@ -467,8 +466,8 @@ msgstr "El flux ja està tancat"
 #: gdata/services/youtube/gdata-youtube-service.c:541
 #, c-format
 msgid ""
-"You have made too many API calls recently. Please wait a few minutes and try"
-" again."
+"You have made too many API calls recently. Please wait a few minutes and try "
+"again."
 msgstr ""
 "Heu realitzat massa crides a l'API últimament. Espereu uns minuts i torneu-"
 "ho a intentar."
@@ -478,29 +477,29 @@ msgstr ""
 #: gdata/services/youtube/gdata-youtube-service.c:557
 #, c-format
 msgid "You must be authenticated to do this."
-msgstr "Heu d'estar autenticat per fer-ho."
+msgstr "Heu d'estar autenticat per a fer-ho."
 
 #: gdata/services/calendar/gdata-calendar-service.c:465
 #: gdata/services/calendar/gdata-calendar-service.c:519
 msgid "You must be authenticated to query all calendars."
-msgstr "Heu d'estar autenticat per consultar tots els calendaris."
+msgstr "Heu d'estar autenticat per a consultar tots els calendaris."
 
 #: gdata/services/calendar/gdata-calendar-service.c:563
 #: gdata/services/calendar/gdata-calendar-service.c:617
 #: gdata/services/calendar/gdata-calendar-service.c:677
 #: gdata/services/calendar/gdata-calendar-service.c:739
 msgid "You must be authenticated to query your own calendars."
-msgstr "Heu d'estar autenticat per consultar els vostres calendaris."
+msgstr "Heu d'estar autenticat per a consultar els vostres calendaris."
 
 #: gdata/services/contacts/gdata-contacts-service.c:258
 #: gdata/services/contacts/gdata-contacts-service.c:311
 msgid "You must be authenticated to query contacts."
-msgstr "Heu d'estar autenticat per consultar els contactes."
+msgstr "Heu d'estar autenticat per a consultar els contactes."
 
 #: gdata/services/contacts/gdata-contacts-service.c:425
 #: gdata/services/contacts/gdata-contacts-service.c:478
 msgid "You must be authenticated to query contact groups."
-msgstr "Heu d'estar autenticat per consultar els grups de contactes."
+msgstr "Heu d'estar autenticat per a consultar els grups de contactes."
 
 #: gdata/services/contacts/gdata-contacts-service.c:516
 msgid "The group has already been inserted."
@@ -508,7 +507,7 @@ msgstr "El grup ja fou inserit."
 
 #: gdata/services/contacts/gdata-contacts-service.c:523
 msgid "You must be authenticated to insert a group."
-msgstr "Heu d'estar autenticat per inserir un grup."
+msgstr "Heu d'estar autenticat per a inserir un grup."
 
 #: gdata/services/documents/gdata-documents-document.c:412
 msgid "You must be authenticated to download documents."
@@ -528,7 +527,7 @@ msgstr "Visibilitat no vàlida: valor no reconegut «%s»"
 #: gdata/services/documents/gdata-documents-service.c:581
 #: gdata/services/documents/gdata-documents-service.c:634
 msgid "You must be authenticated to query documents."
-msgstr "Heu d'estar autenticat per consultar els documents."
+msgstr "Heu d'estar autenticat per a consultar els documents."
 
 #: gdata/services/documents/gdata-documents-service.c:697
 msgid "You must be authenticated to upload documents."
@@ -540,7 +539,7 @@ msgstr "Aquest document ja s'ha pujat."
 
 #: gdata/services/documents/gdata-documents-service.c:848
 msgid "You must be authenticated to update documents."
-msgstr "Heu d'estar autenticat per actualitzar documents."
+msgstr "Heu d'estar autenticat per a actualitzar documents."
 
 #: gdata/services/documents/gdata-documents-service.c:1015
 #, c-format
@@ -552,7 +551,7 @@ msgstr ""
 
 #: gdata/services/documents/gdata-documents-service.c:1055
 msgid "You must be authenticated to copy documents."
-msgstr "Heu d'estar autenticat per copiar els documents."
+msgstr "Heu d'estar autenticat per a copiar els documents."
 
 #: gdata/services/documents/gdata-documents-service.c:1074
 #: gdata/services/documents/gdata-documents-service.c:1439
@@ -561,11 +560,11 @@ msgstr "No s'ha trobat la carpeta pare"
 
 #: gdata/services/documents/gdata-documents-service.c:1208
 msgid "You must be authenticated to insert or move documents and folders."
-msgstr "Heu d'estar autenticat per inserir o moure documents i carpetes."
+msgstr "Heu d'estar autenticat per a inserir o moure documents i carpetes."
 
 #: gdata/services/documents/gdata-documents-service.c:1412
 msgid "You must be authenticated to move documents and folders."
-msgstr "Heu d'estar autenticat per moure documents i carpetes."
+msgstr "Heu d'estar autenticat per a moure documents i carpetes."
 
 #: gdata/services/freebase/gdata-freebase-service.c:497
 #, c-format
@@ -575,8 +574,7 @@ msgstr "En la propietat «%s» no hi ha cap imatge"
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:244
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
-"Heu d'especificar un nom d'usuari o estar autenticat per consultar un "
-"usuari."
+"Heu d'especificar un nom d'usuari o estar autenticat per a consultar un usuari."
 
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:372
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:432
@@ -587,7 +585,7 @@ msgstr "El paràmetre de consulta no és vàlid per als àlbums."
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:444
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
-"Heu d'especificar un nom d'usuari o estar autenticat per consultar tots els "
+"Heu d'especificar un nom d'usuari o estar autenticat per a consultar tots els "
 "àlbums."
 
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:463
@@ -604,23 +602,22 @@ msgstr "Ja s'ha inserit l'àlbum."
 
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:702
 msgid "You must be authenticated to insert an album."
-msgstr "Heu d'estar autenticat per inserir un àlbum."
+msgstr "Heu d'estar autenticat per a inserir un àlbum."
 
 #: gdata/services/tasks/gdata-tasks-service.c:330
 #: gdata/services/tasks/gdata-tasks-service.c:384
 msgid "You must be authenticated to query all tasklists."
-msgstr "Heu d'estar autenticat per consultar totes les llistes de tasques."
+msgstr "Heu d'estar autenticat per a consultar totes les llistes de tasques."
 
 #: gdata/services/tasks/gdata-tasks-service.c:431
 #: gdata/services/tasks/gdata-tasks-service.c:491
 msgid "You must be authenticated to query your own tasks."
-msgstr "Heu d'estar autenticat per consultar les vostres tasques."
+msgstr "Heu d'estar autenticat per a consultar les vostres tasques."
 
 #: gdata/services/youtube/gdata-youtube-service.c:548
 #, c-format
 msgid ""
-"You have exceeded your entry quota. Please delete some entries and try "
-"again."
+"You have exceeded your entry quota. Please delete some entries and try again."
 msgstr ""
 "Heu excedit la vostra quota d'entrades. Suprimiu-ne algunes i torneu-ho a "
 "intentar."
@@ -632,8 +629,8 @@ msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
 "Visit %s to create one."
 msgstr ""
-"Per poder fer això heu de vincular el vostre compte del Google amb un canal "
-"de YouTube. Aneu a %s per crear-ne un."
+"Per a poder fer això heu de vincular el vostre compte del Google amb un "
+"canal de YouTube. Aneu a %s per a crear-ne un."
 
 #: gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
@@ -652,7 +649,8 @@ msgstr "Heu d'estar autenticat per pujar un vídeo."
 #~ msgid "This service is not available at the moment."
 #~ msgstr "Aquest servei no està disponible actualment."
 
-#~ msgid "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
 #~ msgstr ""
 #~ "S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació "
 #~ "«%s»."
