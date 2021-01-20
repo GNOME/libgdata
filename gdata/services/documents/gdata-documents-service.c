@@ -261,6 +261,7 @@
 #include "gdata-documents-property.h"
 #include "gdata-documents-service.h"
 #include "gdata-documents-utils.h"
+#include "gdata-documents-drive.h"
 #include "gdata-batchable.h"
 #include "gdata-service.h"
 #include "gdata-private.h"
@@ -641,6 +642,101 @@ gdata_documents_service_query_documents_async (GDataDocumentsService *self, GDat
 	                           GDATA_TYPE_DOCUMENTS_ENTRY, cancellable, progress_callback, progress_user_data,
 	                           destroy_progress_user_data, callback, user_data);
 	g_free (request_uri);
+}
+
+/**
+ * gdata_documents_service_query_drives:
+ * @self: a #GDataDocumentsService
+ * @query: (nullable): a #GDataDocumentsDriveQuery with the query parameters, or %NULL
+ * @cancellable: (nullable): optional #GCancellable object, or %NULL
+ * @progress_callback: (nullable) (scope call) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @error: a #GError, or %NULL
+ *
+ * Queries the service to return a list of shared drives matching the given @query.
+ *
+ * For more details, see gdata_service_query().
+ *
+ * Return value: (transfer full): a #GDataDocumentsFeed of query results; unref with g_object_unref()
+ *
+ * Since: 0.18.0
+ */
+GDataDocumentsFeed *
+gdata_documents_service_query_drives (GDataDocumentsService *self, GDataDocumentsDriveQuery *query, GCancellable *cancellable,
+                                      GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                      GError **error)
+{
+	GDataFeed *feed;
+	const gchar *request_uri = "https://www.googleapis.com/drive/v2/drives";
+
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self), NULL);
+	g_return_val_if_fail (query == NULL || GDATA_IS_DOCUMENTS_DRIVE_QUERY (query), NULL);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* Ensure we're authenticated first */
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
+		g_set_error_literal (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED,
+		                     _("You must be authenticated to query drives."));
+		return NULL;
+	}
+
+	feed = gdata_service_query (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
+	                            GDATA_TYPE_DOCUMENTS_DRIVE, cancellable, progress_callback, progress_user_data, error);
+
+	return GDATA_DOCUMENTS_FEED (feed);
+}
+
+/**
+ * gdata_documents_service_query_drives_async:
+ * @self: a #GDataDocumentsService
+ * @query: (nullable): a #GDataDocumentsDriveQuery with the query parameters, or %NULL
+ * @cancellable: (nullable): optional #GCancellable object, or %NULL
+ * @progress_callback: (nullable) (closure progress_user_data): a #GDataQueryProgressCallback to call when an entry is loaded, or %NULL
+ * @progress_user_data: (closure): data to pass to the @progress_callback function
+ * @destroy_progress_user_data: (nullable): the function to call when @progress_callback will not be called any more, or %NULL. This function will be
+ * called with @progress_user_data as a parameter and can be used to free any memory allocated for it.
+ * @callback: a #GAsyncReadyCallback to call when authentication is finished
+ * @user_data: (closure): data to pass to the @callback function
+ *
+ * Queries the service to return a list of shared drives matching the given @query. @self and
+ * @query are both reffed when this function is called, so can safely be unreffed after this function returns.
+ *
+ * For more details, see gdata_documents_service_query_drives(), which is the synchronous version of this function,
+ * and gdata_service_query_async(), which is the base asynchronous query function.
+ *
+ * Since: 0.18.0
+ */
+void
+gdata_documents_service_query_drives_async (GDataDocumentsService *self, GDataDocumentsDriveQuery *query, GCancellable *cancellable,
+                                            GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                            GDestroyNotify destroy_progress_user_data,
+                                            GAsyncReadyCallback callback, gpointer user_data)
+{
+	const gchar *request_uri = "https://www.googleapis.com/drive/v2/drives";
+
+	g_return_if_fail (GDATA_IS_DOCUMENTS_SERVICE (self));
+	g_return_if_fail (query == NULL || GDATA_IS_DOCUMENTS_QUERY (query));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (callback != NULL);
+
+	/* Ensure we're authenticated first */
+	if (gdata_authorizer_is_authorized_for_domain (gdata_service_get_authorizer (GDATA_SERVICE (self)),
+	                                               get_documents_authorization_domain ()) == FALSE) {
+		g_autoptr(GTask) task = NULL;
+
+		task = g_task_new (self, cancellable, callback, user_data);
+		g_task_set_source_tag (task, gdata_service_query_async);
+		g_task_return_new_error (task, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED, "%s",
+		                         _("You must be authenticated to query drives."));
+
+		return;
+	}
+
+	gdata_service_query_async (GDATA_SERVICE (self), get_documents_authorization_domain (), request_uri, GDATA_QUERY (query),
+	                           GDATA_TYPE_DOCUMENTS_DRIVE, cancellable, progress_callback, progress_user_data,
+	                           destroy_progress_user_data, callback, user_data);
 }
 
 static void

@@ -128,6 +128,8 @@
 /* Google Documents*/
 #include <gdata/services/documents/gdata-documents-entry.h>
 #include <gdata/services/documents/gdata-documents-document.h>
+#include <gdata/services/documents/gdata-documents-drive.h>
+#include <gdata/services/documents/gdata-documents-drive-query.h>
 #include <gdata/services/documents/gdata-documents-property.h>
 #include <gdata/services/documents/gdata-documents-text.h>
 #include <gdata/services/documents/gdata-documents-spreadsheet.h>

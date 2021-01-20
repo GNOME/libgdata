@@ -1058,7 +1058,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 static gchar *
 get_entry_uri (const gchar *id)
 {
-	return g_strconcat ("https://www.googleapis.com/drive/v2/files/", id, NULL);
+	return g_strconcat ("https://www.googleapis.com/drive/v2/files/", id, "?supportsAllDrives=true", NULL);
 }
 
 /**

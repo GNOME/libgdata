@@ -404,6 +404,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 		max_results = max_results > 1000 ? 1000 : max_results;
 		g_string_append_printf (query_uri, "maxResults=%u", max_results);
 	}
+
+	APPEND_SEP
+	g_string_append_printf (query_uri, "includeItemsFromAllDrives=true");
+	APPEND_SEP
+	g_string_append_printf (query_uri, "supportsAllDrives=true");
 }
 
 /**

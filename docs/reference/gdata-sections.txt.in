@@ -1817,6 +1817,8 @@ gdata_documents_service_get_metadata_async
 gdata_documents_service_get_metadata_finish
 gdata_documents_service_query_documents
 gdata_documents_service_query_documents_async
+gdata_documents_service_query_drives
+gdata_documents_service_query_drives_async
 gdata_documents_service_upload_document
 gdata_documents_service_upload_document_resumable
 gdata_documents_service_update_document
@@ -1863,6 +1865,42 @@ GDATA_IS_DOCUMENTS_METADATA_CLASS
 GDATA_TYPE_DOCUMENTS_METADATA
 <SUBSECTION Private>
 GDataDocumentsMetadataPrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-drive</FILE>
+<TITLE>GDataDocumentsDrive</TITLE>
+GDataDocumentsDrive
+GDataDocumentsDriveClass
+gdata_documents_drive_get_name
+<SUBSECTION Standard>
+gdata_documents_drive_get_type
+GDATA_DOCUMENTS_DRIVE
+GDATA_DOCUMENTS_DRIVE_CLASS
+GDATA_DOCUMENTS_DRIVE_GET_CLASS
+GDATA_IS_DOCUMENTS_DRIVE
+GDATA_IS_DOCUMENTS_DRIVE_CLASS
+GDATA_TYPE_DOCUMENTS_DRIVE
+<SUBSECTION Private>
+GDataDocumentsDrivePrivate
+</SECTION>
+
+<SECTION>
+<FILE>gdata-documents-drive-query</FILE>
+<TITLE>GDataDocumentsDriveQuery</TITLE>
+GDataDocumentsDriveQuery
+GDataDocumentsDriveQueryClass
+gdata_documents_drive_query_new
+<SUBSECTION Standard>
+gdata_documents_drive_query_get_type
+GDATA_DOCUMENTS_DRIVE_QUERY
+GDATA_DOCUMENTS_DRIVE_QUERY_CLASS
+GDATA_DOCUMENTS_DRIVE_QUERY_GET_CLASS
+GDATA_IS_DOCUMENTS_DRIVE_QUERY
+GDATA_IS_DOCUMENTS_DRIVE_QUERY_CLASS
+GDATA_TYPE_DOCUMENTS_DRIVE_QUERY
+<SUBSECTION Private>
+GDataDocumentsDriveQueryPrivate
 </SECTION>
 
 <SECTION>
