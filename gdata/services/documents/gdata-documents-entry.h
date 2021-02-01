@@ -125,6 +125,8 @@ GList *gdata_documents_entry_get_document_properties (GDataDocumentsEntry *self)
 gboolean gdata_documents_entry_add_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property);
 gboolean gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *self, GDataDocumentsProperty *property);
 
+gint64 gdata_documents_entry_get_shared_with_me_date (GDataDocumentsEntry *self);
+
 G_END_DECLS
 
 #endif /* !GDATA_DOCUMENTS_ENTRY_H */
