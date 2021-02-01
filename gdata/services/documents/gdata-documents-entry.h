@@ -127,6 +127,8 @@ gboolean gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *s
 
 gint64 gdata_documents_entry_get_shared_with_me_date (GDataDocumentsEntry *self);
 
+gboolean gdata_documents_entry_can_edit (GDataDocumentsEntry *self);
+
 G_END_DECLS
 
 #endif /* !GDATA_DOCUMENTS_ENTRY_H */
