@@ -1,3 +1,19 @@
+Overview of changes from libgdata 0.17.13 to libgdata 0.18.0
+============================================================
+
+* Add support for Team Drives (work by Ondrej Holy) (#25)
+
+* Bugs fixed:
+ - #25 Team drives API support needed
+
+* Translation updates:
+ - Bokmål, Norwegian
+ - Catalan
+ - Greek, Modern (1453-)
+ - Portuguese
+ - Slovak
+
+
 Overview of changes from libgdata 0.17.12 to libgdata 0.17.13
 =============================================================
 
