@@ -28,6 +28,7 @@
 #include <gdata/services/documents/gdata-documents-query.h>
 #include <gdata/services/documents/gdata-documents-feed.h>
 #include <gdata/services/documents/gdata-documents-metadata.h>
+#include <gdata/services/documents/gdata-documents-drive-query.h>
 
 G_BEGIN_DECLS
 
@@ -111,6 +112,14 @@ void gdata_documents_service_query_documents_async (GDataDocumentsService *self,
                                                     GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                     GDestroyNotify destroy_progress_user_data,
                                                     GAsyncReadyCallback callback, gpointer user_data);
+
+GDataDocumentsFeed *gdata_documents_service_query_drives (GDataDocumentsService *self, GDataDocumentsDriveQuery *query, GCancellable *cancellable,
+                                                          GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                          GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+void gdata_documents_service_query_drives_async (GDataDocumentsService *self, GDataDocumentsDriveQuery *query, GCancellable *cancellable,
+                                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
+                                                 GDestroyNotify destroy_progress_user_data,
+                                                 GAsyncReadyCallback callback, gpointer user_data);
 
 #include <gdata/services/documents/gdata-documents-document.h>
 #include <gdata/services/documents/gdata-documents-folder.h>

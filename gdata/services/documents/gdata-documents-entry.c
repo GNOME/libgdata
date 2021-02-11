@@ -135,6 +135,8 @@ struct _GDataDocumentsEntryPrivate {
 	goffset quota_used; /* bytes */
 	goffset file_size; /* bytes */
 	GList *properties; /* GDataDocumentsProperty */
+	gint64 shared_with_me_date;
+	gboolean can_edit;
 };
 
 enum {
@@ -147,6 +149,8 @@ enum {
 	PROP_RESOURCE_ID,
 	PROP_QUOTA_USED,
 	PROP_FILE_SIZE,
+	PROP_SHARED_WITH_ME_DATE,
+	PROP_CAN_EDIT,
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
@@ -311,6 +315,32 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                     "File size", "The size of the document.",
 	                                                     0, G_MAXINT64, 0,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:shared-with-me-date:
+	 *
+	 * The UNIX timestamp for the time at which this file was shared with the user.
+	 *
+	 * Since: 0.18.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_SHARED_WITH_ME_DATE,
+	                                 g_param_spec_int64 ("shared-with-me-date",
+	                                                     "Shared with me date", "The time at which this file was shared with the user.",
+	                                                     -1, G_MAXINT64, -1,
+	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * GDataDocumentsEntry:can-edit:
+	 *
+	 * Indicates whether the current user can edit this file.
+	 *
+	 * Since: 0.18.0
+	 */
+	g_object_class_install_property (gobject_class, PROP_CAN_EDIT,
+	                                 g_param_spec_boolean ("can-edit",
+	                                                       "Can edit?", "Indicates whether the current user can edit this file.",
+	                                                       FALSE,
+	                                                       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static gboolean
@@ -436,6 +466,12 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 			break;
 		case PROP_FILE_SIZE:
 			g_value_set_int64 (value, priv->file_size);
+			break;
+		case PROP_SHARED_WITH_ME_DATE:
+			g_value_set_int64 (value, priv->shared_with_me_date);
+			break;
+		case PROP_CAN_EDIT:
+			g_value_set_boolean (value, priv->can_edit);
 			break;
 		default:
 			/* We don't have any other property... */
@@ -935,6 +971,31 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 		}
 
 		return success;
+	} else if (gdata_parser_int64_time_from_json_member (reader, "sharedWithMeDate", P_DEFAULT, &(priv->shared_with_me_date), &success, error) == TRUE) {
+		return success;
+	} else if (g_strcmp0 (json_reader_get_member_name (reader), "capabilities") == 0) {
+		guint i, members;
+
+		if (!json_reader_is_object (reader)) {
+			g_set_error (error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR,
+			             /* Translators: the parameter is an error message */
+			             _("Error parsing JSON: %s"),
+			             "JSON node ‘capabilities’ is not an object.");
+			return FALSE;
+		}
+
+		for (i = 0, members = (guint) json_reader_count_members (reader); i < members; i++) {
+			json_reader_read_element (reader, i);
+
+			if (gdata_parser_boolean_from_json_member (reader, "canEdit", P_DEFAULT, &(priv->can_edit), &success, error) == TRUE) {
+				json_reader_end_element (reader);
+				break;
+			}
+
+			json_reader_end_element (reader);
+		}
+
+		return success;
 	}
 
 	return GDATA_PARSABLE_CLASS (gdata_documents_entry_parent_class)->parse_json (parsable, reader, user_data, error);
@@ -1058,7 +1119,7 @@ get_namespaces (GDataParsable *parsable, GHashTable *namespaces)
 static gchar *
 get_entry_uri (const gchar *id)
 {
-	return g_strconcat ("https://www.googleapis.com/drive/v2/files/", id, NULL);
+	return g_strconcat ("https://www.googleapis.com/drive/v2/files/", id, "?supportsAllDrives=true", NULL);
 }
 
 /**
@@ -1418,4 +1479,38 @@ gdata_documents_entry_remove_documents_property (GDataDocumentsEntry *self, GDat
 	gdata_documents_property_set_value ((GDataDocumentsProperty *) l->data, NULL);
 
 	return TRUE;
+}
+
+/**
+ * gdata_documents_entry_get_shared_with_me_date:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:shared-with-me-date property. If the property is unset, `-1` will be returned.
+ *
+ * Return value: the UNIX timestamp for the time at which this file was shared with the user, or `-1`
+ *
+ * Since: 0.18.0
+ */
+gint64
+gdata_documents_entry_get_shared_with_me_date (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), -1);
+	return self->priv->shared_with_me_date;
+}
+
+/**
+ * gdata_documents_entry_can_edit:
+ * @self: a #GDataDocumentsEntry
+ *
+ * Gets the #GDataDocumentsEntry:can-edit property.
+ *
+ * Return value: %TRUE if the current user can edit this file, %FALSE otherwise
+ *
+ * Since: 0.18.0
+ */
+gboolean
+gdata_documents_entry_can_edit (GDataDocumentsEntry *self)
+{
+	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), FALSE);
+	return self->priv->can_edit;
 }

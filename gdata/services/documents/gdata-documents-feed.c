@@ -41,6 +41,7 @@
 
 #include "gdata-documents-feed.h"
 #include "gdata-documents-utils.h"
+#include "gdata-documents-drive.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
 #include "gdata-service.h"
@@ -159,6 +160,8 @@ parse_json (GDataParsable *parsable, JsonReader *reader, gpointer user_data, GEr
 
 			if (g_strcmp0 (kind, "drive#file") == 0) {
 				entry_type = gdata_documents_utils_get_type_from_content_type (mime_type);
+			} else if (g_strcmp0 (kind, "drive#drive") == 0) {
+				entry_type = GDATA_TYPE_DOCUMENTS_DRIVE;
 			} else {
 				g_warning ("%s files are not handled yet", kind);
 			}
