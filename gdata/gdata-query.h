@@ -66,6 +66,7 @@ typedef struct {
 } GDataQueryClass;
 
 GType gdata_query_get_type (void) G_GNUC_CONST;
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GDataQuery, g_object_unref)
 
 GDataQuery *gdata_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 GDataQuery *gdata_query_new_with_limits (const gchar *q, guint start_index, guint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
