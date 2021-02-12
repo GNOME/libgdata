@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-09-03 09:39+0000\n"
-"PO-Revision-Date: 2019-09-03 20:16+0200\n"
+"POT-Creation-Date: 2021-02-11 21:33+0000\n"
+"PO-Revision-Date: 2021-02-12 11:13+0100\n"
 "Last-Translator: Daniel Șerbănescu <daniel [at] serbanescu [dot] dk>\n"
 "Language-Team: Romanian Gnome Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: gdata/gdata-batch-operation.c:635
 #, c-format
@@ -204,26 +204,27 @@ msgstr "Document gol."
 #: gdata/services/documents/gdata-documents-access-rule.c:144
 #: gdata/services/documents/gdata-documents-access-rule.c:154
 #: gdata/services/documents/gdata-documents-document.c:289
-#: gdata/services/documents/gdata-documents-entry.c:483
-#: gdata/services/documents/gdata-documents-entry.c:494
-#: gdata/services/documents/gdata-documents-entry.c:506
-#: gdata/services/documents/gdata-documents-entry.c:546
-#: gdata/services/documents/gdata-documents-entry.c:557
-#: gdata/services/documents/gdata-documents-entry.c:568
-#: gdata/services/documents/gdata-documents-entry.c:615
-#: gdata/services/documents/gdata-documents-entry.c:626
-#: gdata/services/documents/gdata-documents-entry.c:734
-#: gdata/services/documents/gdata-documents-entry.c:769
-#: gdata/services/documents/gdata-documents-entry.c:784
-#: gdata/services/documents/gdata-documents-entry.c:799
-#: gdata/services/documents/gdata-documents-entry.c:829
-#: gdata/services/documents/gdata-documents-entry.c:845
-#: gdata/services/documents/gdata-documents-entry.c:884
-#: gdata/services/documents/gdata-documents-entry.c:901
-#: gdata/services/documents/gdata-documents-feed.c:81
-#: gdata/services/documents/gdata-documents-feed.c:92
-#: gdata/services/documents/gdata-documents-feed.c:129
-#: gdata/services/documents/gdata-documents-feed.c:147
+#: gdata/services/documents/gdata-documents-entry.c:519
+#: gdata/services/documents/gdata-documents-entry.c:530
+#: gdata/services/documents/gdata-documents-entry.c:542
+#: gdata/services/documents/gdata-documents-entry.c:582
+#: gdata/services/documents/gdata-documents-entry.c:593
+#: gdata/services/documents/gdata-documents-entry.c:604
+#: gdata/services/documents/gdata-documents-entry.c:651
+#: gdata/services/documents/gdata-documents-entry.c:662
+#: gdata/services/documents/gdata-documents-entry.c:770
+#: gdata/services/documents/gdata-documents-entry.c:805
+#: gdata/services/documents/gdata-documents-entry.c:820
+#: gdata/services/documents/gdata-documents-entry.c:835
+#: gdata/services/documents/gdata-documents-entry.c:865
+#: gdata/services/documents/gdata-documents-entry.c:881
+#: gdata/services/documents/gdata-documents-entry.c:920
+#: gdata/services/documents/gdata-documents-entry.c:937
+#: gdata/services/documents/gdata-documents-entry.c:982
+#: gdata/services/documents/gdata-documents-feed.c:82
+#: gdata/services/documents/gdata-documents-feed.c:93
+#: gdata/services/documents/gdata-documents-feed.c:130
+#: gdata/services/documents/gdata-documents-feed.c:148
 #, c-format
 msgid "Error parsing JSON: %s"
 msgstr "Eroare la parsarea JSON: %s"
@@ -488,50 +489,55 @@ msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "Format de exportare de document necunoscut sau nesuportat „%s”."
 
 #. Translators: the parameter is the invalid value of visibility variable
-#: gdata/services/documents/gdata-documents-entry.c:919
+#: gdata/services/documents/gdata-documents-entry.c:955
 #, c-format
 msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Vizibilitate nevalidă: valoare nerecunoscută „%s”"
 
-#: gdata/services/documents/gdata-documents-service.c:581
-#: gdata/services/documents/gdata-documents-service.c:634
+#: gdata/services/documents/gdata-documents-service.c:582
+#: gdata/services/documents/gdata-documents-service.c:635
 msgid "You must be authenticated to query documents."
 msgstr "Trebuie să fiți autentificat pentru a interoga documentele."
 
-#: gdata/services/documents/gdata-documents-service.c:697
+#: gdata/services/documents/gdata-documents-service.c:681
+#: gdata/services/documents/gdata-documents-service.c:732
+msgid "You must be authenticated to query drives."
+msgstr "Trebuie să fiți autentificat pentru a interoga discurile."
+
+#: gdata/services/documents/gdata-documents-service.c:793
 msgid "You must be authenticated to upload documents."
 msgstr "Trebuie să fiți autentificat pentru a încărca documente."
 
-#: gdata/services/documents/gdata-documents-service.c:703
+#: gdata/services/documents/gdata-documents-service.c:799
 msgid "The document has already been uploaded."
 msgstr "Documentul a fost deja încărcat."
 
-#: gdata/services/documents/gdata-documents-service.c:848
+#: gdata/services/documents/gdata-documents-service.c:944
 msgid "You must be authenticated to update documents."
 msgstr "Trebuie să fiți autentificat pentru a actualiza documentele."
 
-#: gdata/services/documents/gdata-documents-service.c:1015
+#: gdata/services/documents/gdata-documents-service.c:1111
 #, c-format
 msgid ""
 "The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
 "Tipul de conținut al documentului furnizat („%s”) nu a putut fi recunoscut."
 
-#: gdata/services/documents/gdata-documents-service.c:1055
+#: gdata/services/documents/gdata-documents-service.c:1151
 msgid "You must be authenticated to copy documents."
 msgstr "Trebuie să fiți autentificat pentru a copia documente."
 
-#: gdata/services/documents/gdata-documents-service.c:1074
-#: gdata/services/documents/gdata-documents-service.c:1439
+#: gdata/services/documents/gdata-documents-service.c:1170
+#: gdata/services/documents/gdata-documents-service.c:1535
 msgid "Parent folder not found"
 msgstr "Nu s-a găsit dosarul superior"
 
-#: gdata/services/documents/gdata-documents-service.c:1208
+#: gdata/services/documents/gdata-documents-service.c:1304
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Trebuie să fiți autentificat pentru a introduce sau muta documente și dosare."
 
-#: gdata/services/documents/gdata-documents-service.c:1412
+#: gdata/services/documents/gdata-documents-service.c:1508
 msgid "You must be authenticated to move documents and folders."
 msgstr "Trebuie să fiți autentificat pentru a muta documente și dosare."
 
