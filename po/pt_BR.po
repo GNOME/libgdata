@@ -5,23 +5,23 @@
 # Og Maciel <ogmaciel@gnome.org>, 2009.
 # Djavan Fagundes <djavanf@gnome.org>, 2010.
 # Flamarion Jorge <jorge.flamarion@gmail.com>, 2009, 2011.
-# Enrico Nicoletto <liverig@gmail.com>, 2013, 2014, 2015.
 # Rafael Fontenelle <rafaelff@gnome.org>, 2013-2019.
+# Enrico Nicoletto <liverig@gmail.com>, 2013, 2014, 2015, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2019-09-03 09:39+0000\n"
-"PO-Revision-Date: 2019-09-03 14:40-0300\n"
-"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
+"POT-Creation-Date: 2021-02-11 21:33+0000\n"
+"PO-Revision-Date: 2021-02-12 11:54-0300\n"
+"Last-Translator: Enrico Nicoletto <liverig@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-"X-Generator: Gtranslator 3.32.0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Project-Style: gnome\n"
 
 #: gdata/gdata-batch-operation.c:635
@@ -211,26 +211,27 @@ msgstr "Documento vazio."
 #: gdata/services/documents/gdata-documents-access-rule.c:144
 #: gdata/services/documents/gdata-documents-access-rule.c:154
 #: gdata/services/documents/gdata-documents-document.c:289
-#: gdata/services/documents/gdata-documents-entry.c:483
-#: gdata/services/documents/gdata-documents-entry.c:494
-#: gdata/services/documents/gdata-documents-entry.c:506
-#: gdata/services/documents/gdata-documents-entry.c:546
-#: gdata/services/documents/gdata-documents-entry.c:557
-#: gdata/services/documents/gdata-documents-entry.c:568
-#: gdata/services/documents/gdata-documents-entry.c:615
-#: gdata/services/documents/gdata-documents-entry.c:626
-#: gdata/services/documents/gdata-documents-entry.c:734
-#: gdata/services/documents/gdata-documents-entry.c:769
-#: gdata/services/documents/gdata-documents-entry.c:784
-#: gdata/services/documents/gdata-documents-entry.c:799
-#: gdata/services/documents/gdata-documents-entry.c:829
-#: gdata/services/documents/gdata-documents-entry.c:845
-#: gdata/services/documents/gdata-documents-entry.c:884
-#: gdata/services/documents/gdata-documents-entry.c:901
-#: gdata/services/documents/gdata-documents-feed.c:81
-#: gdata/services/documents/gdata-documents-feed.c:92
-#: gdata/services/documents/gdata-documents-feed.c:129
-#: gdata/services/documents/gdata-documents-feed.c:147
+#: gdata/services/documents/gdata-documents-entry.c:519
+#: gdata/services/documents/gdata-documents-entry.c:530
+#: gdata/services/documents/gdata-documents-entry.c:542
+#: gdata/services/documents/gdata-documents-entry.c:582
+#: gdata/services/documents/gdata-documents-entry.c:593
+#: gdata/services/documents/gdata-documents-entry.c:604
+#: gdata/services/documents/gdata-documents-entry.c:651
+#: gdata/services/documents/gdata-documents-entry.c:662
+#: gdata/services/documents/gdata-documents-entry.c:770
+#: gdata/services/documents/gdata-documents-entry.c:805
+#: gdata/services/documents/gdata-documents-entry.c:820
+#: gdata/services/documents/gdata-documents-entry.c:835
+#: gdata/services/documents/gdata-documents-entry.c:865
+#: gdata/services/documents/gdata-documents-entry.c:881
+#: gdata/services/documents/gdata-documents-entry.c:920
+#: gdata/services/documents/gdata-documents-entry.c:937
+#: gdata/services/documents/gdata-documents-entry.c:982
+#: gdata/services/documents/gdata-documents-feed.c:82
+#: gdata/services/documents/gdata-documents-feed.c:93
+#: gdata/services/documents/gdata-documents-feed.c:130
+#: gdata/services/documents/gdata-documents-feed.c:148
 #, c-format
 msgid "Error parsing JSON: %s"
 msgstr "Erro ao analisar JSON: %s"
@@ -491,50 +492,55 @@ msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "Formato de exportação de documento “%s” sem suporte ou desconhecido."
 
 #. Translators: the parameter is the invalid value of visibility variable
-#: gdata/services/documents/gdata-documents-entry.c:919
+#: gdata/services/documents/gdata-documents-entry.c:955
 #, c-format
 msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Visibilidade inválida: valor não reconhecido “%s”"
 
-#: gdata/services/documents/gdata-documents-service.c:581
-#: gdata/services/documents/gdata-documents-service.c:634
+#: gdata/services/documents/gdata-documents-service.c:582
+#: gdata/services/documents/gdata-documents-service.c:635
 msgid "You must be authenticated to query documents."
 msgstr "Você deve estar autenticado para consultar documentos."
 
-#: gdata/services/documents/gdata-documents-service.c:697
+#: gdata/services/documents/gdata-documents-service.c:681
+#: gdata/services/documents/gdata-documents-service.c:732
+msgid "You must be authenticated to query drives."
+msgstr "Você deve estar autenticado para consultar unidades."
+
+#: gdata/services/documents/gdata-documents-service.c:793
 msgid "You must be authenticated to upload documents."
 msgstr "Você deve estar autenticado para enviar documentos."
 
-#: gdata/services/documents/gdata-documents-service.c:703
+#: gdata/services/documents/gdata-documents-service.c:799
 msgid "The document has already been uploaded."
 msgstr "O documento já foi enviado."
 
-#: gdata/services/documents/gdata-documents-service.c:848
+#: gdata/services/documents/gdata-documents-service.c:944
 msgid "You must be authenticated to update documents."
 msgstr "Você deve estar autenticado para atualizar documentos."
 
-#: gdata/services/documents/gdata-documents-service.c:1015
+#: gdata/services/documents/gdata-documents-service.c:1111
 #, c-format
 msgid ""
 "The content type of the supplied document (‘%s’) could not be recognized."
 msgstr ""
 "O tipo de conteúdo fornecido pelo documento (“%s”) não pôde ser reconhecido."
 
-#: gdata/services/documents/gdata-documents-service.c:1055
+#: gdata/services/documents/gdata-documents-service.c:1151
 msgid "You must be authenticated to copy documents."
 msgstr "Você deve estar autenticado para copiar documentos."
 
-#: gdata/services/documents/gdata-documents-service.c:1074
-#: gdata/services/documents/gdata-documents-service.c:1439
+#: gdata/services/documents/gdata-documents-service.c:1170
+#: gdata/services/documents/gdata-documents-service.c:1535
 msgid "Parent folder not found"
 msgstr "Pasta pai não localizada"
 
-#: gdata/services/documents/gdata-documents-service.c:1208
+#: gdata/services/documents/gdata-documents-service.c:1304
 msgid "You must be authenticated to insert or move documents and folders."
 msgstr ""
 "Você precisa estar autenticado para inserir ou mover documentos e pastas."
 
-#: gdata/services/documents/gdata-documents-service.c:1412
+#: gdata/services/documents/gdata-documents-service.c:1508
 msgid "You must be authenticated to move documents and folders."
 msgstr "Você deve estar autenticado para mover documentos e pastas."
 
