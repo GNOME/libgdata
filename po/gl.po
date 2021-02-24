@@ -3,19 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
 # colaborar connosco, podes atopar máis información en http://www.trasno.net
+#
 # Antón Méixome <meixome@mancomun.org>, 2009.
 # Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2011, 2012.
 # Fran Dieguez <frandieguez@gnome.org>, 2013-2021.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata-master-po-gl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2021-02-11 21:33+0000\n"
-"PO-Revision-Date: 2021-02-12 20:11+0100\n"
+"POT-Creation-Date: 2021-02-21 20:05+0000\n"
+"PO-Revision-Date: 2021-02-23 16:17+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician <proxecto@trasno.gal>\n"
+"Language-Team: Proxecto Trasno <proxecto@trasno.gal>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -176,7 +176,7 @@ msgstr "Pode que non se elimine este comentario."
 #. Tried to seek too far
 #: gdata/gdata-download-stream.c:763
 msgid "Invalid seek request"
-msgstr "Petición de busca non válida"
+msgstr "Solicitude de busca non válida"
 
 #: gdata/gdata-oauth1-authorizer.c:825
 msgid "The server rejected the temporary credentials request."
@@ -184,7 +184,7 @@ msgstr "O servidor rexeitou a solicitude de credenciais temporais."
 
 #: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
 msgid "OAuth 1.0 support is disabled."
-msgstr "A compatiblidade con OAuth 1.0 está desactivada."
+msgstr "A compatibilidade con OAuth 1.0 está desactivada."
 
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
@@ -507,7 +507,6 @@ msgstr "Debe autenticarse para consultar os documentos."
 
 #: gdata/services/documents/gdata-documents-service.c:681
 #: gdata/services/documents/gdata-documents-service.c:732
-#| msgid "You must be authenticated to query documents."
 msgid "You must be authenticated to query drives."
 msgstr "Debe autenticarse para consultar os controladores."
 
