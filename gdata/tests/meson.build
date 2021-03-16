@@ -23,7 +23,6 @@ tests = {
     'should_fail': true,
   },
   'general': {},
-  'oauth1-authorizer': {},
   'oauth2-authorizer': {},
   'perf': {},
   'picasaweb': {

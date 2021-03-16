@@ -93,13 +93,6 @@ gdata_private_deps = [
   dependency('gthread-2.0'),
 ]
 
-oauth_dep = dependency('oauth', version: '>= 0.9.4', required: get_option('oauth1'))
-enable_oauth1 = oauth_dep.found()
-if enable_oauth1
-  gdata_private_deps += oauth_dep
-endif
-config_h.set('ENABLE_OAUTH1', enable_oauth1)
-
 libsoup_dep = dependency('libsoup-2.4', version: '>= 2.42.0')
 gdata_deps += libsoup_dep
 # libsoup 2.47.3 is needed for the new SoupServer API; but it contained a bug in

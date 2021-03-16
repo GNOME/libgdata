@@ -13,11 +13,6 @@ option('goa',
   value: 'enabled',
   description: 'enable Gnome Online Accounts (goa) support')
 
-option('oauth1',
-  type: 'feature',
-  value: 'disabled',
-  description: 'enable OAuth 1.0 support (deprecated)')
-
 option('always_build_tests',
   type: 'boolean',
   value: true,
