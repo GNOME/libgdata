@@ -598,7 +598,7 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	GDataBatchOperationPrivate *priv = self->priv;
 	SoupMessage *message;
 	GDataFeed *feed;
-	GTimeVal updated;
+	gint64 updated;
 	gchar *upload_data;
 	guint status;
 	GHashTableIter iter;
@@ -638,9 +638,9 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	message = _gdata_service_build_message (priv->service, priv->authorization_domain, SOUP_METHOD_POST, priv->feed_uri, NULL, TRUE);
 
 	/* Build the request */
-	g_get_current_time (&updated);
+	updated = g_get_real_time () / G_USEC_PER_SEC;
 	feed = _gdata_feed_new (GDATA_TYPE_FEED, "Batch operation feed",
-	                        "batch1", updated.tv_sec);
+	                        "batch1", updated);
 
 	g_hash_table_iter_init (&iter, priv->operations);
 	while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE) {
@@ -658,7 +658,7 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 			g_free (entry_uri);
 
 			gdata_entry_set_title (entry, "Batch operation query");
-			_gdata_entry_set_updated (entry, updated.tv_sec);
+			_gdata_entry_set_updated (entry, updated);
 
 			_gdata_entry_set_batch_data (entry, op->id, op->type);
 			_gdata_feed_add_entry (feed, entry);

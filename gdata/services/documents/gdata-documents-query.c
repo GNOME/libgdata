@@ -37,7 +37,7 @@
  *	GDataDocumentsService *service;
  *	GDataDocumentsQuery *query;
  *	GDataFeed *feed;
- *	GTimeVal current_time;
+ *	gint64 current_time;
  *	GList *i;
  *	GError *error = NULL;
  *
@@ -51,9 +51,9 @@
  *	gdata_documents_query_add_collaborator (query, "example@gmail.com");
  *	gdata_documents_query_set_show_deleted (query, TRUE);
  *
- *	g_get_current_time (&current_time);
- *	gdata_query_set_updated_min (GDATA_QUERY (query), current_time.tv_sec - 7 * 24 * 60 * 60);
- *	gdata_query_set_updated_max (GDATA_QUERY (query), current_time.tv_sec);
+ *	current_time = g_get_real_time () / G_USEC_PER_SEC;
+ *	gdata_query_set_updated_min (GDATA_QUERY (query), current_time - 7 * 24 * 60 * 60);
+ *	gdata_query_set_updated_max (GDATA_QUERY (query), current_time);
  *
  *	/<!-- -->* Execute the query *<!-- -->/
  *	feed = gdata_documents_service_query_documents (service, query, NULL, NULL, NULL, &error);

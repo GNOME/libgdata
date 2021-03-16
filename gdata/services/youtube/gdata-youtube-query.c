@@ -572,22 +572,20 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	if (priv->age != GDATA_YOUTUBE_AGE_ALL_TIME) {
 		gchar *after;
-		GTimeVal tv = { 0, };
+		GDateTime *tv, *tv2;
 
-		g_get_current_time (&tv);
-
-		/* Squash the microseconds; they’re not useful. */
-		tv.tv_usec = 0;
+		/* don't use g_date_time_new_now_utc (squash microseconds) */
+		tv2 = g_date_time_new_from_unix_utc (g_get_real_time () / G_USEC_PER_SEC);
 
 		switch (priv->age) {
 		case GDATA_YOUTUBE_AGE_TODAY:
-			tv.tv_sec -= 24 * 60 * 60;
+			tv = g_date_time_add_days (tv2, -1);
 			break;
 		case GDATA_YOUTUBE_AGE_THIS_WEEK:
-			tv.tv_sec -= 7 * 24 * 60 * 60;
+			tv = g_date_time_add_weeks (tv2, -1);
 			break;
 		case GDATA_YOUTUBE_AGE_THIS_MONTH:
-			tv.tv_sec -= 31 * 24 * 60 * 60;
+			tv = g_date_time_add_months (tv2, -1);
 			break;
 		case GDATA_YOUTUBE_AGE_ALL_TIME:
 		default:
@@ -596,9 +594,11 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 		APPEND_SEP
 
-		after = g_time_val_to_iso8601 (&tv);
+		after = g_date_time_format_iso8601 (tv);
 		g_string_append_printf (query_uri, "publishedAfter=%s", after);
 		g_free (after);
+		g_date_time_unref (tv);
+		g_date_time_unref (tv2);
 	}
 
 	/* We don’t need to use APPEND_SEP below here, as this parameter is

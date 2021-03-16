@@ -471,7 +471,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	gchar *uri, *signature, *timestamp;
 	char *nonce;
 	gboolean is_first = TRUE;
-	GTimeVal time_val;
+	gint64 time_val;
 	guchar signature_buf[HMAC_SHA1_LEN];
 	gsize signature_buf_len;
 	GHmac *signature_hmac;
@@ -494,8 +494,8 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 
 	/* Add various standard parameters to the list (note: this modifies the hash table belonging to the caller) */
 	nonce = oauth_gen_nonce ();
-	g_get_current_time (&time_val);
-	timestamp = g_strdup_printf ("%li", time_val.tv_sec);
+	time_val = g_get_real_time () / G_USEC_PER_SEC;
+	timestamp = g_strdup_printf ("%li", time_val);
 
 	if (parameters == NULL) {
 		parameters = g_hash_table_new (g_str_hash, g_str_equal);

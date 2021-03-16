@@ -67,35 +67,42 @@ print_task (GDataTasksTask *task)
 {
 	const gchar *title, *id, *description, *parent_id, *position, *notes;
 	const gchar *status;
-	GTimeVal date_published_tv = { 0, };
+	GDateTime *tmp;
+	gint64 date_published_tv;
 	gchar *date_published = NULL;  /* owned */
-	GTimeVal due_tv = { 0, };
+	gint64 due_tv;
 	gchar *due = NULL;  /* owned */
-	GTimeVal completed_tv = { 0, };
+	gint64 completed_tv;
 	gchar *completed = NULL;  /* owned */
 	gboolean is_deleted, is_hidden;
 
 	title = gdata_entry_get_title (GDATA_ENTRY (task));
 	id = gdata_entry_get_id (GDATA_ENTRY (task));
 	description = gdata_entry_get_content (GDATA_ENTRY (task));
-	date_published_tv.tv_sec = gdata_entry_get_published (GDATA_ENTRY (task));
-	date_published = g_time_val_to_iso8601 (&date_published_tv);
+	date_published_tv = gdata_entry_get_published (GDATA_ENTRY (task));
+	tmp = g_date_time_new_from_unix_utc (date_published_tv);
+	date_published = g_date_time_format_iso8601 (tmp);
+	g_date_time_unref (tmp);
 	parent_id = gdata_tasks_task_get_parent (task);
 	position = gdata_tasks_task_get_position (task);
 	notes = gdata_tasks_task_get_notes (task);
 	status = gdata_tasks_task_get_status (task);
-	due_tv.tv_sec = gdata_tasks_task_get_due (task);
-	due = g_time_val_to_iso8601 (&due_tv);
-	completed_tv.tv_sec = gdata_tasks_task_get_completed (task);
-	completed = g_time_val_to_iso8601 (&completed_tv);
+	due_tv = gdata_tasks_task_get_due (task);
+	tmp = g_date_time_new_from_unix_utc (due_tv);
+	due = g_date_time_format_iso8601 (tmp);
+	g_date_time_unref (tmp);
+	completed_tv = gdata_tasks_task_get_completed (task);
+	tmp = g_date_time_new_from_unix_utc (completed_tv);
+	completed = g_date_time_format_iso8601 (tmp);
+	g_date_time_unref (tmp);
 	is_deleted = gdata_tasks_task_is_deleted (task);
 	is_hidden = gdata_tasks_task_is_hidden (task);
 
 	g_print ("%s — %s\n", id, title);
-	g_print ("   Published: %s\n", date_published_tv.tv_sec != 0 ? date_published : "unknown");
+	g_print ("   Published: %s\n", date_published_tv != 0 ? date_published : "unknown");
 	g_print ("   Status: %s\n", format_status (status));
-	g_print ("   Due: %s\n", due_tv.tv_sec != 0 ? due : "not set");
-	g_print ("   Completed: %s\n", completed_tv.tv_sec != 0 ? completed : "not yet");
+	g_print ("   Due: %s\n", due_tv != 0 ? due : "not set");
+	g_print ("   Completed: %s\n", completed_tv != 0 ? completed : "not yet");
 	g_print ("   Deleted? %s\n", is_deleted ? "Yes" : "No");
 	g_print ("   Hidden? %s\n", is_hidden ? "Yes" : "No");
 	g_print ("   Position: %s\n", position);

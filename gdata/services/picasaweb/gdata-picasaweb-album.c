@@ -507,13 +507,13 @@ gdata_picasaweb_album_constructor (GType type, guint n_construct_params, GObject
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
-		GTimeVal time_val;
+		gint64 time_val;
 
 		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
 		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->timestamp = (gint64) time_val.tv_sec * 1000;
-		priv->edited = time_val.tv_sec;
+		time_val = g_get_real_time () / G_USEC_PER_SEC;
+		priv->timestamp = time_val * 1000;
+		priv->edited = time_val;
 	}
 
 	return object;

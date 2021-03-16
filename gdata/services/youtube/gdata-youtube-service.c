@@ -684,14 +684,16 @@ standard_feed_type_to_feed_uri (GDataYouTubeStandardFeedType feed_type)
 	case GDATA_YOUTUBE_RECENTLY_FEATURED_FEED:
 	case GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED: {
 		gchar *date, *out;
-		GTimeVal tv;
+		GDateTime *tv, *tv2;
 
 		/* All feed types except MOST_POPULAR have been deprecated for
 		 * a while, and fall back to MOST_POPULAR on the server anyway.
 		 * See: https://developers.google.com/youtube/2.0/developers_guide_protocol_video_feeds#Standard_feeds */
-		g_get_current_time (&tv);
-		tv.tv_sec -= 24 * 60 * 60;  /* 1 day ago */
-		date = g_time_val_to_iso8601 (&tv);
+		tv = g_date_time_new_now_utc ();
+		tv2 = g_date_time_add_days (tv, -1);
+		g_date_time_unref (tv);
+		date = g_date_time_format_iso8601 (tv2);
+		g_date_time_unref (tv2);
 		out = _gdata_service_build_uri ("https://www.googleapis.com/youtube/v3/videos"
 		                                "?part=snippet"
 		                                "&chart=mostPopular"

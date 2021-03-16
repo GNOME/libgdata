@@ -266,12 +266,10 @@ gdata_contacts_group_constructor (GType type, guint n_construct_params, GObjectC
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataContactsGroupPrivate *priv = GDATA_CONTACTS_GROUP (object)->priv;
-		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause setting it from
 		 * parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->edited = time_val.tv_sec;
+		priv->edited = g_get_real_time () / G_USEC_PER_SEC;
 	}
 
 	return object;
