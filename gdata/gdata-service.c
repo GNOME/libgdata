@@ -956,12 +956,9 @@ __gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, con
 
 	/* Are we off the end of the final page? */
 	if (query != NULL && _gdata_query_is_finished (query)) {
-		GTimeVal updated;
-
 		/* Build an empty dummy feed to signify the end of the list. */
-		g_get_current_time (&updated);
 		return _gdata_feed_new (klass->feed_type, "Empty feed", "feed1",
-		                        updated.tv_sec);
+		                        g_get_real_time () / G_USEC_PER_SEC);
 	}
 
 	/* Send the request. */

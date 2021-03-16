@@ -37,7 +37,7 @@
  *	GDataCalendarCalendar *calendar;
  *	GDataCalendarQuery *query;
  *	GDataFeed *feed;
- *	GTimeVal current_time;
+ *	gint64 current_time;
  *	GList *i;
  *	GError *error = NULL;
  *
@@ -47,8 +47,8 @@
  *
  *	/<!-- -->* Create the query to use. We're going to query for events within the next week which match the search term "party",
  *	 * ordered by last modification time (descending). *<!-- -->/
- *	g_get_current_time (&current_time);
- *	query = gdata_calendar_query_new_with_limits ("party", current_time.tv_sec, current_time.tv_sec + 7 * 24 * 60 * 60);
+ *	current_time = g_get_real_time () / G_USEC_PER_SEC;
+ *	query = gdata_calendar_query_new_with_limits ("party", current_time, current_time + 7 * 24 * 60 * 60);
  *	gdata_calendar_query_set_order_by (query, "lastmodified");
  *
  *	/<!-- -->* Execute the query *<!-- -->/

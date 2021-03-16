@@ -471,7 +471,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	gchar *uri, *signature, *timestamp;
 	char *nonce;
 	gboolean is_first = TRUE;
-	GTimeVal time_val;
+	gint64 time_val;
 	guchar signature_buf[HMAC_SHA1_LEN];
 	gsize signature_buf_len;
 	GHmac *signature_hmac;
@@ -494,8 +494,8 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 
 	/* Add various standard parameters to the list (note: this modifies the hash table belonging to the caller) */
 	nonce = oauth_gen_nonce ();
-	g_get_current_time (&time_val);
-	timestamp = g_strdup_printf ("%li", time_val.tv_sec);
+	time_val = g_get_real_time () / G_USEC_PER_SEC;
+	timestamp = g_strdup_printf ("%li", time_val);
 
 	if (parameters == NULL) {
 		parameters = g_hash_table_new (g_str_hash, g_str_equal);
@@ -559,7 +559,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 
 	/* Start building the signature base string as described here: http://tools.ietf.org/html/rfc5849#section-3.4.1.1 */
 	signature_base_string = g_string_sized_new (4 /* method */ + 1 /* sep */ + strlen (uri) + 1 /* sep */ + params_length /* query string */);
-	g_string_append_uri_escaped (signature_base_string, message->method, NULL, FALSE);
+	g_string_append_uri_escaped (signature_base_string, soup_message_get_method (message), NULL, FALSE);
 	g_string_append_c (signature_base_string, '&');
 	g_string_append_uri_escaped (signature_base_string, uri, NULL, FALSE);
 	g_string_append_c (signature_base_string, '&');
@@ -619,7 +619,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	g_string_append_uri_escaped (authorization_header, nonce, NULL, FALSE);
 	g_string_append (authorization_header, "\",oauth_version=\"1.0\"");
 
-	soup_message_headers_replace (message->request_headers, "Authorization", authorization_header->str);
+	soup_message_headers_replace (soup_message_get_request_headers (message), "Authorization", authorization_header->str);
 
 	g_string_free (authorization_header, TRUE);
 	free (signature);

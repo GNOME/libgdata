@@ -46,7 +46,8 @@ print_video (GDataYouTubeVideo *video)
 {
 	const gchar *title, *player_uri, *id, *description;
 	GList/*<unowned GDataMediaThumbnail>*/ *thumbnails;
-	GTimeVal date_published_tv = { 0, };
+	GDateTime *tmp;
+	gint64 date_published_tv;
 	gchar *date_published = NULL;  /* owned */
 	guint duration;  /* seconds */
 	guint rating_min = 0, rating_max = 0, rating_count = 0;
@@ -57,8 +58,10 @@ print_video (GDataYouTubeVideo *video)
 	id = gdata_entry_get_id (GDATA_ENTRY (video));
 	description = gdata_youtube_video_get_description (video);
 	thumbnails = gdata_youtube_video_get_thumbnails (video);
-	date_published_tv.tv_sec = gdata_entry_get_published (GDATA_ENTRY (video));
-	date_published = g_time_val_to_iso8601 (&date_published_tv);
+	date_published_tv = gdata_entry_get_published (GDATA_ENTRY (video));
+	tmp = g_date_time_new_from_unix_utc (date_published_tv);
+	date_published = g_date_time_format_iso8601 (tmp);
+	g_date_time_unref (tmp);
 	duration = gdata_youtube_video_get_duration (video);
 	gdata_youtube_video_get_rating (video, &rating_min, &rating_max,
 	                                &rating_count, &rating_average);

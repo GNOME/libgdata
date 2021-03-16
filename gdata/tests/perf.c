@@ -78,22 +78,23 @@ test_parse_feed (void)
 static void
 test_perf_parsing (void)
 {
-	GTimeVal start_time, end_time;
+	GDateTime *start_time, *end_time;
+	GTimeSpan total_time, per_iteration_time;
 	guint i;
-	guint64 total_time;  /* microseconds */
-	guint64 per_iteration_time;  /* microseconds */
 
 	#define ITERATIONS 10000
 
 	/* Test feed parsing time */
-	g_get_current_time (&start_time);
+	start_time = g_date_time_new_now_utc ();
 	for (i = 0; i < ITERATIONS; i++)
 		test_parse_feed ();
-	g_get_current_time (&end_time);
+	end_time = g_date_time_new_now_utc ();
 
-	total_time = (end_time.tv_sec - start_time.tv_sec) * G_USEC_PER_SEC +
-	             (end_time.tv_usec - start_time.tv_usec);
+	total_time = g_date_time_difference (end_time, start_time);
 	per_iteration_time = total_time / ITERATIONS;
+
+	g_date_time_unref (start_time);
+	g_date_time_unref (end_time);
 
 	/* Prefix with hashes to avoid the output being misinterpreted as TAP
 	 * commands. */

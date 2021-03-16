@@ -37,7 +37,7 @@
  *	GDataGDWhere *where;
  *	GDataGDWho *who;
  *	GDataGDWhen *when;
- *	GTimeVal current_time;
+ *	gint64 current_time;
  *	GError *error = NULL;
  *
  *	/<!-- -->* Create a service *<!-- -->/
@@ -58,8 +58,8 @@
  *	gdata_calendar_event_add_person (event, who);
  *	g_object_unref (who);
  *
- *	g_get_current_time (&current_time);
- *	when = gdata_gd_when_new (current_time.tv_sec, current_time.tv_sec + 3600, FALSE);
+ *	current_time = g_get_real_time () / G_USEC_PER_SEC;
+ *	when = gdata_gd_when_new (current_time, current_time + 3600, FALSE);
  *	gdata_calendar_event_add_time (event, when);
  *	g_object_unref (when);
  *
@@ -374,12 +374,10 @@ gdata_calendar_event_constructor (GType type, guint n_construct_params, GObjectC
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataCalendarEventPrivate *priv = GDATA_CALENDAR_EVENT (object)->priv;
-		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->edited = time_val.tv_sec;
+		priv->edited = g_get_real_time () / G_USEC_PER_SEC;
 	}
 
 	return object;
@@ -554,7 +552,7 @@ date_object_from_json (JsonReader *reader,
 	if (json_reader_read_member (reader, "dateTime")) {
 		const gchar *date_string;
 		const GError *child_error;
-		GTimeVal time_val;
+		GDateTime *time_val;
 
 		date_string = json_reader_get_string_value (reader);
 		child_error = json_reader_get_error (reader);
@@ -567,13 +565,15 @@ date_object_from_json (JsonReader *reader,
 			return TRUE;
 		}
 
-		if (!g_time_val_from_iso8601 (date_string, &time_val)) {
+		time_val = g_date_time_new_from_iso8601 (date_string, NULL);
+		if (!time_val) {
 			*success = gdata_parser_error_not_iso8601_format_json (reader, date_string, error);
 			json_reader_end_member (reader);
 			return TRUE;
 		}
 
-		date_time = time_val.tv_sec;
+		date_time = g_date_time_to_unix (time_val);
+		g_date_time_unref (time_val);
 		is_date = FALSE;
 		found_member = TRUE;
 	}
