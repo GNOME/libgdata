@@ -114,7 +114,7 @@ enum {
 	PROP_KEY,
 };
 
-G_DEFINE_TYPE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
 
 static void
 gdata_access_rule_class_init (GDataAccessRuleClass *klass)
@@ -122,8 +122,6 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataAccessRulePrivate));
 
 	gobject_class->constructor = gdata_access_rule_constructor;
 	gobject_class->finalize = gdata_access_rule_finalize;
@@ -240,7 +238,7 @@ notify_role_cb (GDataAccessRule *self, GParamSpec *pspec, gpointer user_data)
 static void
 gdata_access_rule_init (GDataAccessRule *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate);
+	self->priv = gdata_access_rule_get_instance_private (self);
 	self->priv->edited = -1;
 
 	/* Listen to change notifications for the entry's title, since it's linked to GDataAccessRule:role */

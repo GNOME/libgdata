@@ -61,15 +61,13 @@ enum {
 	PROP_TIME
 };
 
-G_DEFINE_TYPE (GDataMediaThumbnail, gdata_media_thumbnail, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataMediaThumbnail, gdata_media_thumbnail, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataMediaThumbnailPrivate));
 
 	gobject_class->get_property = gdata_media_thumbnail_get_property;
 	gobject_class->finalize = gdata_media_thumbnail_finalize;
@@ -144,7 +142,7 @@ gdata_media_thumbnail_class_init (GDataMediaThumbnailClass *klass)
 static void
 gdata_media_thumbnail_init (GDataMediaThumbnail *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_MEDIA_THUMBNAIL, GDataMediaThumbnailPrivate);
+	self->priv = gdata_media_thumbnail_get_instance_private (self);
 }
 
 static void

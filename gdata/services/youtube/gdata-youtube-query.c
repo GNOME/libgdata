@@ -87,15 +87,13 @@ enum {
 	PROP_LICENSE,
 };
 
-G_DEFINE_TYPE (GDataYouTubeQuery, gdata_youtube_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataYouTubeQuery, gdata_youtube_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeQueryPrivate));
 
 	gobject_class->set_property = gdata_youtube_query_set_property;
 	gobject_class->get_property = gdata_youtube_query_get_property;
@@ -351,7 +349,7 @@ gdata_youtube_query_class_init (GDataYouTubeQueryClass *klass)
 static void
 gdata_youtube_query_init (GDataYouTubeQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_QUERY, GDataYouTubeQueryPrivate);
+	self->priv = gdata_youtube_query_get_instance_private (self);
 
 	self->priv->latitude = G_MAXDOUBLE;
 	self->priv->longitude = G_MAXDOUBLE;

@@ -292,6 +292,7 @@ _GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube, "youtube",
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (youtube_force_ssl, "youtube-force-ssl",
                                     "https://www.googleapis.com/auth/youtube.force-ssl")
 G_DEFINE_TYPE_WITH_CODE (GDataYouTubeService, gdata_youtube_service, GDATA_TYPE_SERVICE,
+                         G_ADD_PRIVATE (GDataYouTubeService)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_BATCHABLE,
                                                 gdata_youtube_service_batchable_init))
 
@@ -300,8 +301,6 @@ gdata_youtube_service_class_init (GDataYouTubeServiceClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeServicePrivate));
 
 	gobject_class->set_property = gdata_youtube_service_set_property;
 	gobject_class->get_property = gdata_youtube_service_get_property;
@@ -346,7 +345,7 @@ gdata_youtube_service_batchable_init (GDataBatchableIface *iface)
 static void
 gdata_youtube_service_init (GDataYouTubeService *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_SERVICE, GDataYouTubeServicePrivate);
+	self->priv = gdata_youtube_service_get_instance_private (self);
 }
 
 static void

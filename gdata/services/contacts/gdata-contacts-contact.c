@@ -234,7 +234,7 @@ enum {
 	PROP_FILE_AS,
 };
 
-G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
 
 static void
 gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
@@ -242,8 +242,6 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
 	gobject_class->constructor = gdata_contacts_contact_constructor;
 	gobject_class->get_property = gdata_contacts_contact_get_property;
@@ -533,7 +531,7 @@ notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *
 static void
 gdata_contacts_contact_init (GDataContactsContact *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate);
+	self->priv = gdata_contacts_contact_get_instance_private (self);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->user_defined_fields = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->groups = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

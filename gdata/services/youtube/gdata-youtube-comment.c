@@ -63,7 +63,7 @@ enum {
 	PROP_PARENT_COMMENT_URI = 1,
 };
 
-G_DEFINE_TYPE (GDataYouTubeComment, gdata_youtube_comment, GDATA_TYPE_COMMENT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataYouTubeComment, gdata_youtube_comment, GDATA_TYPE_COMMENT)
 
 static void
 gdata_youtube_comment_class_init (GDataYouTubeCommentClass *klass)
@@ -71,8 +71,6 @@ gdata_youtube_comment_class_init (GDataYouTubeCommentClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeCommentPrivate));
 
 	gobject_class->get_property = gdata_youtube_comment_get_property;
 	gobject_class->set_property = gdata_youtube_comment_set_property;
@@ -103,7 +101,7 @@ gdata_youtube_comment_class_init (GDataYouTubeCommentClass *klass)
 static void
 gdata_youtube_comment_init (GDataYouTubeComment *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_COMMENT, GDataYouTubeCommentPrivate);
+	self->priv = gdata_youtube_comment_get_instance_private (self);
 }
 
 static void

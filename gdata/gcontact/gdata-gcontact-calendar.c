@@ -60,6 +60,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGContactCalendar, gdata_gcontact_calendar, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGContactCalendar)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gcontact_calendar_comparable_init))
 
 static void
@@ -67,8 +68,6 @@ gdata_gcontact_calendar_class_init (GDataGContactCalendarClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGContactCalendarPrivate));
 
 	gobject_class->get_property = gdata_gcontact_calendar_get_property;
 	gobject_class->set_property = gdata_gcontact_calendar_set_property;
@@ -165,7 +164,7 @@ gdata_gcontact_calendar_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gcontact_calendar_init (GDataGContactCalendar *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GCONTACT_CALENDAR, GDataGContactCalendarPrivate);
+	self->priv = gdata_gcontact_calendar_get_instance_private (self);
 }
 
 static void

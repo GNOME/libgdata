@@ -64,6 +64,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataLink, gdata_link, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataLink)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_link_comparable_init))
 
 static void
@@ -71,8 +72,6 @@ gdata_link_class_init (GDataLinkClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataLinkPrivate));
 
 	gobject_class->set_property = gdata_link_set_property;
 	gobject_class->get_property = gdata_link_get_property;
@@ -199,7 +198,7 @@ gdata_link_comparable_init (GDataComparableIface *iface)
 static void
 gdata_link_init (GDataLink *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_LINK, GDataLinkPrivate);
+	self->priv = gdata_link_get_instance_private (self);
 	self->priv->length = -1;
 	self->priv->relation_type = g_strdup (GDATA_LINK_ALTERNATE);
 }

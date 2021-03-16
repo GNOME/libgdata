@@ -71,15 +71,13 @@ enum {
 	PROP_LOCATION
 };
 
-G_DEFINE_TYPE (GDataPicasaWebQuery, gdata_picasaweb_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataPicasaWebQuery, gdata_picasaweb_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataPicasaWebQueryPrivate));
 
 	gobject_class->get_property = gdata_picasaweb_query_get_property;
 	gobject_class->set_property = gdata_picasaweb_query_set_property;
@@ -166,7 +164,7 @@ gdata_picasaweb_query_class_init (GDataPicasaWebQueryClass *klass)
 static void
 gdata_picasaweb_query_init (GDataPicasaWebQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_QUERY, GDataPicasaWebQueryPrivate);
+	self->priv = gdata_picasaweb_query_get_instance_private (self);
 
 	/* https://developers.google.com/picasa-web/docs/3.0/reference#Parameters */
 	_gdata_query_set_pagination_type (GDATA_QUERY (self),

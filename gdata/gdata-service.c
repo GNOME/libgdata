@@ -105,14 +105,12 @@ enum {
 	PROP_PROXY_RESOLVER,
 };
 
-G_DEFINE_TYPE (GDataService, gdata_service, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataService, gdata_service, G_TYPE_OBJECT)
 
 static void
 gdata_service_class_init (GDataServiceClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataServicePrivate));
 
 	gobject_class->set_property = gdata_service_set_property;
 	gobject_class->get_property = gdata_service_get_property;
@@ -220,7 +218,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 static void
 gdata_service_init (GDataService *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_SERVICE, GDataServicePrivate);
+	self->priv = gdata_service_get_instance_private (self);
 	self->priv->session = _gdata_service_build_session ();
 
 	/* Log handling for all message types except debug */

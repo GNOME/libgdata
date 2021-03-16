@@ -74,6 +74,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGDName, gdata_gd_name, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGDName)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_name_comparable_init))
 
 static void
@@ -81,8 +82,6 @@ gdata_gd_name_class_init (GDataGDNameClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGDNamePrivate));
 
 	gobject_class->get_property = gdata_gd_name_get_property;
 	gobject_class->set_property = gdata_gd_name_set_property;
@@ -212,7 +211,7 @@ gdata_gd_name_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gd_name_init (GDataGDName *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_NAME, GDataGDNamePrivate);
+	self->priv = gdata_gd_name_get_instance_private (self);
 }
 
 static void

@@ -55,15 +55,13 @@ enum {
 	PROP_IS_DEPRECATED
 };
 
-G_DEFINE_TYPE (GDataYouTubeCategory, gdata_youtube_category, GDATA_TYPE_CATEGORY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataYouTubeCategory, gdata_youtube_category, GDATA_TYPE_CATEGORY)
 
 static void
 gdata_youtube_category_class_init (GDataYouTubeCategoryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeCategoryPrivate));
 
 	gobject_class->get_property = gdata_youtube_category_get_property;
 	gobject_class->finalize = gdata_youtube_category_finalize;
@@ -101,7 +99,7 @@ gdata_youtube_category_class_init (GDataYouTubeCategoryClass *klass)
 static void
 gdata_youtube_category_init (GDataYouTubeCategory *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_CATEGORY, GDataYouTubeCategoryPrivate);
+	self->priv = gdata_youtube_category_get_instance_private (self);
 }
 
 static void

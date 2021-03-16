@@ -180,6 +180,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY,
+                         G_ADD_PRIVATE (GDataPicasaWebFile)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMMENTABLE, gdata_picasaweb_file_commentable_init))
 
 static void
@@ -188,8 +189,6 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataPicasaWebFilePrivate));
 
 	gobject_class->constructor = gdata_picasaweb_file_constructor;
 	gobject_class->get_property = gdata_picasaweb_file_get_property;
@@ -667,7 +666,7 @@ notify_summary_cb (GDataPicasaWebFile *self, GParamSpec *pspec, gpointer user_da
 static void
 gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFilePrivate);
+	self->priv = gdata_picasaweb_file_get_instance_private (self);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->exif_tags = g_object_new (GDATA_TYPE_EXIF_TAGS, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);

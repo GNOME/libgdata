@@ -119,15 +119,13 @@ enum {
 	PROP_SHOW_DELETED,
 };
 
-G_DEFINE_TYPE (GDataCalendarQuery, gdata_calendar_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataCalendarQuery, gdata_calendar_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataCalendarQueryPrivate));
 
 	gobject_class->set_property = gdata_calendar_query_set_property;
 	gobject_class->get_property = gdata_calendar_query_get_property;
@@ -290,7 +288,7 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 static void
 gdata_calendar_query_init (GDataCalendarQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_QUERY, GDataCalendarQueryPrivate);
+	self->priv = gdata_calendar_query_get_instance_private (self);
 	self->priv->recurrence_expansion_start = -1;
 	self->priv->recurrence_expansion_end = -1;
 	self->priv->start_min = -1;

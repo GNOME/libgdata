@@ -75,7 +75,7 @@ enum {
 	PROP_HIDDEN,
 };
 
-G_DEFINE_TYPE (GDataTasksTask, gdata_tasks_task, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataTasksTask, gdata_tasks_task, GDATA_TYPE_ENTRY)
 
 static void
 gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
@@ -83,8 +83,6 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataTasksTaskPrivate));
 
 	gobject_class->get_property = gdata_tasks_task_get_property;
 	gobject_class->set_property = gdata_tasks_task_set_property;
@@ -222,7 +220,7 @@ gdata_tasks_task_class_init (GDataTasksTaskClass *klass)
 static void
 gdata_tasks_task_init (GDataTasksTask *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_TASKS_TASK, GDataTasksTaskPrivate);
+	self->priv = gdata_tasks_task_get_instance_private (self);
 	self->priv->due = -1;
 	self->priv->completed = -1;
 }

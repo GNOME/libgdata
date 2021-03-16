@@ -70,14 +70,12 @@ enum {
 	PROP_CONSTRUCTED_FROM_XML = 1,
 };
 
-G_DEFINE_ABSTRACT_TYPE (GDataParsable, gdata_parsable, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GDataParsable, gdata_parsable, G_TYPE_OBJECT)
 
 static void
 gdata_parsable_class_init (GDataParsableClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataParsablePrivate));
 
 	gobject_class->get_property = gdata_parsable_get_property;
 	gobject_class->set_property = gdata_parsable_set_property;
@@ -104,7 +102,7 @@ gdata_parsable_class_init (GDataParsableClass *klass)
 static void
 gdata_parsable_init (GDataParsable *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PARSABLE, GDataParsablePrivate);
+	self->priv = gdata_parsable_get_instance_private (self);
 
 	self->priv->extra_xml = g_string_new ("");
 	self->priv->extra_namespaces = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);

@@ -56,6 +56,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGContactLanguage, gdata_gcontact_language, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGContactLanguage)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gcontact_language_comparable_init))
 
 static void
@@ -63,8 +64,6 @@ gdata_gcontact_language_class_init (GDataGContactLanguageClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGContactLanguagePrivate));
 
 	gobject_class->get_property = gdata_gcontact_language_get_property;
 	gobject_class->set_property = gdata_gcontact_language_set_property;
@@ -128,7 +127,7 @@ gdata_gcontact_language_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gcontact_language_init (GDataGContactLanguage *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GCONTACT_LANGUAGE, GDataGContactLanguagePrivate);
+	self->priv = gdata_gcontact_language_get_instance_private (self);
 }
 
 static void
