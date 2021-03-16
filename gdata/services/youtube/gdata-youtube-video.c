@@ -160,6 +160,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataYouTubeVideo, gdata_youtube_video, GDATA_TYPE_ENTRY,
+                         G_ADD_PRIVATE (GDataYouTubeVideo)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMMENTABLE, gdata_youtube_video_commentable_init))
 
 static void
@@ -168,8 +169,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeVideoPrivate));
 
 	gobject_class->get_property = gdata_youtube_video_get_property;
 	gobject_class->set_property = gdata_youtube_video_set_property;
@@ -525,7 +524,7 @@ gdata_youtube_video_commentable_init (GDataCommentableInterface *iface)
 static void
 gdata_youtube_video_init (GDataYouTubeVideo *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_VIDEO, GDataYouTubeVideoPrivate);
+	self->priv = gdata_youtube_video_get_instance_private (self);
 	self->priv->recorded = -1;
 	self->priv->access_controls = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 	self->priv->latitude = G_MAXDOUBLE;

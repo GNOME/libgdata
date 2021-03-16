@@ -59,15 +59,13 @@ enum {
 	PROP_LABEL
 };
 
-G_DEFINE_TYPE (GDataGContactEvent, gdata_gcontact_event, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataGContactEvent, gdata_gcontact_event, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_gcontact_event_class_init (GDataGContactEventClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGContactEventPrivate));
 
 	gobject_class->get_property = gdata_gcontact_event_get_property;
 	gobject_class->set_property = gdata_gcontact_event_set_property;
@@ -136,7 +134,7 @@ gdata_gcontact_event_class_init (GDataGContactEventClass *klass)
 static void
 gdata_gcontact_event_init (GDataGContactEvent *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GCONTACT_EVENT, GDataGContactEventPrivate);
+	self->priv = gdata_gcontact_event_get_instance_private (self);
 
 	/* Clear the date to an invalid but sane value */
 	g_date_clear (&(self->priv->date), 1);

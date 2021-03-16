@@ -154,6 +154,7 @@ enum {
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GDataDocumentsEntry, gdata_documents_entry, GDATA_TYPE_ENTRY,
+                                  G_ADD_PRIVATE (GDataDocumentsEntry)
                                   G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_documents_entry_access_handler_init))
 
 static void
@@ -162,8 +163,6 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsEntryPrivate));
 
 	gobject_class->get_property = gdata_documents_entry_get_property;
 	gobject_class->set_property = gdata_documents_entry_set_property;
@@ -403,7 +402,7 @@ gdata_documents_entry_access_handler_init (GDataAccessHandlerIface *iface)
 static void
 gdata_documents_entry_init (GDataDocumentsEntry *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_ENTRY, GDataDocumentsEntryPrivate);
+	self->priv = gdata_documents_entry_get_instance_private (self);
 	self->priv->last_viewed = -1;
 }
 

@@ -150,7 +150,7 @@ enum {
 	PROP_ORIGINAL_EVENT_URI
 };
 
-G_DEFINE_TYPE (GDataCalendarEvent, gdata_calendar_event, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataCalendarEvent, gdata_calendar_event, GDATA_TYPE_ENTRY)
 
 static void
 gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
@@ -158,8 +158,6 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataCalendarEventPrivate));
 
 	gobject_class->constructor = gdata_calendar_event_constructor;
 	gobject_class->get_property = gdata_calendar_event_get_property;
@@ -362,7 +360,7 @@ gdata_calendar_event_class_init (GDataCalendarEventClass *klass)
 static void
 gdata_calendar_event_init (GDataCalendarEvent *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_EVENT, GDataCalendarEventPrivate);
+	self->priv = gdata_calendar_event_get_instance_private (self);
 	self->priv->edited = -1;
 }
 

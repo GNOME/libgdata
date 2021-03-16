@@ -66,15 +66,14 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataDocumentsProperty, gdata_documents_property, GDATA_TYPE_PARSABLE,
-			 G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_documents_property_comparable_init))
+                         G_ADD_PRIVATE (GDataDocumentsProperty)
+                         G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_documents_property_comparable_init))
 
 static void
 gdata_documents_property_class_init (GDataDocumentsPropertyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsPropertyPrivate));
 
 	gobject_class->set_property = gdata_documents_property_set_property;
 	gobject_class->get_property = gdata_documents_property_get_property;
@@ -234,7 +233,7 @@ gdata_documents_property_comparable_init (GDataComparableIface *iface)
 static void
 gdata_documents_property_init (GDataDocumentsProperty *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_PROPERTY, GDataDocumentsPropertyPrivate);
+	self->priv = gdata_documents_property_get_instance_private (self);
 
 	/* Google Drive sets the default value of a Property Resource to be an empty string (""),
 	 * and visibility is %GDATA_DOCUMENTS_PROPERTY_VISIBILITY_PRIVATE by default */

@@ -55,15 +55,13 @@ enum {
 	PROP_ENTITY_TYPE = 1
 };
 
-G_DEFINE_TYPE (GDataYouTubeCredit, gdata_youtube_credit, GDATA_TYPE_MEDIA_CREDIT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataYouTubeCredit, gdata_youtube_credit, GDATA_TYPE_MEDIA_CREDIT)
 
 static void
 gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeCreditPrivate));
 
 	gobject_class->get_property = gdata_youtube_credit_get_property;
 	gobject_class->finalize = gdata_youtube_credit_finalize;
@@ -95,7 +93,7 @@ gdata_youtube_credit_class_init (GDataYouTubeCreditClass *klass)
 static void
 gdata_youtube_credit_init (GDataYouTubeCredit *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_CREDIT, GDataYouTubeCreditPrivate);
+	self->priv = gdata_youtube_credit_get_instance_private (self);
 }
 
 static void

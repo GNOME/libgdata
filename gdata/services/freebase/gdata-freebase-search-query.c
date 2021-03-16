@@ -95,15 +95,13 @@ enum {
 	PROP_STEMMED
 };
 
-G_DEFINE_TYPE (GDataFreebaseSearchQuery, gdata_freebase_search_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFreebaseSearchQuery, gdata_freebase_search_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_freebase_search_query_class_init (GDataFreebaseSearchQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFreebaseSearchQueryPrivate));
 
 	gobject_class->finalize = gdata_freebase_search_query_finalize;
 	gobject_class->set_property = gdata_freebase_search_query_set_property;
@@ -148,7 +146,7 @@ gdata_freebase_search_query_class_init (GDataFreebaseSearchQueryClass *klass)
 static void
 gdata_freebase_search_query_init (GDataFreebaseSearchQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_SEARCH_QUERY, GDataFreebaseSearchQueryPrivate);
+	self->priv = gdata_freebase_search_query_get_instance_private (self);
 }
 
 static void

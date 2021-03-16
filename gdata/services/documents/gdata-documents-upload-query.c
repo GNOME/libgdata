@@ -157,14 +157,12 @@ enum {
 	PROP_CONVERT,
 };
 
-G_DEFINE_TYPE (GDataDocumentsUploadQuery, gdata_documents_upload_query, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataDocumentsUploadQuery, gdata_documents_upload_query, G_TYPE_OBJECT)
 
 static void
 gdata_documents_upload_query_class_init (GDataDocumentsUploadQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsUploadQueryPrivate));
 
 	gobject_class->get_property = gdata_documents_upload_query_get_property;
 	gobject_class->set_property = gdata_documents_upload_query_set_property;
@@ -209,7 +207,7 @@ gdata_documents_upload_query_class_init (GDataDocumentsUploadQueryClass *klass)
 static void
 gdata_documents_upload_query_init (GDataDocumentsUploadQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_UPLOAD_QUERY, GDataDocumentsUploadQueryPrivate);
+	self->priv = gdata_documents_upload_query_get_instance_private (self);
 	self->priv->convert = TRUE;
 }
 

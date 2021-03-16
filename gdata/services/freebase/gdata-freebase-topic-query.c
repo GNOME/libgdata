@@ -64,15 +64,13 @@ enum {
 	PROP_FILTER
 };
 
-G_DEFINE_TYPE (GDataFreebaseTopicQuery, gdata_freebase_topic_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFreebaseTopicQuery, gdata_freebase_topic_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_freebase_topic_query_class_init (GDataFreebaseTopicQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFreebaseTopicQueryPrivate));
 
 	gobject_class->finalize = gdata_freebase_topic_query_finalize;
 	gobject_class->set_property = gdata_freebase_topic_query_set_property;
@@ -116,7 +114,7 @@ gdata_freebase_topic_query_class_init (GDataFreebaseTopicQueryClass *klass)
 static void
 gdata_freebase_topic_query_init (GDataFreebaseTopicQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_TOPIC_QUERY, GDataFreebaseTopicQueryPrivate);
+	self->priv = gdata_freebase_topic_query_get_instance_private (self);
 }
 
 static void

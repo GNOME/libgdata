@@ -56,14 +56,12 @@ enum {
 	PROP_MESSAGE
 };
 
-G_DEFINE_TYPE (GDataYouTubeState, gdata_youtube_state, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataYouTubeState, gdata_youtube_state, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeStatePrivate));
 
 	gobject_class->get_property = gdata_youtube_state_get_property;
 	gobject_class->set_property = gdata_youtube_state_set_property;
@@ -146,7 +144,7 @@ gdata_youtube_state_class_init (GDataYouTubeStateClass *klass)
 static void
 gdata_youtube_state_init (GDataYouTubeState *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_STATE, GDataYouTubeStatePrivate);
+	self->priv = gdata_youtube_state_get_instance_private (self);
 }
 
 static void

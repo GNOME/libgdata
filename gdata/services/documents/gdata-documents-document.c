@@ -220,7 +220,7 @@ struct _GDataDocumentsDocumentPrivate {
 	GHashTable *export_links; /* owned string → owned string */
 };
 
-G_DEFINE_TYPE (GDataDocumentsDocument, gdata_documents_document, GDATA_TYPE_DOCUMENTS_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataDocumentsDocument, gdata_documents_document, GDATA_TYPE_DOCUMENTS_ENTRY)
 
 static void
 gdata_documents_document_class_init (GDataDocumentsDocumentClass *klass)
@@ -228,8 +228,6 @@ gdata_documents_document_class_init (GDataDocumentsDocumentClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsDocumentPrivate));
 
 	gobject_class->finalize = gdata_documents_document_finalize;
 	parsable_class->parse_json = parse_json;
@@ -240,7 +238,7 @@ gdata_documents_document_class_init (GDataDocumentsDocumentClass *klass)
 static void
 gdata_documents_document_init (GDataDocumentsDocument *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_DOCUMENT, GDataDocumentsDocumentPrivate);
+	self->priv = gdata_documents_document_get_instance_private (self);
 	self->priv->export_links = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 }
 

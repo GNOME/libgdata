@@ -59,7 +59,7 @@ static gboolean parse_json (GDataParsable *parsable, JsonReader *reader, gpointe
 static const gchar *get_content_type (void);
 static gchar *get_entry_uri (const gchar *id);
 
-G_DEFINE_TYPE (GDataFreebaseResult, gdata_freebase_result, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFreebaseResult, gdata_freebase_result, GDATA_TYPE_ENTRY)
 
 static void
 gdata_freebase_result_class_init (GDataFreebaseResultClass *klass)
@@ -67,8 +67,6 @@ gdata_freebase_result_class_init (GDataFreebaseResultClass *klass)
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFreebaseResultPrivate));
 
 	gobject_class->finalize = gdata_freebase_result_finalize;
 	gobject_class->get_property = gdata_freebase_result_get_property;
@@ -97,7 +95,7 @@ gdata_freebase_result_class_init (GDataFreebaseResultClass *klass)
 static void
 gdata_freebase_result_init (GDataFreebaseResult *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_RESULT, GDataFreebaseResultPrivate);
+	self->priv = gdata_freebase_result_get_instance_private (self);
 }
 
 static void

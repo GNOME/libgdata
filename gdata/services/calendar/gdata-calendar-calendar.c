@@ -116,6 +116,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataCalendarCalendar, gdata_calendar_calendar, GDATA_TYPE_ENTRY,
+                         G_ADD_PRIVATE (GDataCalendarCalendar)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_ACCESS_HANDLER, gdata_calendar_calendar_access_handler_init))
 
 static void
@@ -124,8 +125,6 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataCalendarCalendarPrivate));
 
 	gobject_class->set_property = gdata_calendar_calendar_set_property;
 	gobject_class->get_property = gdata_calendar_calendar_get_property;
@@ -337,7 +336,7 @@ gdata_calendar_calendar_access_handler_init (GDataAccessHandlerIface *iface)
 static void
 gdata_calendar_calendar_init (GDataCalendarCalendar *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CALENDAR_CALENDAR, GDataCalendarCalendarPrivate);
+	self->priv = gdata_calendar_calendar_get_instance_private (self);
 }
 
 static void

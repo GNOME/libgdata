@@ -62,6 +62,7 @@ struct _GDataDummyAuthorizerPrivate {
 
 G_DEFINE_TYPE_WITH_CODE (GDataDummyAuthorizer, gdata_dummy_authorizer,
                          G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (GDataDummyAuthorizer)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_AUTHORIZER,
                                                 authorizer_init))
 
@@ -69,8 +70,6 @@ static void
 gdata_dummy_authorizer_class_init (GDataDummyAuthorizerClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDummyAuthorizerPrivate));
 
 	gobject_class->finalize = finalize;
 }
@@ -85,9 +84,7 @@ authorizer_init (GDataAuthorizerInterface *iface)
 static void
 gdata_dummy_authorizer_init (GDataDummyAuthorizer *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-	                                          GDATA_TYPE_DUMMY_AUTHORIZER,
-	                                          GDataDummyAuthorizerPrivate);
+	self->priv = gdata_dummy_authorizer_get_instance_private (self);
 
 	/* Set up the authorizer's mutex */
 	g_mutex_init (&(self->priv->mutex));

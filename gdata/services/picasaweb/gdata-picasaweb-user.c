@@ -60,7 +60,7 @@ enum {
 	PROP_THUMBNAIL_URI
 };
 
-G_DEFINE_TYPE (GDataPicasaWebUser, gdata_picasaweb_user, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataPicasaWebUser, gdata_picasaweb_user, GDATA_TYPE_ENTRY)
 
 static void
 gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
@@ -68,8 +68,6 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataPicasaWebUserPrivate));
 
 	gobject_class->get_property = gdata_picasaweb_user_get_property;
 	gobject_class->finalize = gdata_picasaweb_user_finalize;
@@ -173,7 +171,7 @@ gdata_picasaweb_user_class_init (GDataPicasaWebUserClass *klass)
 static void
 gdata_picasaweb_user_init (GDataPicasaWebUser *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_USER, GDataPicasaWebUserPrivate);
+	self->priv = gdata_picasaweb_user_get_instance_private (self);
 
 	/* Initialise the properties whose values we can theoretically not know */
 	self->priv->quota_limit = self->priv->quota_current = self->priv->max_photos_per_album = -1;

@@ -199,14 +199,13 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataOAuth1Authorizer, gdata_oauth1_authorizer, G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (GDataOAuth1Authorizer)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_AUTHORIZER, authorizer_init))
 
 static void
 gdata_oauth1_authorizer_class_init (GDataOAuth1AuthorizerClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataOAuth1AuthorizerPrivate));
 
 	gobject_class->get_property = get_property;
 	gobject_class->set_property = set_property;
@@ -303,7 +302,7 @@ authorizer_init (GDataAuthorizerInterface *iface)
 static void
 gdata_oauth1_authorizer_init (GDataOAuth1Authorizer *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_OAUTH1_AUTHORIZER, GDataOAuth1AuthorizerPrivate);
+	self->priv = gdata_oauth1_authorizer_get_instance_private (self);
 
 	/* Set up the authorizer's mutex */
 	g_mutex_init (&(self->priv->mutex));

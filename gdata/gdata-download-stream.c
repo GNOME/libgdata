@@ -182,6 +182,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataDownloadStream, gdata_download_stream, G_TYPE_INPUT_STREAM,
+                         G_ADD_PRIVATE (GDataDownloadStream)
                          G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, gdata_download_stream_seekable_iface_init))
 
 static void
@@ -189,8 +190,6 @@ gdata_download_stream_class_init (GDataDownloadStreamClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GInputStreamClass *stream_class = G_INPUT_STREAM_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDownloadStreamPrivate));
 
 	gobject_class->constructor = gdata_download_stream_constructor;
 	gobject_class->dispose = gdata_download_stream_dispose;
@@ -314,7 +313,7 @@ gdata_download_stream_seekable_iface_init (GSeekableIface *seekable_iface)
 static void
 gdata_download_stream_init (GDataDownloadStream *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOWNLOAD_STREAM, GDataDownloadStreamPrivate);
+	self->priv = gdata_download_stream_get_instance_private (self);
 	self->priv->buffer = NULL; /* created when the network thread is started and destroyed when the stream is closed */
 
 	self->priv->finished = FALSE;

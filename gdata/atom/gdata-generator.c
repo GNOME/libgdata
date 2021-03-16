@@ -54,6 +54,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGenerator, gdata_generator, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGenerator)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_generator_comparable_init))
 
 static void
@@ -61,8 +62,6 @@ gdata_generator_class_init (GDataGeneratorClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGeneratorPrivate));
 
 	gobject_class->get_property = gdata_generator_get_property;
 	gobject_class->finalize = gdata_generator_finalize;
@@ -138,7 +137,7 @@ gdata_generator_comparable_init (GDataComparableIface *iface)
 static void
 gdata_generator_init (GDataGenerator *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GENERATOR, GDataGeneratorPrivate);
+	self->priv = gdata_generator_get_instance_private (self);
 }
 
 static void

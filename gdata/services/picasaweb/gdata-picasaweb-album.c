@@ -147,7 +147,7 @@ enum {
 	PROP_ALBUM_ID
 };
 
-G_DEFINE_TYPE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
 
 static void
 gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
@@ -155,8 +155,6 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataPicasaWebAlbumPrivate));
 
 	gobject_class->constructor = gdata_picasaweb_album_constructor;
 	gobject_class->get_property = gdata_picasaweb_album_get_property;
@@ -477,7 +475,7 @@ notify_visibility_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer use
 static void
 gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_ALBUM, GDataPicasaWebAlbumPrivate);
+	self->priv = gdata_picasaweb_album_get_instance_private (self);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->edited = -1;

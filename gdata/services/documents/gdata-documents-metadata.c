@@ -56,15 +56,13 @@ enum {
 	PROP_QUOTA_USED,
 };
 
-G_DEFINE_TYPE (GDataDocumentsMetadata, gdata_documents_metadata, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataDocumentsMetadata, gdata_documents_metadata, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_documents_metadata_class_init (GDataDocumentsMetadataClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsMetadataPrivate));
 
 	gobject_class->get_property = gdata_documents_metadata_get_property;
 	gobject_class->set_property = gdata_documents_metadata_set_property;
@@ -102,7 +100,7 @@ gdata_documents_metadata_class_init (GDataDocumentsMetadataClass *klass)
 static void
 gdata_documents_metadata_init (GDataDocumentsMetadata *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_METADATA, GDataDocumentsMetadataPrivate);
+	self->priv = gdata_documents_metadata_get_instance_private (self);
 }
 
 static void

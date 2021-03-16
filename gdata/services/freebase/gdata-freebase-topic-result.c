@@ -103,15 +103,13 @@ static gboolean reader_get_properties (JsonReader *reader, GDataFreebaseTopicObj
 
 G_DEFINE_BOXED_TYPE (GDataFreebaseTopicObject, gdata_freebase_topic_object, gdata_freebase_topic_object_ref, gdata_freebase_topic_object_unref)
 G_DEFINE_BOXED_TYPE (GDataFreebaseTopicValue, gdata_freebase_topic_value, gdata_freebase_topic_value_ref, gdata_freebase_topic_value_unref)
-G_DEFINE_TYPE (GDataFreebaseTopicResult, gdata_freebase_topic_result, GDATA_TYPE_FREEBASE_RESULT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFreebaseTopicResult, gdata_freebase_topic_result, GDATA_TYPE_FREEBASE_RESULT)
 
 static void
 gdata_freebase_topic_result_class_init (GDataFreebaseTopicResultClass *klass)
 {
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFreebaseTopicResultPrivate));
 
 	gobject_class->finalize = gdata_freebase_topic_result_finalize;
 	parsable_class->parse_json = parse_json;
@@ -120,7 +118,7 @@ gdata_freebase_topic_result_class_init (GDataFreebaseTopicResultClass *klass)
 static void
 gdata_freebase_topic_result_init (GDataFreebaseTopicResult *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_TOPIC_RESULT, GDataFreebaseTopicResultPrivate);
+	self->priv = gdata_freebase_topic_result_get_instance_private (self);
 }
 
 static void
