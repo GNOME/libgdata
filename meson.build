@@ -1,6 +1,6 @@
 project(
   'libgdata', 'c',
-  version: '0.18.0',
+  version: '0.19.0',
   license: 'LGPL2.1+',
   default_options: 'buildtype=debugoptimized',
   meson_version: '>= 0.50.0',
