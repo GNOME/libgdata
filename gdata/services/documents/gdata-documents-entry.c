@@ -140,9 +140,7 @@ struct _GDataDocumentsEntryPrivate {
 };
 
 enum {
-	PROP_EDITED = 1,
-	PROP_LAST_VIEWED,
-	PROP_DOCUMENT_ID,
+	PROP_LAST_VIEWED = 1,
 	PROP_LAST_MODIFIED_BY,
 	PROP_IS_DELETED,
 	PROP_WRITERS_CAN_INVITE,
@@ -176,20 +174,6 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	parsable_class->get_namespaces = get_namespaces;
 
 	entry_class->get_entry_uri = get_entry_uri;
-
-	/**
-	 * GDataDocumentsEntry:edited:
-	 *
-	 * The last time the document was edited. If the document has not been edited yet, the content indicates the time it was created.
-	 *
-	 * Since: 0.4.0
-	 * Deprecated: 0.17.0: This is identical to #GDataEntry:updated.
-	 */
-	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_int64 ("edited",
-	                                                     "Edited", "The last time the document was edited.",
-	                                                     -1, G_MAXINT64, -1,
-	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataDocumentsEntry:last-viewed:
@@ -253,22 +237,6 @@ gdata_documents_entry_class_init (GDataDocumentsEntryClass *klass)
 	                                                      "Resource ID", "The resource ID of the document.",
 	                                                      NULL,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataDocumentsEntry:document-id:
-	 *
-	 * The document ID of the document, which is different from its entry ID (GDataEntry:id). The
-	 * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#terminology_used_in_this_guide">online GData
-	 * Documentation</ulink> refers to these as “untyped resource IDs”.
-	 *
-	 * Since: 0.4.0
-	 * Deprecated: 0.11.0: This a substring of the #GDataDocumentsEntry:resource-id, which is more general and should be used instead.
-	 */
-	g_object_class_install_property (gobject_class, PROP_DOCUMENT_ID,
-	                                 g_param_spec_string ("document-id",
-	                                                      "Document ID", "The document ID of the document.",
-	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataDocumentsEntry:last-modified-by:
@@ -442,17 +410,11 @@ gdata_documents_entry_get_property (GObject *object, guint property_id, GValue *
 		case PROP_RESOURCE_ID:
 			g_value_set_string (value, priv->resource_id);
 			break;
-		case PROP_DOCUMENT_ID:
-			g_value_set_string (value, gdata_entry_get_id (GDATA_ENTRY (object)));
-			break;
 		case PROP_WRITERS_CAN_INVITE:
 			g_value_set_boolean (value, priv->writers_can_invite);
 			break;
 		case PROP_IS_DELETED:
 			g_value_set_boolean (value, priv->is_deleted);
-			break;
-		case PROP_EDITED:
-			g_value_set_int64 (value, gdata_entry_get_updated (GDATA_ENTRY (object)));
 			break;
 		case PROP_LAST_VIEWED:
 			g_value_set_int64 (value, priv->last_viewed);
@@ -1122,24 +1084,6 @@ get_entry_uri (const gchar *id)
 }
 
 /**
- * gdata_documents_entry_get_edited:
- * @self: a #GDataDocumentsEntry
- *
- * Gets the #GDataDocumentsEntry:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
- *
- * Return value: the UNIX timestamp for the time the document was last edited, or <code class="literal">-1</code>
- *
- * Since: 0.4.0
- * Deprecated: 0.17.0: Use gdata_entry_get_updated() instead. See #GDataDocumentsEntry:edited.
- */
-gint64
-gdata_documents_entry_get_edited (GDataDocumentsEntry *self)
-{
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), -1);
-	return gdata_entry_get_updated (GDATA_ENTRY (self));
-}
-
-/**
  * gdata_documents_entry_get_last_viewed:
  * @self: a #GDataDocumentsEntry
  *
@@ -1223,26 +1167,6 @@ gdata_documents_entry_get_path (GDataDocumentsEntry *self)
 	g_string_append (path, id);
 
 	return g_string_free (path, FALSE);
-}
-
-/**
- * gdata_documents_entry_get_document_id:
- * @self: a #GDataDocumentsEntry
- *
- * Gets the #GDataDocumentsEntry:document-id property. The
- * <ulink type="http" url="https://developers.google.com/google-apps/documents-list/#terminology_used_in_this_guide">online GData Documentation</ulink>
- * refers to these as “untyped resource IDs”.
- *
- * Return value: the document's document ID
- *
- * Since: 0.4.0
- * Deprecated: 0.11.0: Use gdata_documents_entry_get_resource_id() instead. See #GDataDocumentsEntry:document-id.
- */
-const gchar *
-gdata_documents_entry_get_document_id (GDataDocumentsEntry *self )
-{
-	g_return_val_if_fail (GDATA_IS_DOCUMENTS_ENTRY (self), NULL);
-	return gdata_entry_get_id (GDATA_ENTRY (self));
 }
 
 /**

@@ -315,9 +315,7 @@ global:
 	gdata_documents_drive_query_get_type;
 	gdata_documents_drive_query_new;
 	gdata_documents_entry_add_documents_property;
-	gdata_documents_entry_get_document_id;
 	gdata_documents_entry_get_document_properties;
-	gdata_documents_entry_get_edited;
 	gdata_documents_entry_get_file_size;
 	gdata_documents_entry_get_last_modified_by;
 	gdata_documents_entry_get_last_viewed;
