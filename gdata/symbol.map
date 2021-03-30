@@ -49,8 +49,6 @@ global:
 	gdata_calendar_access_rule_new;
 	gdata_calendar_calendar_get_access_level;
 	gdata_calendar_calendar_get_color;
-	gdata_calendar_calendar_get_edited;
-	gdata_calendar_calendar_get_times_cleaned;
 	gdata_calendar_calendar_get_timezone;
 	gdata_calendar_calendar_get_type;
 	gdata_calendar_calendar_is_hidden;
@@ -92,16 +90,11 @@ global:
 	gdata_calendar_event_set_transparency;
 	gdata_calendar_event_set_uid;
 	gdata_calendar_event_set_visibility;
-	gdata_calendar_feed_get_times_cleaned;
-	gdata_calendar_feed_get_timezone;
 	gdata_calendar_feed_get_type;
 	gdata_calendar_query_get_future_events;
 	gdata_calendar_query_get_max_attendees;
 	gdata_calendar_query_get_order_by;
-	gdata_calendar_query_get_recurrence_expansion_end;
-	gdata_calendar_query_get_recurrence_expansion_start;
 	gdata_calendar_query_get_single_events;
-	gdata_calendar_query_get_sort_order;
 	gdata_calendar_query_get_start_max;
 	gdata_calendar_query_get_start_min;
 	gdata_calendar_query_get_timezone;
@@ -111,11 +104,8 @@ global:
 	gdata_calendar_query_set_future_events;
 	gdata_calendar_query_set_max_attendees;
 	gdata_calendar_query_set_order_by;
-	gdata_calendar_query_set_recurrence_expansion_end;
-	gdata_calendar_query_set_recurrence_expansion_start;
 	gdata_calendar_query_set_show_deleted;
 	gdata_calendar_query_set_single_events;
-	gdata_calendar_query_set_sort_order;
 	gdata_calendar_query_set_start_max;
 	gdata_calendar_query_set_start_min;
 	gdata_calendar_query_set_timezone;
@@ -124,8 +114,6 @@ global:
 	gdata_calendar_service_get_type;
 	gdata_calendar_service_insert_calendar_event;
 	gdata_calendar_service_insert_calendar_event_async;
-	gdata_calendar_service_insert_event;
-	gdata_calendar_service_insert_event_async;
 	gdata_calendar_service_new;
 	gdata_calendar_service_query_all_calendars;
 	gdata_calendar_service_query_all_calendars_async;

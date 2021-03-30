@@ -94,10 +94,7 @@ static void get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *que
 struct _GDataCalendarQueryPrivate {
 	gboolean future_events;
 	gchar *order_by; /* TODO: #defined values */
-	gint64 recurrence_expansion_start;
-	gint64 recurrence_expansion_end;
 	gboolean single_events;
-	gchar *sort_order; /* TODO: #defined values */
 	gint64 start_min;  /* UNIX timestamp, seconds */
 	gint64 start_max;  /* UNIX timestamp, seconds */
 	gchar *timezone;
@@ -108,10 +105,7 @@ struct _GDataCalendarQueryPrivate {
 enum {
 	PROP_FUTURE_EVENTS = 1,
 	PROP_ORDER_BY,
-	PROP_RECURRENCE_EXPANSION_START,
-	PROP_RECURRENCE_EXPANSION_END,
 	PROP_SINGLE_EVENTS,
-	PROP_SORT_ORDER,
 	PROP_START_MIN,
 	PROP_START_MAX,
 	PROP_TIMEZONE,
@@ -137,7 +131,6 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	 * GDataCalendarQuery:future-events:
 	 *
 	 * A shortcut to request all events scheduled for the future. Overrides the
-	 * #GDataCalendarQuery:recurrence-expansion-start, #GDataCalendarQuery:recurrence-expansion-end,
 	 * #GDataCalendarQuery:start-min and #GDataCalendarQuery:start-max properties.
 	 */
 	g_object_class_install_property (gobject_class, PROP_FUTURE_EVENTS,
@@ -159,32 +152,6 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * GDataCalendarQuery:recurrence-expansion-start:
-	 *
-	 * Specifies the beginning of the time period to expand recurring events for, inclusive.
-	 *
-	 * Deprecated: 0.17.7: Use #GDataCalendarQuery:single-events instead, as this is no longer supported on the server.
-	 */
-	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_START,
-	                                 g_param_spec_int64 ("recurrence-expansion-start",
-	                                                     "Recurrence expansion start", "Specifies start of period to expand recurrences for.",
-	                                                     -1, G_MAXINT64, -1,
-	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
-
-	/**
-	 * GDataCalendarQuery:recurrence-expansion-end:
-	 *
-	 * Specifies the end of the time period to expand recurring events for, exclusive.
-	 *
-	 * Deprecated: 0.17.7: Use #GDataCalendarQuery:single-events instead, as this is no longer supported on the server.
-	 */
-	g_object_class_install_property (gobject_class, PROP_RECURRENCE_EXPANSION_END,
-	                                 g_param_spec_int64 ("recurrence-expansion-end",
-	                                                     "Recurrence expansion end", "Specifies end of period to expand recurrences for.",
-	                                                     -1, G_MAXINT64, -1,
-	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
-
-	/**
 	 * GDataCalendarQuery:single-events:
 	 *
 	 * Indicates whether recurring events should be expanded or represented as a single event.
@@ -194,22 +161,6 @@ gdata_calendar_query_class_init (GDataCalendarQueryClass *klass)
 	                                                       "Single events?", "Indicates whether recurring events should be expanded.",
 	                                                       FALSE,
 	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataCalendarQuery:sort-order:
-	 *
-	 * Specifies direction of sorting. Supported values are <literal>ascending</literal> and
-	 * <literal>descending</literal>.
-	 *
-	 * By default, results are returned in ascending order.
-	 *
-	 * Deprecated: 0.17.7: Manually sort the results after retrieving them, as this is no longer supported on the server.
-	 */
-	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
-	                                 g_param_spec_string ("sort-order",
-	                                                      "Sort order", "Specifies direction of sorting.",
-	                                                      NULL,
-	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataCalendarQuery:start-min:
@@ -289,8 +240,6 @@ static void
 gdata_calendar_query_init (GDataCalendarQuery *self)
 {
 	self->priv = gdata_calendar_query_get_instance_private (self);
-	self->priv->recurrence_expansion_start = -1;
-	self->priv->recurrence_expansion_end = -1;
 	self->priv->start_min = -1;
 	self->priv->start_max = -1;
 
@@ -304,7 +253,6 @@ gdata_calendar_query_finalize (GObject *object)
 	GDataCalendarQueryPrivate *priv = GDATA_CALENDAR_QUERY (object)->priv;
 
 	g_free (priv->order_by);
-	g_free (priv->sort_order);
 	g_free (priv->timezone);
 
 	/* Chain up to the parent class */
@@ -323,17 +271,8 @@ gdata_calendar_query_get_property (GObject *object, guint property_id, GValue *v
 		case PROP_ORDER_BY:
 			g_value_set_string (value, priv->order_by);
 			break;
-		case PROP_RECURRENCE_EXPANSION_START:
-			g_value_set_int64 (value, priv->recurrence_expansion_start);
-			break;
-		case PROP_RECURRENCE_EXPANSION_END:
-			g_value_set_int64 (value, priv->recurrence_expansion_end);
-			break;
 		case PROP_SINGLE_EVENTS:
 			g_value_set_boolean (value, priv->single_events);
-			break;
-		case PROP_SORT_ORDER:
-			g_value_set_string (value, priv->sort_order);
 			break;
 		case PROP_START_MIN:
 			g_value_set_int64 (value, priv->start_min);
@@ -369,23 +308,8 @@ gdata_calendar_query_set_property (GObject *object, guint property_id, const GVa
 		case PROP_ORDER_BY:
 			gdata_calendar_query_set_order_by (self, g_value_get_string (value));
 			break;
-		case PROP_RECURRENCE_EXPANSION_START:
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-			gdata_calendar_query_set_recurrence_expansion_start (self, g_value_get_int64 (value));
-G_GNUC_END_IGNORE_DEPRECATIONS
-			break;
-		case PROP_RECURRENCE_EXPANSION_END:
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-			gdata_calendar_query_set_recurrence_expansion_end (self, g_value_get_int64 (value));
-G_GNUC_END_IGNORE_DEPRECATIONS
-			break;
 		case PROP_SINGLE_EVENTS:
 			gdata_calendar_query_set_single_events (self, g_value_get_boolean (value));
-			break;
-		case PROP_SORT_ORDER:
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-			gdata_calendar_query_set_sort_order (self, g_value_get_string (value));
-G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_START_MIN:
 			gdata_calendar_query_set_start_min (self, g_value_get_int64 (value));
@@ -449,9 +373,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
 
 	/* Convert the deprecated recurrence-expansion-* properties into single-events. */
 	APPEND_SEP
-	if (priv->single_events == TRUE ||
-	    priv->recurrence_expansion_start >= 0 ||
-	    priv->recurrence_expansion_end >= 0)
+	if (priv->single_events == TRUE)
 		g_string_append (query_uri, "singleEvents=true");
 	else
 		g_string_append (query_uri, "singleEvents=false");
@@ -607,89 +529,6 @@ gdata_calendar_query_set_order_by (GDataCalendarQuery *self, const gchar *order_
 }
 
 /**
- * gdata_calendar_query_get_recurrence_expansion_start:
- * @self: a #GDataCalendarQuery
- *
- * Gets the #GDataCalendarQuery:recurrence-expansion-start property. If the property is unset, <code class="literal">-1</code> will be returned.
- *
- * Return value: the UNIX timestamp for the recurrence-expansion-start property, or <code class="literal">-1</code>
- * Deprecated: 0.17.7: Use #GDataCalendarQuery:single-events instead, as this is no longer supported on the server.
- */
-gint64
-gdata_calendar_query_get_recurrence_expansion_start (GDataCalendarQuery *self)
-{
-	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), -1);
-	return self->priv->recurrence_expansion_start;
-}
-
-/**
- * gdata_calendar_query_set_recurrence_expansion_start:
- * @self: a #GDataCalendarQuery
- * @start: a new start time, or <code class="literal">-1</code>
- *
- * Sets the #GDataCalendarQuery:recurrence-expansion-start property of the #GDataCalendarQuery
- * to the new time/date, @start.
- *
- * Set @start to <code class="literal">-1</code> to unset the property in the query URI.
- *
- * Deprecated: 0.17.7: Use #GDataCalendarQuery:single-events instead, as this is no longer supported on the server.
- */
-void
-gdata_calendar_query_set_recurrence_expansion_start (GDataCalendarQuery *self, gint64 start)
-{
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-	g_return_if_fail (start >= -1);
-
-	self->priv->recurrence_expansion_start = start;
-	g_object_notify (G_OBJECT (self), "recurrence-expansion-start");
-
-	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (GDATA_QUERY (self), NULL);
-}
-
-/**
- * gdata_calendar_query_get_recurrence_expansion_end:
- * @self: a #GDataCalendarQuery
- *
- * Gets the #GDataCalendarQuery:recurrence-expansion-end property. If the property is unset, <code class="literal">-1</code> will be returned.
- *
- * Return value: the UNIX timestamp for the recurrence-expansion-end property, or <code class="literal">-1</code>
- *
- * Deprecated: 0.17.7: Use #GDataCalendarQuery:single-events instead, as this is no longer supported on the server.
- */
-gint64
-gdata_calendar_query_get_recurrence_expansion_end (GDataCalendarQuery *self)
-{
-	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), -1	);
-	return self->priv->recurrence_expansion_end;
-}
-
-/**
- * gdata_calendar_query_set_recurrence_expansion_end:
- * @self: a #GDataCalendarQuery
- * @end: a new end time, or <code class="literal">-1</code>
- *
- * Sets the #GDataCalendarQuery:recurrence-expansion-end property of the #GDataCalendarQuery
- * to the new time/date, @end.
- *
- * Set @end to <code class="literal">-1</code> to unset the property in the query URI.
- *
- * Deprecated: 0.17.7: Use #GDataCalendarQuery:single-events instead, as this is no longer supported on the server.
- */
-void
-gdata_calendar_query_set_recurrence_expansion_end (GDataCalendarQuery *self, gint64 end)
-{
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-	g_return_if_fail (end >= -1);
-
-	self->priv->recurrence_expansion_end = end;
-	g_object_notify (G_OBJECT (self), "recurrence-expansion-end");
-
-	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (GDATA_QUERY (self), NULL);
-}
-
-/**
  * gdata_calendar_query_get_single_events:
  * @self: a #GDataCalendarQuery
  *
@@ -717,46 +556,6 @@ gdata_calendar_query_set_single_events (GDataCalendarQuery *self, gboolean singl
 	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
 	self->priv->single_events = single_events;
 	g_object_notify (G_OBJECT (self), "single-events");
-
-	/* Our current ETag will no longer be relevant */
-	gdata_query_set_etag (GDATA_QUERY (self), NULL);
-}
-
-/**
- * gdata_calendar_query_get_sort_order:
- * @self: a #GDataCalendarQuery
- *
- * Gets the #GDataCalendarQuery:sort-order property.
- *
- * Return value: the sort order property, or %NULL if it is unset
- * Deprecated: 0.17.7: Manually sort the results after retrieving them, as this is no longer supported on the server.
- */
-const gchar *
-gdata_calendar_query_get_sort_order (GDataCalendarQuery *self)
-{
-	g_return_val_if_fail (GDATA_IS_CALENDAR_QUERY (self), NULL);
-	return self->priv->sort_order;
-}
-
-/**
- * gdata_calendar_query_set_sort_order:
- * @self: a #GDataCalendarQuery
- * @sort_order: (allow-none): a new sort order string, or %NULL
- *
- * Sets the #GDataCalendarQuery:sort-order property of the #GDataCalendarQuery to the new sort order string, @sort_order.
- *
- * Set @sort_order to %NULL to unset the property in the query URI.
- *
- * Deprecated: 0.17.7: Manually sort the results after retrieving them, as this is no longer supported on the server.
- */
-void
-gdata_calendar_query_set_sort_order (GDataCalendarQuery *self, const gchar *sort_order)
-{
-	g_return_if_fail (GDATA_IS_CALENDAR_QUERY (self));
-
-	g_free (self->priv->sort_order);
-	self->priv->sort_order = g_strdup (sort_order);
-	g_object_notify (G_OBJECT (self), "sort-order");
 
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
