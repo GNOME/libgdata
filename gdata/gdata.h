@@ -151,14 +151,4 @@
 #include <gdata/services/tasks/gdata-tasks-tasklist.h>
 #include <gdata/services/tasks/gdata-tasks-task.h>
 
-/* Google Freebase */
-#include <gdata/services/freebase/gdata-freebase-service.h>
-#include <gdata/services/freebase/gdata-freebase-query.h>
-#include <gdata/services/freebase/gdata-freebase-result.h>
-#include <gdata/services/freebase/gdata-freebase-search-query.h>
-#include <gdata/services/freebase/gdata-freebase-search-result.h>
-#include <gdata/services/freebase/gdata-freebase-topic-query.h>
-#include <gdata/services/freebase/gdata-freebase-topic-result.h>
-#include <gdata/services/freebase/gdata-freebase-enums.h>
-
 #endif /* !GDATA_H */

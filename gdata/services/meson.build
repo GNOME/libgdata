@@ -1,7 +1,6 @@
 subdir('calendar')
 subdir('contacts')
 subdir('documents')
-subdir('freebase')
 subdir('picasaweb')
 subdir('tasks')
 subdir('youtube')

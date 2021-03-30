@@ -26,7 +26,6 @@ ignore_headers = [
   # FIXME: these files are created by enums workaround
   'gdata-documents-enums-in.h',
   'gdata-enums-in.h',
-  'gdata-freebase-enums-in.h',
   'gdata-media-enums-in.h',
   'gdata-picasaweb-enums-in.h',
   'gdata-youtube-enums-in.h',
