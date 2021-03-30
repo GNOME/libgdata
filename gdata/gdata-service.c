@@ -77,7 +77,6 @@ real_parse_feed (GDataService *self,
                  GDataQueryProgressCallback progress_callback,
                  gpointer progress_user_data,
                  GError **error);
-static void notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
 static void notify_timeout_cb (GObject *gobject, GParamSpec *pspec, GObject *self);
 static void debug_handler (const char *log_domain, GLogLevelFlags log_level, const char *message, gpointer user_data);
 static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char direction, const char *data, gpointer user_data);
@@ -85,9 +84,6 @@ static void soup_log_printer (SoupLogger *logger, SoupLoggerLogLevel level, char
 static GDataFeed *__gdata_service_query (GDataService *self, GDataAuthorizationDomain *domain, const gchar *feed_uri, GDataQuery *query,
                                          GType entry_type, GCancellable *cancellable, GDataQueryProgressCallback progress_callback,
                                          gpointer progress_user_data, GError **error);
-
-static SoupURI *_get_proxy_uri (GDataService *self);
-static void _set_proxy_uri (GDataService *self, SoupURI *proxy_uri);
 
 struct _GDataServicePrivate {
 	SoupSession *session;
@@ -97,8 +93,7 @@ struct _GDataServicePrivate {
 };
 
 enum {
-	PROP_PROXY_URI = 1,
-	PROP_TIMEOUT,
+	PROP_TIMEOUT = 1,
 	PROP_LOCALE,
 	PROP_AUTHORIZER,
 	PROP_PROXY_RESOLVER,
@@ -122,22 +117,6 @@ gdata_service_class_init (GDataServiceClass *klass)
 	klass->parse_error_response = real_parse_error_response;
 	klass->parse_feed = real_parse_feed;
 	klass->get_authorization_domains = NULL; /* equivalent to returning an empty list of domains */
-
-	/**
-	 * GDataService:proxy-uri:
-	 *
-	 * The proxy URI used internally for all network requests.
-	 *
-	 * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
-	 *
-	 * Since: 0.2.0
-	 * Deprecated: 0.15.0: Use #GDataService:proxy-resolver instead, which gives more flexibility over the proxy used.
-	 */
-	g_object_class_install_property (gobject_class, PROP_PROXY_URI,
-	                                 g_param_spec_boxed ("proxy-uri",
-	                                                     "Proxy URI", "The proxy URI used internally for all network requests.",
-	                                                     SOUP_TYPE_URI,
-	                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataService:timeout:
@@ -203,7 +182,7 @@ gdata_service_class_init (GDataServiceClass *klass)
 	/**
 	 * GDataService:proxy-resolver:
 	 *
-	 * The #GProxyResolver used to determine a proxy URI.  Setting this will clear the #GDataService:proxy-uri property.
+	 * The #GProxyResolver used to determine a proxy URI.
 	 *
 	 * Since: 0.15.0
 	 */
@@ -223,8 +202,7 @@ gdata_service_init (GDataService *self)
 	/* Log handling for all message types except debug */
 	g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_ERROR | G_LOG_LEVEL_INFO | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING, (GLogFunc) debug_handler, self);
 
-	/* Proxy the SoupSession's proxy-uri and timeout properties */
-	g_signal_connect (self->priv->session, "notify::proxy-uri", (GCallback) notify_proxy_uri_cb, self);
+	/* Proxy the SoupSession's timeout property */
 	g_signal_connect (self->priv->session, "notify::timeout", (GCallback) notify_timeout_cb, self);
 
 	/* Keep our GProxyResolver synchronized with SoupSession's. */
@@ -267,9 +245,6 @@ gdata_service_get_property (GObject *object, guint property_id, GValue *value, G
 	GDataServicePrivate *priv = GDATA_SERVICE (object)->priv;
 
 	switch (property_id) {
-		case PROP_PROXY_URI:
-			g_value_set_boxed (value, _get_proxy_uri (GDATA_SERVICE (object)));
-			break;
 		case PROP_TIMEOUT:
 			g_value_set_uint (value, gdata_service_get_timeout (GDATA_SERVICE (object)));
 			break;
@@ -293,9 +268,6 @@ static void
 gdata_service_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_PROXY_URI:
-			_set_proxy_uri (GDATA_SERVICE (object), g_value_get_boxed (value));
-			break;
 		case PROP_TIMEOUT:
 			gdata_service_set_timeout (GDATA_SERVICE (object), g_value_get_uint (value));
 			break;
@@ -1833,73 +1805,6 @@ gdata_service_delete_entry (GDataService *self, GDataAuthorizationDomain *domain
 	return TRUE;
 }
 
-static void
-notify_proxy_uri_cb (GObject *gobject, GParamSpec *pspec, GObject *self)
-{
-	g_object_notify (self, "proxy-uri");
-}
-
-/* Static function which isn't deprecated so we can continue using it internally. */
-static SoupURI *
-_get_proxy_uri (GDataService *self)
-{
-	SoupURI *proxy_uri;
-
-	g_return_val_if_fail (GDATA_IS_SERVICE (self), NULL);
-
-	g_object_get (self->priv->session, SOUP_SESSION_PROXY_URI, &proxy_uri, NULL);
-	g_object_unref (proxy_uri); /* remove the ref added by g_object_get */
-
-	return proxy_uri;
-}
-
-/**
- * gdata_service_get_proxy_uri:
- * @self: a #GDataService
- *
- * Gets the proxy URI on the #GDataService's #SoupSession.
- *
- * Return value: (transfer none): the proxy URI, or %NULL
- *
- * Since: 0.2.0
- * Deprecated: 0.15.0: Use gdata_service_get_proxy_resolver() instead, which gives more flexibility over the proxy used.
- */
-SoupURI *
-gdata_service_get_proxy_uri (GDataService *self)
-{
-	return _get_proxy_uri (self);
-}
-
-/* Static function which isn't deprecated so we can continue using it internally. */
-static void
-_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
-{
-	g_return_if_fail (GDATA_IS_SERVICE (self));
-	g_object_set (self->priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
-	g_object_notify (G_OBJECT (self), "proxy-uri");
-}
-
-/**
- * gdata_service_set_proxy_uri:
- * @self: a #GDataService
- * @proxy_uri: (allow-none): the proxy URI, or %NULL
- *
- * Sets the proxy URI on the #SoupSession used internally by the given #GDataService.
- * This forces all requests through the given proxy.
- *
- * If @proxy_uri is %NULL, no proxy will be used.
- *
- * Note that if a #GDataAuthorizer is being used with this #GDataService, the authorizer might also need its proxy URI setting.
- *
- * Since: 0.2.0
- * Deprecated: 0.15.0: Use gdata_service_set_proxy_resolver() instead, which gives more flexibility over the proxy used.
- */
-void
-gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri)
-{
-	_set_proxy_uri (self, proxy_uri);
-}
-
 /**
  * gdata_service_get_proxy_resolver:
  * @self: a #GDataService
@@ -1924,8 +1829,6 @@ gdata_service_get_proxy_resolver (GDataService *self)
  * @proxy_resolver: (allow-none): a #GProxyResolver, or %NULL
  *
  * Sets the #GProxyResolver on the #SoupSession used internally by the given #GDataService.
- *
- * Setting this will clear the #GDataService:proxy-uri property.
  *
  * Since: 0.15.0
  */
