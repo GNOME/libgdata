@@ -145,13 +145,10 @@ enum {
 	PROP_KEYWORDS,
 	PROP_PLAYER_URI,
 	PROP_CATEGORY,
-	PROP_CREDIT,
 	PROP_DESCRIPTION,
 	PROP_DURATION,
 	PROP_IS_PRIVATE,
 	PROP_UPLOADED,
-	PROP_VIDEO_ID,
-	PROP_IS_DRAFT,
 	PROP_STATE,
 	PROP_RECORDED,
 	PROP_ASPECT_RATIO,
@@ -320,25 +317,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	                                                      GDATA_TYPE_MEDIA_CATEGORY,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-
-	/**
-	 * GDataYouTubeVideo:credit:
-	 *
-	 * Identifies the owner of the video.
-	 *
-	 * Deprecated: 0.17.0: This is no longer supported by Google, and
-	 *   will always be %NULL. There is no replacement.
-	 */
-	g_object_class_install_property (gobject_class, PROP_CREDIT,
-	                                 g_param_spec_object ("credit",
-	                                                      "Credit", "Identifies the owner of the video.",
-	                                                      GDATA_TYPE_YOUTUBE_CREDIT,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS |
-	                                                      G_PARAM_DEPRECATED));
-
-	G_GNUC_END_IGNORE_DEPRECATIONS
-
 	/**
 	 * GDataYouTubeVideo:description:
 	 *
@@ -394,38 +372,6 @@ gdata_youtube_video_class_init (GDataYouTubeVideoClass *klass)
 	                                                     "Uploaded", "Specifies the time the video was originally uploaded to YouTube.",
 	                                                     -1, G_MAXINT64, -1,
 	                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataYouTubeVideo:video-id:
-	 *
-	 * Specifies a unique ID which YouTube uses to identify the video. For example: <literal>qz8EfkS4KK0</literal>.
-	 *
-	 * For more information, see the <ulink type="http"
-	 * url="https://developers.google.com/youtube/v3/docs/videos#id">online documentation</ulink>.
-	 *
-	 * Deprecated: 0.17.0: This is now equal to #GDataEntry:id.
-	 */
-	g_object_class_install_property (gobject_class, PROP_VIDEO_ID,
-	                                 g_param_spec_string ("video-id",
-	                                                      "Video ID", "Specifies a unique ID which YouTube uses to identify the video.",
-	                                                      NULL,
-	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS |
-	                                                      G_PARAM_DEPRECATED));
-
-	/**
-	 * GDataYouTubeVideo:is-draft:
-	 *
-	 * Indicates whether the video is in draft, or unpublished, status.
-	 *
-	 * Deprecated: 0.17.0: This is now equal to
-	 *   #GDataYouTubeVideo:is-private.
-	 */
-	g_object_class_install_property (gobject_class, PROP_IS_DRAFT,
-	                                 g_param_spec_boolean ("is-draft",
-	                                                       "Draft?", "Indicates whether the video is in draft, or unpublished, status.",
-	                                                       FALSE,
-	                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS |
-	                                                       G_PARAM_DEPRECATED));
 
 	/**
 	 * GDataYouTubeVideo:state:
@@ -602,9 +548,6 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 		case PROP_CATEGORY:
 			g_value_set_object (value, priv->category);
 			break;
-		case PROP_CREDIT:
-			g_value_set_object (value, NULL);
-			break;
 		case PROP_DESCRIPTION:
 			g_value_set_string (value, gdata_entry_get_summary (GDATA_ENTRY (object)));
 			break;
@@ -616,12 +559,6 @@ gdata_youtube_video_get_property (GObject *object, guint property_id, GValue *va
 			break;
 		case PROP_UPLOADED:
 			g_value_set_int64 (value, gdata_entry_get_published (GDATA_ENTRY (object)));
-			break;
-		case PROP_VIDEO_ID:
-			g_value_set_string (value, gdata_entry_get_id (GDATA_ENTRY (object)));
-			break;
-		case PROP_IS_DRAFT:
-			g_value_set_boolean (value, gdata_youtube_video_is_private (GDATA_YOUTUBE_VIDEO (object)));
 			break;
 		case PROP_STATE:
 			g_value_set_object (value, gdata_youtube_video_get_state (GDATA_YOUTUBE_VIDEO (object)));
@@ -664,9 +601,6 @@ gdata_youtube_video_set_property (GObject *object, guint property_id, const GVal
 			gdata_youtube_video_set_description (self, g_value_get_string (value));
 			break;
 		case PROP_IS_PRIVATE:
-			gdata_youtube_video_set_is_private (self, g_value_get_boolean (value));
-			break;
-		case PROP_IS_DRAFT:
 			gdata_youtube_video_set_is_private (self, g_value_get_boolean (value));
 			break;
 		case PROP_RECORDED:
@@ -1956,27 +1890,6 @@ gdata_youtube_video_set_category (GDataYouTubeVideo *self, GDataMediaCategory *c
 	g_object_notify (G_OBJECT (self), "category");
 }
 
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-
-/**
- * gdata_youtube_video_get_credit:
- * @self: a #GDataYouTubeVideo
- *
- * Gets the #GDataYouTubeVideo:credit property.
- *
- * Return value: (transfer none): a #GDataMediaCredit giving information on whom to credit for the video, or %NULL
- * Deprecated: 0.17.0: This is no longer supported by Google, and will
- *   always return %NULL. There is no replacement.
- */
-GDataYouTubeCredit *
-gdata_youtube_video_get_credit (GDataYouTubeVideo *self)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return NULL;
-}
-
-G_GNUC_END_IGNORE_DEPRECATIONS
-
 /**
  * gdata_youtube_video_get_description:
  * @self: a #GDataYouTubeVideo
@@ -2008,33 +1921,6 @@ gdata_youtube_video_set_description (GDataYouTubeVideo *self, const gchar *descr
 	gdata_entry_set_summary (GDATA_ENTRY (self), description);
 	g_object_notify (G_OBJECT (self), "description");
 }
-
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-
-/**
- * gdata_youtube_video_look_up_content:
- * @self: a #GDataYouTubeVideo
- * @type: the MIME type of the content desired
- *
- * Looks up a #GDataYouTubeContent from the video with the given MIME type. The video's list of contents is
- * a list of URIs to various formats of the video itself, such as its SWF URI or RTSP stream.
- *
- * Return value: (transfer none): a #GDataYouTubeContent matching @type, or %NULL
- * Deprecated: 0.17.0: This is no longer supported by Google, and will
- *   always return %NULL. To view a video, open the URI returned by
- *   gdata_youtube_video_get_player_uri() in a web browser.
- */
-GDataYouTubeContent *
-gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	g_return_val_if_fail (type != NULL, NULL);
-
-	/* Not supported in the v3 API. */
-	return NULL;
-}
-
-G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
  * gdata_youtube_video_get_thumbnails:
@@ -2109,57 +1995,6 @@ gdata_youtube_video_get_uploaded (GDataYouTubeVideo *self)
 {
 	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), -1);
 	return gdata_entry_get_published (GDATA_ENTRY (self));
-}
-
-/**
- * gdata_youtube_video_get_video_id:
- * @self: a #GDataYouTubeVideo
- *
- * Gets the #GDataYouTubeVideo:video-id property.
- *
- * Return value: the video's unique and permanent ID
- * Deprecated: 0.17.0: This is now equal to #GDataEntry:id.
- */
-const gchar *
-gdata_youtube_video_get_video_id (GDataYouTubeVideo *self)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), NULL);
-	return gdata_entry_get_id (GDATA_ENTRY (self));
-}
-
-/**
- * gdata_youtube_video_is_draft:
- * @self: a #GDataYouTubeVideo
- *
- * Gets the #GDataYouTubeVideo:is-draft property.
- *
- * Return value: %TRUE if the video is a draft, %FALSE otherwise
- * Deprecated: 0.17.0: This is now equal to
- *   gdata_youtube_video_is_private().
- */
-gboolean
-gdata_youtube_video_is_draft (GDataYouTubeVideo *self)
-{
-	g_return_val_if_fail (GDATA_IS_YOUTUBE_VIDEO (self), FALSE);
-	return gdata_youtube_video_is_private (self);
-}
-
-/**
- * gdata_youtube_video_set_is_draft:
- * @self: a #GDataYouTubeVideo
- * @is_draft: whether the video is a draft
- *
- * Sets the #GDataYouTubeVideo:is-draft property to decide whether the video is a draft.
- *
- * Deprecated: 0.17.0: This is now equivalent to
- *   gdata_youtube_video_set_is_private().
- */
-void
-gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft)
-{
-	g_return_if_fail (GDATA_IS_YOUTUBE_VIDEO (self));
-	gdata_youtube_video_set_is_private (self, is_draft);
-	g_object_notify (G_OBJECT (self), "is-draft");
 }
 
 /* Convert from v3 to v2 API video upload state. References:

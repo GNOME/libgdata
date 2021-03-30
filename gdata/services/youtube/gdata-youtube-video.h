@@ -25,8 +25,6 @@
 
 #include <gdata/gdata-entry.h>
 #include <gdata/media/gdata-media-category.h>
-#include <gdata/services/youtube/gdata-youtube-content.h>
-#include <gdata/services/youtube/gdata-youtube-credit.h>
 #include <gdata/services/youtube/gdata-youtube-state.h>
 
 G_BEGIN_DECLS
@@ -96,21 +94,6 @@ G_BEGIN_DECLS
  * Since: 0.7.0
  */
 #define GDATA_YOUTUBE_ACTION_SYNDICATE "syndicate"
-
-#ifndef LIBGDATA_DISABLE_DEPRECATED
-/**
- * GDATA_YOUTUBE_RATING_TYPE_SIMPLE:
- *
- * A rating type to pass to gdata_youtube_video_get_media_rating() for “simple” ratings. The values which can be returned for such ratings are:
- * <code class="literal">adult</code> and <code class="literal">nonadult</code>.
- *
- * Since: 0.10.0
- * Deprecated: 0.17.0: No longer supported by Google. Calling
- *   gdata_youtube_video_get_media_rating() with this rating type will always
- *   return %NULL.
- */
-#define GDATA_YOUTUBE_RATING_TYPE_SIMPLE "simple"
-#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 /**
  * GDATA_YOUTUBE_RATING_TYPE_MPAA:
@@ -222,16 +205,6 @@ void gdata_youtube_video_get_coordinates (GDataYouTubeVideo *self, gdouble *lati
 void gdata_youtube_video_set_coordinates (GDataYouTubeVideo *self, gdouble latitude, gdouble longitude);
 
 gchar *gdata_youtube_video_get_video_id_from_uri (const gchar *video_uri) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
-
-#ifndef LIBGDATA_DISABLE_DEPRECATED
-const gchar *gdata_youtube_video_get_video_id (GDataYouTubeVideo *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_entry_get_id);
-GDataYouTubeContent *gdata_youtube_video_look_up_content (GDataYouTubeVideo *self, const gchar *type) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_youtube_video_get_player_uri);
-
-gboolean gdata_youtube_video_is_draft (GDataYouTubeVideo *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR(gdata_youtube_video_is_private);
-void gdata_youtube_video_set_is_draft (GDataYouTubeVideo *self, gboolean is_draft) G_GNUC_DEPRECATED_FOR(gdata_youtube_video_set_is_private);
-
-GDataYouTubeCredit *gdata_youtube_video_get_credit (GDataYouTubeVideo *self) G_GNUC_PURE G_GNUC_DEPRECATED;
-#endif /* !LIBGDATA_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

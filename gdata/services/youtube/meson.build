@@ -5,8 +5,6 @@ include_subdir = gdata_include_subdir / 'services/youtube'
 headers = files(
   'gdata-youtube-category.h',
   'gdata-youtube-comment.h',
-  'gdata-youtube-content.h',
-  'gdata-youtube-credit.h',
   'gdata-youtube-feed.h',
   'gdata-youtube-query.h',
   'gdata-youtube-service.h',
@@ -24,8 +22,6 @@ gir_headers += headers
 sources += files(
   'gdata-youtube-category.c',
   'gdata-youtube-comment.c',
-  'gdata-youtube-content.c',
-  'gdata-youtube-credit.c',
   'gdata-youtube-feed.c',
   'gdata-youtube-query.c',
   'gdata-youtube-service.c',
