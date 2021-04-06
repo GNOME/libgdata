@@ -76,7 +76,7 @@ cc = meson.get_compiler('c')
 # Requirements
 gdata_deps = [
   dependency('gobject-2.0'),
-  dependency('glib-2.0', version: '>= 2.44.0'),
+  dependency('glib-2.0', version: '>= 2.68.0'),
   dependency('gio-2.0', version: '>= 2.44.0'),
   dependency('gio-unix-2.0'),
   dependency('json-glib-1.0', version: '>= 0.15'),
@@ -84,8 +84,8 @@ gdata_deps = [
 ]
 
 common_c_args = [
-  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
-  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_60',
+  '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_68',
+  '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_68',
 ]
 
 # Private dependencies for libgdata (specifically used for pkgconfig)
