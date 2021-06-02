@@ -3168,7 +3168,11 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	if (content_type != NULL)
 		*content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
 	*length = message->response_body->length;
+#if GLIB_CHECK_VERSION (2, 68, 0)
+	data = g_memdup2 (message->response_body->data, message->response_body->length);
+#else
 	data = g_memdup (message->response_body->data, message->response_body->length);
+#endif
 
 	/* Update the stored photo ETag */
 	g_free (self->priv->photo_etag);
@@ -3446,7 +3450,11 @@ gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContact
 	/* Prepare the data to be passed to the thread */
 	photo_data = g_slice_new (PhotoData);
 	photo_data->service = g_object_ref (service);
+#if GLIB_CHECK_VERSION (2, 68, 0)
+	photo_data->data = g_memdup2 (data, length);
+#else
 	photo_data->data = g_memdup (data, length);
+#endif
 	photo_data->length = length;
 	photo_data->content_type = g_strdup (content_type);
 
