@@ -1537,13 +1537,17 @@ test_comment_properties_parent_comment_uri (void)
 static gchar *
 build_this_week_date_str (void)
 {
-	GTimeVal tv;
+	GDateTime *tv, *tv2;
+	gchar *ret;
 
-	g_get_current_time (&tv);
-	tv.tv_sec -= 7 * 24 * 60 * 60;  /* this week */
-	tv.tv_usec = 0;  /* pointless accuracy */
+	/* don't use g_date_time_new_now_utc (squash microseconds) */
+	tv = g_date_time_new_from_unix_utc (g_get_real_time () / G_USEC_PER_SEC);
+	tv2 = g_date_time_add_weeks (tv, -1);
+	g_date_time_unref (tv);
 
-	return g_time_val_to_iso8601 (&tv);
+	ret = g_date_time_format_iso8601 (tv2);
+	g_date_time_unref (tv2);
+	return ret;
 }
 
 static void

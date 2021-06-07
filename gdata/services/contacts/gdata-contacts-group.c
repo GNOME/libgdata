@@ -130,7 +130,7 @@ enum {
 	PROP_SYSTEM_GROUP_ID
 };
 
-G_DEFINE_TYPE (GDataContactsGroup, gdata_contacts_group, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataContactsGroup, gdata_contacts_group, GDATA_TYPE_ENTRY)
 
 static void
 gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
@@ -138,8 +138,6 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataContactsGroupPrivate));
 
 	gobject_class->constructor = gdata_contacts_group_constructor;
 	gobject_class->get_property = gdata_contacts_group_get_property;
@@ -225,7 +223,7 @@ notify_content_cb (GObject *gobject, GParamSpec *pspec, GDataContactsGroup *self
 static void
 gdata_contacts_group_init (GDataContactsGroup *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_GROUP, GDataContactsGroupPrivate);
+	self->priv =gdata_contacts_group_get_instance_private (self);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->edited = -1;
 
@@ -268,12 +266,10 @@ gdata_contacts_group_constructor (GType type, guint n_construct_params, GObjectC
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataContactsGroupPrivate *priv = GDATA_CONTACTS_GROUP (object)->priv;
-		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause setting it from
 		 * parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->edited = time_val.tv_sec;
+		priv->edited = g_get_real_time () / G_USEC_PER_SEC;
 	}
 
 	return object;

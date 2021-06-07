@@ -54,15 +54,13 @@ enum {
 	PROP_FORMAT = 1
 };
 
-G_DEFINE_TYPE (GDataYouTubeContent, gdata_youtube_content, GDATA_TYPE_MEDIA_CONTENT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataYouTubeContent, gdata_youtube_content, GDATA_TYPE_MEDIA_CONTENT)
 
 static void
 gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataYouTubeContentPrivate));
 
 	gobject_class->get_property = gdata_youtube_content_get_property;
 
@@ -93,7 +91,7 @@ gdata_youtube_content_class_init (GDataYouTubeContentClass *klass)
 static void
 gdata_youtube_content_init (GDataYouTubeContent *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_YOUTUBE_CONTENT, GDataYouTubeContentPrivate);
+	self->priv = gdata_youtube_content_get_instance_private (self);
 }
 
 static void

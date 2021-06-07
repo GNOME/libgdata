@@ -65,15 +65,13 @@ struct _GDataExifTagsPrivate {
 	gint64 _time; /* in milliseconds! */
 };
 
-G_DEFINE_TYPE (GDataExifTags, gdata_exif_tags, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataExifTags, gdata_exif_tags, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_exif_tags_class_init (GDataExifTagsClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataExifTagsPrivate));
 
 	gobject_class->finalize = gdata_exif_tags_finalize;
 
@@ -86,7 +84,7 @@ gdata_exif_tags_class_init (GDataExifTagsClass *klass)
 static void
 gdata_exif_tags_init (GDataExifTags *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_EXIF_TAGS, GDataExifTagsPrivate);
+	self->priv = gdata_exif_tags_get_instance_private (self);
 	self->priv->_time = -1;
 }
 

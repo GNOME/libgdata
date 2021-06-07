@@ -105,15 +105,13 @@ enum {
 	PROP_GROUP
 };
 
-G_DEFINE_TYPE (GDataContactsQuery, gdata_contacts_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataContactsQuery, gdata_contacts_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataContactsQueryPrivate));
 
 	gobject_class->set_property = gdata_contacts_query_set_property;
 	gobject_class->get_property = gdata_contacts_query_get_property;
@@ -180,7 +178,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 static void
 gdata_contacts_query_init (GDataContactsQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_QUERY, GDataContactsQueryPrivate);
+	self->priv = gdata_contacts_query_get_instance_private (self);
 
 	/* https://developers.google.com/google-apps/contacts/v3/reference#contacts-query-parameters-reference
 	 * indicates that the Contacts service uses index pagination, but all

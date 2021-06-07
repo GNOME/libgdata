@@ -76,15 +76,13 @@ static GList *get_authorization_domains (void);
 
 _GDATA_DEFINE_AUTHORIZATION_DOMAIN (freebase, "freebase", "https://www.googleapis.com/auth/freebase.readonly")
 
-G_DEFINE_TYPE (GDataFreebaseService, gdata_freebase_service, GDATA_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFreebaseService, gdata_freebase_service, GDATA_TYPE_SERVICE)
 
 static void
 gdata_freebase_service_class_init (GDataFreebaseServiceClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataServiceClass *service_class = GDATA_SERVICE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFreebaseServicePrivate));
 
 	gobject_class->set_property = gdata_freebase_service_set_property;
 	gobject_class->get_property = gdata_freebase_service_get_property;
@@ -113,7 +111,7 @@ gdata_freebase_service_class_init (GDataFreebaseServiceClass *klass)
 static void
 gdata_freebase_service_init (GDataFreebaseService *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_SERVICE, GDataFreebaseServicePrivate);
+	self->priv = gdata_freebase_service_get_instance_private (self);
 }
 
 static void

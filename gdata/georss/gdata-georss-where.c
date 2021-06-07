@@ -54,14 +54,12 @@ struct _GDataGeoRSSWherePrivate {
 	gdouble longitude;
 };
 
-G_DEFINE_TYPE (GDataGeoRSSWhere, gdata_georss_where, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataGeoRSSWhere, gdata_georss_where, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_georss_where_class_init (GDataGeoRSSWhereClass *klass)
 {
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGeoRSSWherePrivate));
 
 	parsable_class->get_xml = get_xml;
 	parsable_class->parse_xml = parse_xml;
@@ -73,7 +71,7 @@ gdata_georss_where_class_init (GDataGeoRSSWhereClass *klass)
 static void
 gdata_georss_where_init (GDataGeoRSSWhere *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GEORSS_WHERE, GDataGeoRSSWherePrivate);
+	self->priv = gdata_georss_where_get_instance_private (self);
 
 	self->priv->latitude = G_MAXDOUBLE;
 	self->priv->longitude = G_MAXDOUBLE;

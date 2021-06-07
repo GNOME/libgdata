@@ -62,6 +62,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGDEmailAddress, gdata_gd_email_address, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGDEmailAddress)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_email_address_comparable_init))
 
 static void
@@ -69,8 +70,6 @@ gdata_gd_email_address_class_init (GDataGDEmailAddressClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGDEmailAddressPrivate));
 
 	gobject_class->get_property = gdata_gd_email_address_get_property;
 	gobject_class->set_property = gdata_gd_email_address_set_property;
@@ -178,7 +177,7 @@ gdata_gd_email_address_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gd_email_address_init (GDataGDEmailAddress *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_EMAIL_ADDRESS, GDataGDEmailAddressPrivate);
+	self->priv = gdata_gd_email_address_get_instance_private (self);
 }
 
 static void

@@ -58,15 +58,13 @@ enum {
 	PROP_IS_FIXED = 1
 };
 
-G_DEFINE_TYPE (GDataAPPCategories, gdata_app_categories, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataAPPCategories, gdata_app_categories, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_app_categories_class_init (GDataAPPCategoriesClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataAPPCategoriesPrivate));
 
 	gobject_class->get_property = gdata_app_categories_get_property;
 	gobject_class->dispose = gdata_app_categories_dispose;
@@ -98,7 +96,7 @@ gdata_app_categories_class_init (GDataAPPCategoriesClass *klass)
 static void
 gdata_app_categories_init (GDataAPPCategories *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_APP_CATEGORIES, GDataAPPCategoriesPrivate);
+	self->priv = gdata_app_categories_get_instance_private (self);
 }
 
 static void

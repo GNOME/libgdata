@@ -199,14 +199,13 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataOAuth1Authorizer, gdata_oauth1_authorizer, G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (GDataOAuth1Authorizer)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_AUTHORIZER, authorizer_init))
 
 static void
 gdata_oauth1_authorizer_class_init (GDataOAuth1AuthorizerClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataOAuth1AuthorizerPrivate));
 
 	gobject_class->get_property = get_property;
 	gobject_class->set_property = set_property;
@@ -303,7 +302,7 @@ authorizer_init (GDataAuthorizerInterface *iface)
 static void
 gdata_oauth1_authorizer_init (GDataOAuth1Authorizer *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_OAUTH1_AUTHORIZER, GDataOAuth1AuthorizerPrivate);
+	self->priv = gdata_oauth1_authorizer_get_instance_private (self);
 
 	/* Set up the authorizer's mutex */
 	g_mutex_init (&(self->priv->mutex));
@@ -472,7 +471,7 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 	gchar *uri, *signature, *timestamp;
 	char *nonce;
 	gboolean is_first = TRUE;
-	GTimeVal time_val;
+	gint64 time_val;
 	guchar signature_buf[HMAC_SHA1_LEN];
 	gsize signature_buf_len;
 	GHmac *signature_hmac;
@@ -495,8 +494,8 @@ sign_message (GDataOAuth1Authorizer *self, SoupMessage *message, const gchar *to
 
 	/* Add various standard parameters to the list (note: this modifies the hash table belonging to the caller) */
 	nonce = oauth_gen_nonce ();
-	g_get_current_time (&time_val);
-	timestamp = g_strdup_printf ("%li", time_val.tv_sec);
+	time_val = g_get_real_time () / G_USEC_PER_SEC;
+	timestamp = g_strdup_printf ("%li", time_val);
 
 	if (parameters == NULL) {
 		parameters = g_hash_table_new (g_str_hash, g_str_equal);

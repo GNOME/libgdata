@@ -242,15 +242,13 @@ enum {
 	PROP_CONTENT_LENGTH,
 };
 
-G_DEFINE_TYPE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataUploadStream, gdata_upload_stream, G_TYPE_OUTPUT_STREAM)
 
 static void
 gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GOutputStreamClass *stream_class = G_OUTPUT_STREAM_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataUploadStreamPrivate));
 
 	gobject_class->constructed = gdata_upload_stream_constructed;
 	gobject_class->dispose = gdata_upload_stream_dispose;
@@ -397,7 +395,7 @@ gdata_upload_stream_class_init (GDataUploadStreamClass *klass)
 static void
 gdata_upload_stream_init (GDataUploadStream *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_UPLOAD_STREAM, GDataUploadStreamPrivate);
+	self->priv = gdata_upload_stream_get_instance_private (self);
 	self->priv->buffer = gdata_buffer_new ();
 	g_mutex_init (&(self->priv->write_mutex));
 	g_cond_init (&(self->priv->write_cond));

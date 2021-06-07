@@ -60,6 +60,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGDReminder, gdata_gd_reminder, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGDReminder)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_reminder_comparable_init))
 
 static void
@@ -67,8 +68,6 @@ gdata_gd_reminder_class_init (GDataGDReminderClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGDReminderPrivate));
 
 	gobject_class->get_property = gdata_gd_reminder_get_property;
 	gobject_class->set_property = gdata_gd_reminder_set_property;
@@ -176,7 +175,7 @@ gdata_gd_reminder_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gd_reminder_init (GDataGDReminder *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_REMINDER, GDataGDReminderPrivate);
+	self->priv = gdata_gd_reminder_get_instance_private (self);
 	self->priv->absolute_time = -1;
 }
 

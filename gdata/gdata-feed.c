@@ -97,15 +97,13 @@ enum {
 	PROP_NEXT_PAGE_TOKEN,
 };
 
-G_DEFINE_TYPE (GDataFeed, gdata_feed, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFeed, gdata_feed, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_feed_class_init (GDataFeedClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFeedPrivate));
 
 	gobject_class->get_property = gdata_feed_get_property;
 	gobject_class->dispose = gdata_feed_dispose;
@@ -319,7 +317,7 @@ gdata_feed_class_init (GDataFeedClass *klass)
 static void
 gdata_feed_init (GDataFeed *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FEED, GDataFeedPrivate);
+	self->priv = gdata_feed_get_instance_private (self);
 	self->priv->updated = -1;
 }
 

@@ -91,15 +91,13 @@ enum {
 	PROP_CONTENT_URI
 };
 
-G_DEFINE_TYPE (GDataEntry, gdata_entry, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataEntry, gdata_entry, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_entry_class_init (GDataEntryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataEntryPrivate));
 
 	gobject_class->constructed = gdata_entry_constructed;
 	gobject_class->get_property = gdata_entry_get_property;
@@ -272,7 +270,7 @@ gdata_entry_class_init (GDataEntryClass *klass)
 static void
 gdata_entry_init (GDataEntry *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ENTRY, GDataEntryPrivate);
+	self->priv = gdata_entry_get_instance_private (self);
 	self->priv->updated = -1;
 	self->priv->published = -1;
 }

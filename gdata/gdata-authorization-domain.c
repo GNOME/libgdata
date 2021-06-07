@@ -60,14 +60,12 @@ enum {
 	PROP_SCOPE,
 };
 
-G_DEFINE_TYPE (GDataAuthorizationDomain, gdata_authorization_domain, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataAuthorizationDomain, gdata_authorization_domain, G_TYPE_OBJECT)
 
 static void
 gdata_authorization_domain_class_init (GDataAuthorizationDomainClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataAuthorizationDomainPrivate));
 
 	gobject_class->get_property = get_property;
 	gobject_class->set_property = set_property;
@@ -105,7 +103,7 @@ gdata_authorization_domain_class_init (GDataAuthorizationDomainClass *klass)
 static void
 gdata_authorization_domain_init (GDataAuthorizationDomain *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_AUTHORIZATION_DOMAIN, GDataAuthorizationDomainPrivate);
+	self->priv = gdata_authorization_domain_get_instance_private (self);
 }
 
 static void

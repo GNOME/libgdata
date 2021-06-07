@@ -3502,11 +3502,12 @@ static void
 test_gd_when_escaping (void)
 {
 	GDataGDWhen *when;
-	GTimeVal start_time;
+	GDateTime *start_time;
 
-	g_time_val_from_iso8601 ("2005-06-07T01:00:00Z", &start_time);
-	when = gdata_gd_when_new (start_time.tv_sec, -1, FALSE);
+	start_time = g_date_time_new_from_iso8601 ("2005-06-07T01:00:00Z", NULL);
+	when = gdata_gd_when_new (g_date_time_to_unix (start_time), -1, FALSE);
 	gdata_gd_when_set_value_string (when, "Value string & stuff!");
+	g_date_time_unref (start_time);
 
 	/* Check the outputted XML is escaped properly */
 	gdata_test_assert_xml (when,

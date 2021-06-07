@@ -67,15 +67,13 @@ static void item_free (GDataFreebaseSearchResultItem *item);
 
 G_DEFINE_BOXED_TYPE (GDataFreebaseSearchResultItem, gdata_freebase_search_result_item, item_copy, item_free)
 
-G_DEFINE_TYPE (GDataFreebaseSearchResult, gdata_freebase_search_result, GDATA_TYPE_FREEBASE_RESULT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataFreebaseSearchResult, gdata_freebase_search_result, GDATA_TYPE_FREEBASE_RESULT)
 
 static void
 gdata_freebase_search_result_class_init (GDataFreebaseSearchResultClass *klass)
 {
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataFreebaseSearchResultPrivate));
 
 	gobject_class->finalize = gdata_freebase_search_result_finalize;
 	parsable_class->parse_json = parse_json;
@@ -119,7 +117,7 @@ item_copy (const GDataFreebaseSearchResultItem *item)
 static void
 gdata_freebase_search_result_init (GDataFreebaseSearchResult *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_FREEBASE_SEARCH_RESULT, GDataFreebaseSearchResultPrivate);
+	self->priv = gdata_freebase_search_result_get_instance_private (self);
 	self->priv->items = g_ptr_array_new_with_free_func ((GDestroyNotify) item_free);
 }
 

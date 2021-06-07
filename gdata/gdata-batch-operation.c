@@ -126,15 +126,12 @@ enum {
 	PROP_AUTHORIZATION_DOMAIN,
 };
 
-G_DEFINE_TYPE (GDataBatchOperation, gdata_batch_operation, G_TYPE_OBJECT)
-#define GDATA_BATCH_OPERATION_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GDATA_TYPE_BATCH_OPERATION, GDataBatchOperationPrivate))
+G_DEFINE_TYPE_WITH_PRIVATE (GDataBatchOperation, gdata_batch_operation, G_TYPE_OBJECT)
 
 static void
 gdata_batch_operation_class_init (GDataBatchOperationClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataBatchOperationPrivate));
 
 	gobject_class->dispose = gdata_batch_operation_dispose;
 	gobject_class->finalize = gdata_batch_operation_finalize;
@@ -188,7 +185,7 @@ gdata_batch_operation_class_init (GDataBatchOperationClass *klass)
 static void
 gdata_batch_operation_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-	GDataBatchOperationPrivate *priv = GDATA_BATCH_OPERATION_GET_PRIVATE (object);
+	GDataBatchOperationPrivate *priv = gdata_batch_operation_get_instance_private (GDATA_BATCH_OPERATION (object));
 
 	switch (property_id) {
 		case PROP_SERVICE:
@@ -210,7 +207,7 @@ gdata_batch_operation_get_property (GObject *object, guint property_id, GValue *
 static void
 gdata_batch_operation_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-	GDataBatchOperationPrivate *priv = GDATA_BATCH_OPERATION_GET_PRIVATE (object);
+	GDataBatchOperationPrivate *priv = gdata_batch_operation_get_instance_private (GDATA_BATCH_OPERATION (object));
 
 	switch (property_id) {
 		case PROP_SERVICE:
@@ -233,7 +230,7 @@ gdata_batch_operation_set_property (GObject *object, guint property_id, const GV
 static void
 gdata_batch_operation_init (GDataBatchOperation *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_BATCH_OPERATION, GDataBatchOperationPrivate);
+	self->priv = gdata_batch_operation_get_instance_private (self);
 	self->priv->next_id = 1; /* reserve ID 0 for error conditions */
 	self->priv->operations = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) operation_free);
 }
@@ -241,7 +238,7 @@ gdata_batch_operation_init (GDataBatchOperation *self)
 static void
 gdata_batch_operation_dispose (GObject *object)
 {
-	GDataBatchOperationPrivate *priv = GDATA_BATCH_OPERATION_GET_PRIVATE (object);
+	GDataBatchOperationPrivate *priv = gdata_batch_operation_get_instance_private (GDATA_BATCH_OPERATION (object));
 
 	if (priv->authorization_domain != NULL)
 		g_object_unref (priv->authorization_domain);
@@ -258,7 +255,7 @@ gdata_batch_operation_dispose (GObject *object)
 static void
 gdata_batch_operation_finalize (GObject *object)
 {
-	GDataBatchOperationPrivate *priv = GDATA_BATCH_OPERATION_GET_PRIVATE (object);
+	GDataBatchOperationPrivate *priv = gdata_batch_operation_get_instance_private (GDATA_BATCH_OPERATION (object));
 
 	g_free (priv->feed_uri);
 	g_hash_table_destroy (priv->operations);
@@ -601,7 +598,7 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	GDataBatchOperationPrivate *priv = self->priv;
 	SoupMessage *message;
 	GDataFeed *feed;
-	GTimeVal updated;
+	gint64 updated;
 	gchar *upload_data;
 	guint status;
 	GHashTableIter iter;
@@ -641,9 +638,9 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 	message = _gdata_service_build_message (priv->service, priv->authorization_domain, SOUP_METHOD_POST, priv->feed_uri, NULL, TRUE);
 
 	/* Build the request */
-	g_get_current_time (&updated);
+	updated = g_get_real_time () / G_USEC_PER_SEC;
 	feed = _gdata_feed_new (GDATA_TYPE_FEED, "Batch operation feed",
-	                        "batch1", updated.tv_sec);
+	                        "batch1", updated);
 
 	g_hash_table_iter_init (&iter, priv->operations);
 	while (g_hash_table_iter_next (&iter, &op_id, (gpointer*) &op) == TRUE) {
@@ -661,7 +658,7 @@ gdata_batch_operation_run (GDataBatchOperation *self, GCancellable *cancellable,
 			g_free (entry_uri);
 
 			gdata_entry_set_title (entry, "Batch operation query");
-			_gdata_entry_set_updated (entry, updated.tv_sec);
+			_gdata_entry_set_updated (entry, updated);
 
 			_gdata_entry_set_batch_data (entry, op->id, op->type);
 			_gdata_feed_add_entry (feed, entry);

@@ -207,21 +207,22 @@ gboolean
 gdata_parser_int64_from_date (const gchar *date, gint64 *_time)
 {
 	gchar *iso8601_date;
-	gboolean success;
-	GTimeVal time_val;
+	g_autoptr(GDateTime) time_val = NULL;
 
 	if (strlen (date) != 10 && strlen (date) != 8)
 		return FALSE;
 
 	/* Note: This doesn't need translating, as it's outputting an ISO 8601 time string */
 	iso8601_date = g_strdup_printf ("%sT00:00:00Z", date);
-	success = g_time_val_from_iso8601 (iso8601_date, &time_val);
+	time_val = g_date_time_new_from_iso8601 (iso8601_date, NULL);
 	g_free (iso8601_date);
 
-	if (success == TRUE)
-		*_time = time_val.tv_sec;
+	if (time_val) {
+		*_time = g_date_time_to_unix (time_val);
+		return TRUE;
+	}
 
-	return success;
+	return FALSE;
 }
 
 gchar *
@@ -240,21 +241,24 @@ gdata_parser_date_from_int64 (gint64 _time)
 gchar *
 gdata_parser_int64_to_iso8601 (gint64 _time)
 {
-	GTimeVal time_val;
+	g_autoptr(GDateTime) time_val = NULL;
 
-	time_val.tv_sec = _time;
-	time_val.tv_usec = 0;
+	time_val = g_date_time_new_from_unix_utc (_time);
 
-	return g_time_val_to_iso8601 (&time_val);
+	if (!time_val)
+		return NULL;
+
+	return g_date_time_format_iso8601 (time_val);
 }
 
 gboolean
 gdata_parser_int64_from_iso8601 (const gchar *date, gint64 *_time)
 {
-	GTimeVal time_val;
+	g_autoptr(GDateTime) time_val = NULL;
 
-	if (g_time_val_from_iso8601 (date, &time_val) == TRUE) {
-		*_time = time_val.tv_sec;
+	time_val = g_date_time_new_from_iso8601 (date, NULL);
+	if (time_val) {
+		*_time = g_date_time_to_unix (time_val);
 		return TRUE;
 	}
 
@@ -479,7 +483,7 @@ gdata_parser_int64_time_from_element (xmlNode *element, const gchar *element_nam
                                       gint64 *output, gboolean *success, GError **error)
 {
 	xmlChar *text;
-	GTimeVal time_val;
+	g_autoptr(GDateTime) time_val = NULL;
 
 	/* Check it's the right element */
 	if (xmlStrcmp (element->name, (xmlChar*) element_name) != 0)
@@ -499,14 +503,15 @@ gdata_parser_int64_time_from_element (xmlNode *element, const gchar *element_nam
 		return TRUE;
 	}
 
-	/* Attempt to parse the string as a GTimeVal */
-	if (g_time_val_from_iso8601 ((gchar*) text, &time_val) == FALSE) {
+	/* Attempt to parse the string as a GDateTune */
+	time_val = g_date_time_new_from_iso8601 ((gchar *) text, NULL);
+	if (!time_val) {
 		*success = gdata_parser_error_not_iso8601_format (element, (gchar*) text, error);
 		xmlFree (text);
 		return TRUE;
 	}
 
-	*output = time_val.tv_sec;
+	*output = g_date_time_to_unix (time_val);
 
 	/* Success! */
 	xmlFree (text);
@@ -911,7 +916,7 @@ gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *membe
                                           gint64 *output, gboolean *success, GError **error)
 {
 	const gchar *text;
-	GTimeVal time_val;
+	g_autoptr(GDateTime) time_val = NULL;
 	const GError *child_error = NULL;
 
 	/* Check if there's such element */
@@ -935,14 +940,15 @@ gdata_parser_int64_time_from_json_member (JsonReader *reader, const gchar *membe
 		return TRUE;
 	}
 
-	/* Attempt to parse the string as a GTimeVal */
-	if (g_time_val_from_iso8601 ((gchar*) text, &time_val) == FALSE) {
+	/* Attempt to parse the string as a GDateTime */
+	time_val = g_date_time_new_from_iso8601 (text, NULL);
+	if (!time_val) {
 		*success = gdata_parser_error_not_iso8601_format_json (reader, text, error);
 		return TRUE;
 	}
 
 	/* Success! */
-	*output = time_val.tv_sec;
+	*output = g_date_time_to_unix (time_val);
 	*success = TRUE;
 
 	return TRUE;

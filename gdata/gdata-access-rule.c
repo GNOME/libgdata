@@ -114,7 +114,7 @@ enum {
 	PROP_KEY,
 };
 
-G_DEFINE_TYPE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataAccessRule, gdata_access_rule, GDATA_TYPE_ENTRY)
 
 static void
 gdata_access_rule_class_init (GDataAccessRuleClass *klass)
@@ -122,8 +122,6 @@ gdata_access_rule_class_init (GDataAccessRuleClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataAccessRulePrivate));
 
 	gobject_class->constructor = gdata_access_rule_constructor;
 	gobject_class->finalize = gdata_access_rule_finalize;
@@ -240,7 +238,7 @@ notify_role_cb (GDataAccessRule *self, GParamSpec *pspec, gpointer user_data)
 static void
 gdata_access_rule_init (GDataAccessRule *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_ACCESS_RULE, GDataAccessRulePrivate);
+	self->priv = gdata_access_rule_get_instance_private (self);
 	self->priv->edited = -1;
 
 	/* Listen to change notifications for the entry's title, since it's linked to GDataAccessRule:role */
@@ -259,12 +257,10 @@ gdata_access_rule_constructor (GType type, guint n_construct_params, GObjectCons
 	/* We can't create these in init, or they would collide with the group and control created when parsing the XML */
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataAccessRulePrivate *priv = GDATA_ACCESS_RULE (object)->priv;
-		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->edited = time_val.tv_sec;
+		priv->edited = g_get_real_time () / G_USEC_PER_SEC;
 
 		/* Set up the role and scope type */
 		priv->role = g_strdup (GDATA_ACCESS_ROLE_NONE);

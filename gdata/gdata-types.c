@@ -38,7 +38,11 @@
 static gpointer
 gdata_color_copy (gpointer color)
 {
+#if GLIB_CHECK_VERSION (2, 68, 0)
+	return g_memdup2 (color, sizeof (GDataColor));
+#else
 	return g_memdup (color, sizeof (GDataColor));
+#endif
 }
 
 GType

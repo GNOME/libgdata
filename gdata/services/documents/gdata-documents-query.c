@@ -37,7 +37,7 @@
  *	GDataDocumentsService *service;
  *	GDataDocumentsQuery *query;
  *	GDataFeed *feed;
- *	GTimeVal current_time;
+ *	gint64 current_time;
  *	GList *i;
  *	GError *error = NULL;
  *
@@ -51,9 +51,9 @@
  *	gdata_documents_query_add_collaborator (query, "example@gmail.com");
  *	gdata_documents_query_set_show_deleted (query, TRUE);
  *
- *	g_get_current_time (&current_time);
- *	gdata_query_set_updated_min (GDATA_QUERY (query), current_time.tv_sec - 7 * 24 * 60 * 60);
- *	gdata_query_set_updated_max (GDATA_QUERY (query), current_time.tv_sec);
+ *	current_time = g_get_real_time () / G_USEC_PER_SEC;
+ *	gdata_query_set_updated_min (GDATA_QUERY (query), current_time - 7 * 24 * 60 * 60);
+ *	gdata_query_set_updated_max (GDATA_QUERY (query), current_time);
  *
  *	/<!-- -->* Execute the query *<!-- -->/
  *	feed = gdata_documents_service_query_documents (service, query, NULL, NULL, NULL, &error);
@@ -120,15 +120,13 @@ enum {
 	PROP_TITLE
 };
 
-G_DEFINE_TYPE (GDataDocumentsQuery, gdata_documents_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataDocumentsQuery, gdata_documents_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataDocumentsQueryPrivate));
 
 	gobject_class->get_property = gdata_documents_query_get_property;
 	gobject_class->set_property = gdata_documents_query_set_property;
@@ -207,7 +205,7 @@ gdata_documents_query_class_init (GDataDocumentsQueryClass *klass)
 static void
 gdata_documents_query_init (GDataDocumentsQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_DOCUMENTS_QUERY, GDataDocumentsQueryPrivate);
+	self->priv = gdata_documents_query_get_instance_private (self);
 
 	/* https://developers.google.com/drive/v3/reference/files/list#q */
 	_gdata_query_set_pagination_type (GDATA_QUERY (self),

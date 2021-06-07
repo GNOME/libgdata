@@ -117,14 +117,12 @@ enum {
 	PROP_ETAG
 };
 
-G_DEFINE_TYPE (GDataQuery, gdata_query, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataQuery, gdata_query, G_TYPE_OBJECT)
 
 static void
 gdata_query_class_init (GDataQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataQueryPrivate));
 
 	gobject_class->set_property = gdata_query_set_property;
 	gobject_class->get_property = gdata_query_get_property;
@@ -305,7 +303,7 @@ gdata_query_class_init (GDataQueryClass *klass)
 static void
 gdata_query_init (GDataQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_QUERY, GDataQueryPrivate);
+	self->priv = gdata_query_get_instance_private (self);
 	self->priv->updated_min = -1;
 	self->priv->updated_max = -1;
 	self->priv->published_min = -1;

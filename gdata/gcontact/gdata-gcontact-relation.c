@@ -57,15 +57,13 @@ enum {
 	PROP_LABEL
 };
 
-G_DEFINE_TYPE (GDataGContactRelation, gdata_gcontact_relation, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataGContactRelation, gdata_gcontact_relation, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGContactRelationPrivate));
 
 	gobject_class->get_property = gdata_gcontact_relation_get_property;
 	gobject_class->set_property = gdata_gcontact_relation_set_property;
@@ -132,7 +130,7 @@ gdata_gcontact_relation_class_init (GDataGContactRelationClass *klass)
 static void
 gdata_gcontact_relation_init (GDataGContactRelation *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GCONTACT_RELATION, GDataGContactRelationPrivate);
+	self->priv = gdata_gcontact_relation_get_instance_private (self);
 }
 
 static void

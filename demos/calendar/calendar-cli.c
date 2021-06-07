@@ -38,13 +38,13 @@ print_usage (char *argv[])
 	return -1;
 }
 
-/* Convert a GTimeVal to an ISO 8601 date string (without a time component). */
+/* Convert a unix time to an ISO 8601 date string (without a time component). */
 static gchar *
-tv_to_iso8601_date (GTimeVal *tv)
+tv_to_iso8601_date (gint64 tv)
 {
 	struct tm *tm;
 
-	tm = gmtime (&tv->tv_sec);
+	tm = gmtime (&tv);
 
 	return g_strdup_printf ("%04d-%02d-%02d",
 	                        tm->tm_year + 1900,
@@ -81,8 +81,9 @@ print_event (GDataCalendarEvent *event)
 {
 	const gchar *title, *id, *description, *status, *visibility;
 	const gchar *transparency, *uid;
-	GTimeVal date_published_tv = { 0, };
-	GTimeVal date_edited_tv = { 0, };
+	GDateTime *tmp;
+	gint64 date_published_tv;
+	gint64 date_edited_tv;
 	gchar *date_published = NULL;  /* owned */
 	gchar *date_edited = NULL;  /* owned */
 	guint sequence;
@@ -95,10 +96,14 @@ print_event (GDataCalendarEvent *event)
 	title = gdata_entry_get_title (GDATA_ENTRY (event));
 	id = gdata_entry_get_id (GDATA_ENTRY (event));
 	description = gdata_entry_get_content (GDATA_ENTRY (event));
-	date_published_tv.tv_sec = gdata_entry_get_published (GDATA_ENTRY (event));
-	date_published = g_time_val_to_iso8601 (&date_published_tv);
-	date_edited_tv.tv_sec = gdata_calendar_event_get_edited (event);
-	date_edited = g_time_val_to_iso8601 (&date_edited_tv);
+	date_published_tv = gdata_entry_get_published (GDATA_ENTRY (event));
+	tmp = g_date_time_new_from_unix_utc (date_published_tv);
+	date_published = g_date_time_format_iso8601 (tmp);
+	g_date_time_unref (tmp);
+	date_edited_tv = gdata_calendar_event_get_edited (event);
+	tmp = g_date_time_new_from_unix_utc (date_edited_tv);
+	date_edited = g_date_time_format_iso8601 (tmp);
+	g_date_time_unref (tmp);
 	status = gdata_calendar_event_get_status (event);
 	visibility = gdata_calendar_event_get_visibility (event);
 	transparency = gdata_calendar_event_get_transparency (event);
@@ -155,20 +160,25 @@ print_event (GDataCalendarEvent *event)
 
 	for (; times != NULL; times = times->next) {
 		GDataGDWhen *when;
-		GTimeVal start_time = { 0, }, end_time = { 0, };
+		gint64 start_time, end_time;
 		gchar *start = NULL, *end = NULL;  /* owned */
 
 		when = GDATA_GD_WHEN (times->data);
 
-		start_time.tv_sec = gdata_gd_when_get_start_time (when);
-		end_time.tv_sec = gdata_gd_when_get_end_time (when);
+		start_time = gdata_gd_when_get_start_time (when);
+		end_time = gdata_gd_when_get_end_time (when);
 
 		if (gdata_gd_when_is_date (when)) {
-			start = tv_to_iso8601_date (&start_time);
-			end = tv_to_iso8601_date (&end_time);
+			start = tv_to_iso8601_date (start_time);
+			end = tv_to_iso8601_date (end_time);
 		} else {
-			start = g_time_val_to_iso8601 (&start_time);
-			end = g_time_val_to_iso8601 (&end_time);
+			GDateTime *tmp;
+			tmp = g_date_time_new_from_unix_utc (start_time);
+			start = g_date_time_format_iso8601 (tmp);
+			g_date_time_unref (tmp);
+			tmp = g_date_time_new_from_unix_utc (end_time);
+			end = g_date_time_format_iso8601 (tmp);
+			g_date_time_unref (tmp);
 		}
 
 		g_print ("    • %s to %s (%s)\n",
@@ -416,8 +426,7 @@ command_insert_event (int argc, char *argv[])
 	GDataAuthorizer *authorizer = NULL;
 	GDataGDWhen *when = NULL;
 	gboolean is_date;
-	gchar *start_with_time = NULL, *end_with_time = NULL;
-	GTimeVal start_tv = { 0, }, end_tv = { 0, };
+	GDateTime *start_tv = NULL, *end_tv = NULL;
 	gint i;
 
 	if (argc < 7) {
@@ -454,25 +463,38 @@ command_insert_event (int argc, char *argv[])
 	event = gdata_calendar_event_new (NULL);
 	gdata_entry_set_title (GDATA_ENTRY (event), title);
 
-	start_with_time = g_strconcat (start, "T00:00:00Z", NULL);
-	end_with_time = g_strconcat (end, "T00:00:00Z", NULL);
-
-	if (g_time_val_from_iso8601 (start, &start_tv) &&
-	    g_time_val_from_iso8601 (end, &end_tv)) {
+	start_tv = g_date_time_new_from_iso8601 (start, NULL);
+	end_tv = g_date_time_new_from_iso8601 (end, NULL);
+	if (start_tv && end_tv) {
 		/* Includes time. */
 		is_date = FALSE;
-	} else if (g_time_val_from_iso8601 (start_with_time, &start_tv) &&
-	           g_time_val_from_iso8601 (end_with_time, &end_tv)) {
-		/* Does not include time. */
-		is_date = TRUE;
 	} else {
-		g_printerr ("%s: Could not parse start time ‘%s’ and end time "
-		            "‘%s’ as ISO 8601.\n", argv[0], start, end);
-		retval = 1;
-		goto done;
+		gchar *start_with_time, *end_with_time;
+
+		g_clear_pointer (&start_tv, g_date_time_unref);
+		g_clear_pointer (&end_tv, g_date_time_unref);
+
+		start_with_time = g_strconcat (start, "T00:00:00Z", NULL);
+		end_with_time = g_strconcat (end, "T00:00:00Z", NULL);
+
+		start_tv = g_date_time_new_from_iso8601 (start_with_time, NULL);
+		end_tv = g_date_time_new_from_iso8601 (end_with_time, NULL);
+
+		g_free (start_with_time);
+		g_free (end_with_time);
+
+		if (start_tv && end_tv) {
+			/* Does not include time. */
+			is_date = TRUE;
+		} else {
+			g_printerr ("%s: Could not parse start time ‘%s’ and end time "
+			            "‘%s’ as ISO 8601.\n", argv[0], start, end);
+			retval = 1;
+			goto done;
+		}
 	}
 
-	when = gdata_gd_when_new (start_tv.tv_sec, end_tv.tv_sec, is_date);
+	when = gdata_gd_when_new (g_date_time_to_unix (start_tv), g_date_time_to_unix (end_tv), is_date);
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
 
@@ -507,8 +529,8 @@ command_insert_event (int argc, char *argv[])
 	print_event (inserted_event);
 
 done:
-	g_free (start_with_time);
-	g_free (end_with_time);
+	g_clear_pointer (&start_tv, g_date_time_unref);
+	g_clear_pointer (&end_tv, g_date_time_unref);
 	g_clear_object (&inserted_event);
 	g_clear_object (&event);
 	g_clear_object (&authorizer);

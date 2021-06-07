@@ -67,15 +67,13 @@ enum {
 	PROP_IS_READ_ONLY,
 };
 
-G_DEFINE_TYPE (GDataGDFeedLink, gdata_gd_feed_link, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataGDFeedLink, gdata_gd_feed_link, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_gd_feed_link_class_init (GDataGDFeedLinkClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGDFeedLinkPrivate));
 
 	gobject_class->set_property = gdata_gd_feed_link_set_property;
 	gobject_class->get_property = gdata_gd_feed_link_get_property;
@@ -155,7 +153,7 @@ gdata_gd_feed_link_class_init (GDataGDFeedLinkClass *klass)
 static void
 gdata_gd_feed_link_init (GDataGDFeedLink *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_FEED_LINK, GDataGDFeedLinkPrivate);
+	self->priv = gdata_gd_feed_link_get_instance_private (self);
 	self->priv->count_hint = -1;
 	self->priv->relation_type = g_strdup (GDATA_LINK_ALTERNATE);
 }

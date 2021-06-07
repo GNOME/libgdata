@@ -147,7 +147,7 @@ enum {
 	PROP_ALBUM_ID
 };
 
-G_DEFINE_TYPE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataPicasaWebAlbum, gdata_picasaweb_album, GDATA_TYPE_ENTRY)
 
 static void
 gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
@@ -155,8 +155,6 @@ gdata_picasaweb_album_class_init (GDataPicasaWebAlbumClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataPicasaWebAlbumPrivate));
 
 	gobject_class->constructor = gdata_picasaweb_album_constructor;
 	gobject_class->get_property = gdata_picasaweb_album_get_property;
@@ -477,7 +475,7 @@ notify_visibility_cb (GDataPicasaWebAlbum *self, GParamSpec *pspec, gpointer use
 static void
 gdata_picasaweb_album_init (GDataPicasaWebAlbum *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_ALBUM, GDataPicasaWebAlbumPrivate);
+	self->priv = gdata_picasaweb_album_get_instance_private (self);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
 	self->priv->edited = -1;
@@ -509,13 +507,13 @@ gdata_picasaweb_album_constructor (GType type, guint n_construct_params, GObject
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataPicasaWebAlbumPrivate *priv = GDATA_PICASAWEB_ALBUM (object)->priv;
-		GTimeVal time_val;
+		gint64 time_val;
 
 		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
 		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->timestamp = (gint64) time_val.tv_sec * 1000;
-		priv->edited = time_val.tv_sec;
+		time_val = g_get_real_time () / G_USEC_PER_SEC;
+		priv->timestamp = time_val * 1000;
+		priv->edited = time_val;
 	}
 
 	return object;

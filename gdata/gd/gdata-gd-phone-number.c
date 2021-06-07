@@ -65,6 +65,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGDPhoneNumber, gdata_gd_phone_number, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGDPhoneNumber)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_phone_number_comparable_init))
 
 static void
@@ -72,8 +73,6 @@ gdata_gd_phone_number_class_init (GDataGDPhoneNumberClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGDPhoneNumberPrivate));
 
 	gobject_class->get_property = gdata_gd_phone_number_get_property;
 	gobject_class->set_property = gdata_gd_phone_number_set_property;
@@ -199,7 +198,7 @@ gdata_gd_phone_number_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gd_phone_number_init (GDataGDPhoneNumber *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_PHONE_NUMBER, GDataGDPhoneNumberPrivate);
+	self->priv = gdata_gd_phone_number_get_instance_private (self);
 }
 
 static void

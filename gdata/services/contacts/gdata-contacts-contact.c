@@ -234,7 +234,7 @@ enum {
 	PROP_FILE_AS,
 };
 
-G_DEFINE_TYPE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataContactsContact, gdata_contacts_contact, GDATA_TYPE_ENTRY)
 
 static void
 gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
@@ -242,8 +242,6 @@ gdata_contacts_contact_class_init (GDataContactsContactClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataContactsContactPrivate));
 
 	gobject_class->constructor = gdata_contacts_contact_constructor;
 	gobject_class->get_property = gdata_contacts_contact_get_property;
@@ -533,7 +531,7 @@ notify_full_name_cb (GObject *gobject, GParamSpec *pspec, GDataContactsContact *
 static void
 gdata_contacts_contact_init (GDataContactsContact *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_CONTACT, GDataContactsContactPrivate);
+	self->priv = gdata_contacts_contact_get_instance_private (self);
 	self->priv->extended_properties = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->user_defined_fields = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	self->priv->groups = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -584,12 +582,10 @@ gdata_contacts_contact_constructor (GType type, guint n_construct_params, GObjec
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataContactsContactPrivate *priv = GDATA_CONTACTS_CONTACT (object)->priv;
-		GTimeVal time_val;
 
 		/* Set the edited property to the current time (creation time). We don't do this in *_init() since that would cause
 		 * setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->edited = time_val.tv_sec;
+		priv->edited = g_get_real_time () / G_USEC_PER_SEC;
 	}
 
 	return object;
@@ -3172,7 +3168,11 @@ gdata_contacts_contact_get_photo (GDataContactsContact *self, GDataContactsServi
 	if (content_type != NULL)
 		*content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
 	*length = message->response_body->length;
+#if GLIB_CHECK_VERSION (2, 68, 0)
+	data = g_memdup2 (message->response_body->data, message->response_body->length);
+#else
 	data = g_memdup (message->response_body->data, message->response_body->length);
+#endif
 
 	/* Update the stored photo ETag */
 	g_free (self->priv->photo_etag);
@@ -3450,7 +3450,11 @@ gdata_contacts_contact_set_photo_async (GDataContactsContact *self, GDataContact
 	/* Prepare the data to be passed to the thread */
 	photo_data = g_slice_new (PhotoData);
 	photo_data->service = g_object_ref (service);
+#if GLIB_CHECK_VERSION (2, 68, 0)
+	photo_data->data = g_memdup2 (data, length);
+#else
 	photo_data->data = g_memdup (data, length);
+#endif
 	photo_data->length = length;
 	photo_data->content_type = g_strdup (content_type);
 
