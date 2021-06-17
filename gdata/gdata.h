@@ -118,12 +118,6 @@
 #include <gdata/services/picasaweb/gdata-picasaweb-user.h>
 #include <gdata/services/picasaweb/gdata-picasaweb-comment.h>
 
-/* Google Contacts */
-#include <gdata/services/contacts/gdata-contacts-service.h>
-#include <gdata/services/contacts/gdata-contacts-contact.h>
-#include <gdata/services/contacts/gdata-contacts-group.h>
-#include <gdata/services/contacts/gdata-contacts-query.h>
-
 /* Google Documents*/
 #include <gdata/services/documents/gdata-documents-entry.h>
 #include <gdata/services/documents/gdata-documents-document.h>
