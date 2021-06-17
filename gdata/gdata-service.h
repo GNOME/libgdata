@@ -228,11 +228,6 @@ void gdata_service_delete_entry_async (GDataService *self, GDataAuthorizationDom
                                        GAsyncReadyCallback callback, gpointer user_data);
 gboolean gdata_service_delete_entry_finish (GDataService *self, GAsyncResult *async_result, GError **error);
 
-#ifndef LIBGDATA_DISABLE_DEPRECATED
-SoupURI *gdata_service_get_proxy_uri (GDataService *self) G_GNUC_PURE G_GNUC_DEPRECATED_FOR (gdata_service_get_proxy_resolver);
-void gdata_service_set_proxy_uri (GDataService *self, SoupURI *proxy_uri) G_GNUC_DEPRECATED_FOR (gdata_service_set_proxy_resolver);
-#endif /* !LIBGDATA_DISABLE_DEPRECATED */
-
 GProxyResolver *gdata_service_get_proxy_resolver (GDataService *self) G_GNUC_PURE;
 void gdata_service_set_proxy_resolver (GDataService *self, GProxyResolver *proxy_resolver);
 
