@@ -95,21 +95,6 @@ void gdata_calendar_service_query_events_async (GDataCalendarService *self, GDat
 
 #include <gdata/services/calendar/gdata-calendar-event.h>
 
-#ifndef LIBGDATA_DISABLE_DEPRECATED
-GDataCalendarEvent *
-gdata_calendar_service_insert_event (GDataCalendarService *self,
-                                     GDataCalendarEvent *event,
-                                     GCancellable *cancellable,
-                                     GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC G_GNUC_DEPRECATED_FOR(gdata_calendar_service_insert_calendar_event);
-void
-gdata_calendar_service_insert_event_async (GDataCalendarService *self,
-                                           GDataCalendarEvent *event,
-                                           GCancellable *cancellable,
-                                           GAsyncReadyCallback callback,
-                                           gpointer user_data)
-                                           G_GNUC_DEPRECATED_FOR (gdata_calendar_service_insert_calendar_event_async);
-#endif /* !LIBGDATA_DISABLE_DEPRECATED */
-
 GDataCalendarEvent *
 gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
                                               GDataCalendarCalendar *calendar,

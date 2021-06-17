@@ -106,12 +106,10 @@ struct _GDataCalendarCalendarPrivate {
 
 enum {
 	PROP_TIMEZONE = 1,
-	PROP_TIMES_CLEANED,
 	PROP_IS_HIDDEN,
 	PROP_COLOR,
 	PROP_IS_SELECTED,
 	PROP_ACCESS_LEVEL,
-	PROP_EDITED,
 	PROP_ETAG,
 };
 
@@ -147,23 +145,6 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	                                                      "Timezone", "The timezone in which the calendar's times are given.",
 	                                                      NULL,
 	                                                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataCalendarCalendar:times-cleaned:
-	 *
-	 * The number of times the calendar has been cleared of events.
-	 *
-	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
-	 *   is no replacement; this will always return
-	 *   <code class="literal">0</code>.
-	 */
-	g_object_class_install_property (gobject_class, PROP_TIMES_CLEANED,
-	                                 g_param_spec_uint ("times-cleaned",
-	                                                    "Times cleaned", "The number of times the calendar has been cleared of events.",
-	                                                    0, G_MAXUINT, 0,
-	                                                    G_PARAM_DEPRECATED |
-	                                                    G_PARAM_READABLE |
-	                                                    G_PARAM_STATIC_STRINGS));
 
 	/**
 	 * GDataCalendarCalendar:is-hidden:
@@ -216,25 +197,6 @@ gdata_calendar_calendar_class_init (GDataCalendarCalendarClass *klass)
 	                                                      "Access level", "Indicates the access level the current user has to the calendar.",
 	                                                      NULL,
 	                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * GDataCalendarCalendar:edited:
-	 *
-	 * The last time the calendar was edited. If the calendar has not been edited yet, the content indicates the time it was created.
-	 *
-	 * For more information, see the <ulink type="http" url="http://www.atomenabled.org/developers/protocol/#appEdited">
-	 * Atom Publishing Protocol specification</ulink>.
-	 *
-	 * Deprecated: 0.17.2: Unsupported by the online API any more. There
-	 * is no replacement; this will always return -1.
-	 */
-	g_object_class_install_property (gobject_class, PROP_EDITED,
-	                                 g_param_spec_int64 ("edited",
-	                                                     "Edited", "The last time the calendar was edited.",
-	                                                     -1, G_MAXINT64, -1,
-	                                                     G_PARAM_DEPRECATED |
-	                                                     G_PARAM_READABLE |
-	                                                     G_PARAM_STATIC_STRINGS));
 
 	/* Override the ETag property since ETags don't seem to be supported for calendars. */
 	g_object_class_override_property (gobject_class, PROP_ETAG, "etag");
@@ -361,11 +323,6 @@ gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue
 		case PROP_TIMEZONE:
 			g_value_set_string (value, priv->timezone);
 			break;
-		case PROP_TIMES_CLEANED:
-			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-			g_value_set_uint (value, gdata_calendar_calendar_get_times_cleaned (self));
-			G_GNUC_END_IGNORE_DEPRECATIONS
-			break;
 		case PROP_IS_HIDDEN:
 			g_value_set_boolean (value, priv->is_hidden);
 			break;
@@ -377,12 +334,6 @@ gdata_calendar_calendar_get_property (GObject *object, guint property_id, GValue
 			break;
 		case PROP_ACCESS_LEVEL:
 			g_value_set_string (value, priv->access_level);
-			break;
-		case PROP_EDITED:
-			G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-			g_value_set_int64 (value,
-			                   gdata_calendar_calendar_get_edited (self));
-			G_GNUC_END_IGNORE_DEPRECATIONS
 			break;
 		case PROP_ETAG:
 			/* Never return an ETag */
@@ -656,23 +607,6 @@ gdata_calendar_calendar_set_timezone (GDataCalendarCalendar *self, const gchar *
 }
 
 /**
- * gdata_calendar_calendar_get_times_cleaned:
- * @self: a #GDataCalendarCalendar
- *
- * Gets the #GDataCalendarCalendar:times-cleaned property.
- *
- * Return value: the number of times the calendar has been totally emptied
- * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
- *   replacement; this will always return <code class="literal">0</code>.
- */
-guint
-gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self)
-{
-	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (self), 0);
-	return 0;
-}
-
-/**
  * gdata_calendar_calendar_is_hidden:
  * @self: a #GDataCalendarCalendar
  *
@@ -784,21 +718,4 @@ gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self)
 {
 	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (self), NULL);
 	return self->priv->access_level;
-}
-
-/**
- * gdata_calendar_calendar_get_edited:
- * @self: a #GDataCalendarCalendar
- *
- * Gets the #GDataCalendarCalendar:edited property. If the property is unset, <code class="literal">-1</code> will be returned.
- *
- * Return value: the UNIX timestamp for the time the calendar was last edited, or <code class="literal">-1</code>
- * Deprecated: 0.17.2: Unsupported by the online API any more. There is no
- *   replacement; this will always return <code class="literal">-1</code>.
- */
-gint64
-gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self)
-{
-	g_return_val_if_fail (GDATA_IS_CALENDAR_CALENDAR (self), -1);
-	return -1;
 }

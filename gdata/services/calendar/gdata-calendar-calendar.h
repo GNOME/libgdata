@@ -76,11 +76,6 @@ gboolean gdata_calendar_calendar_is_selected (GDataCalendarCalendar *self) G_GNU
 void gdata_calendar_calendar_set_is_selected (GDataCalendarCalendar *self, gboolean is_selected);
 const gchar *gdata_calendar_calendar_get_access_level (GDataCalendarCalendar *self) G_GNUC_PURE;
 
-#ifndef LIBGDATA_DISABLE_DEPRECATED
-guint gdata_calendar_calendar_get_times_cleaned (GDataCalendarCalendar *self) G_GNUC_PURE G_GNUC_DEPRECATED;
-gint64 gdata_calendar_calendar_get_edited (GDataCalendarCalendar *self) G_GNUC_DEPRECATED;
-#endif /* !LIBGDATA_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* !GDATA_CALENDAR_CALENDAR_H */

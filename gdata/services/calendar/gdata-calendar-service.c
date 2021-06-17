@@ -754,42 +754,6 @@ gdata_calendar_service_query_events_async (GDataCalendarService *self, GDataCale
 }
 
 /**
- * gdata_calendar_service_insert_event:
- * @self: a #GDataCalendarService
- * @event: the #GDataCalendarEvent to insert
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: a #GError, or %NULL
- *
- * Inserts @event by uploading it to the online calendar service.
- *
- * For more details, see gdata_service_insert_entry().
- *
- * Return value: (transfer full): an updated #GDataCalendarEvent, or %NULL; unref with g_object_unref()
- *
- * Since: 0.2.0
- * Deprecated: 0.17.2: Use gdata_calendar_service_insert_calendar_event()
- *   instead to be able to specify the calendar to add the event to; otherwise
- *   the default calendar will be used.
- */
-GDataCalendarEvent *
-gdata_calendar_service_insert_event (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable, GError **error)
-{
-	gchar *uri;
-	GDataEntry *entry;
-
-	g_return_val_if_fail (GDATA_IS_CALENDAR_SERVICE (self), NULL);
-	g_return_val_if_fail (GDATA_IS_CALENDAR_EVENT (event), NULL);
-	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	uri = build_events_uri (NULL);
-	entry = gdata_service_insert_entry (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, GDATA_ENTRY (event), cancellable, error);
-	g_free (uri);
-
-	return GDATA_CALENDAR_EVENT (entry);
-}
-
-/**
  * gdata_calendar_service_insert_calendar_event:
  * @self: a #GDataCalendarService
  * @calendar: the #GDataCalendarCalendar to insert the event into
@@ -831,45 +795,6 @@ gdata_calendar_service_insert_calendar_event (GDataCalendarService *self,
 	g_free (uri);
 
 	return GDATA_CALENDAR_EVENT (entry);
-}
-
-/**
- * gdata_calendar_service_insert_event_async:
- * @self: a #GDataCalendarService
- * @event: the #GDataCalendarEvent to insert
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when insertion is finished
- * @user_data: (closure): data to pass to the @callback function
- *
- * Inserts @event by uploading it to the online calendar service. @self and @event are both reffed when this function is called, so can safely be
- * unreffed after this function returns.
- *
- * @callback should call gdata_service_insert_entry_finish() to obtain a #GDataCalendarEvent representing the inserted event and to check for possible
- * errors.
- *
- * For more details, see gdata_calendar_service_insert_event(), which is the synchronous version of this function, and
- * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
- *
- * Since: 0.8.0
- * Deprecated: 0.17.2: Use
- *   gdata_calendar_service_insert_calendar_event_async() instead to be able to
- *   specify the calendar to add the event to; otherwise the default calendar
- *   will be used.
- */
-void
-gdata_calendar_service_insert_event_async (GDataCalendarService *self, GDataCalendarEvent *event, GCancellable *cancellable,
-                                           GAsyncReadyCallback callback, gpointer user_data)
-{
-	gchar *uri;
-
-	g_return_if_fail (GDATA_IS_CALENDAR_SERVICE (self));
-	g_return_if_fail (GDATA_IS_CALENDAR_EVENT (event));
-	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-
-	uri = build_events_uri (NULL);
-	gdata_service_insert_entry_async (GDATA_SERVICE (self), get_calendar_authorization_domain (), uri, GDATA_ENTRY (event), cancellable,
-	                                  callback, user_data);
-	g_free (uri);
 }
 
 /**

@@ -1116,25 +1116,8 @@ test_query_uri (void)
 	gdata_calendar_query_set_order_by (query, "starttime");
 	g_assert_cmpstr (gdata_calendar_query_get_order_by (query), ==, "starttime");
 
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	time_val = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
-	gdata_calendar_query_set_recurrence_expansion_start (query, g_date_time_to_unix (time_val));
-	_time = gdata_calendar_query_get_recurrence_expansion_start (query);
-	g_assert_cmpint (_time, ==, g_date_time_to_unix (time_val));
-
-	time_val = g_date_time_new_from_iso8601 ("2010-04-17T15:00:00.000Z", NULL);
-	gdata_calendar_query_set_recurrence_expansion_end (query, g_date_time_to_unix (time_val));
-	_time = gdata_calendar_query_get_recurrence_expansion_end (query);
-	g_assert_cmpint (_time, ==, g_date_time_to_unix (time_val));
-G_GNUC_END_IGNORE_DEPRECATIONS
-
 	gdata_calendar_query_set_single_events (query, TRUE);
 	g_assert (gdata_calendar_query_get_single_events (query) == TRUE);
-
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	gdata_calendar_query_set_sort_order (query, "descending");
-	g_assert_cmpstr (gdata_calendar_query_get_sort_order (query), ==, "descending");
-G_GNUC_END_IGNORE_DEPRECATIONS
 
 	time_val = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
 	gdata_calendar_query_set_start_min (query, g_date_time_to_unix (time_val));
@@ -1196,14 +1179,7 @@ test_query_etag (void)
 
 	CHECK_ETAG (gdata_calendar_query_set_future_events (query, FALSE))
 	CHECK_ETAG (gdata_calendar_query_set_order_by (query, "shizzle"))
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_start (query, -1))
-	CHECK_ETAG (gdata_calendar_query_set_recurrence_expansion_end (query, -1))
-G_GNUC_END_IGNORE_DEPRECATIONS
 	CHECK_ETAG (gdata_calendar_query_set_single_events (query, FALSE))
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	CHECK_ETAG (gdata_calendar_query_set_sort_order (query, "shizzle"))
-G_GNUC_END_IGNORE_DEPRECATIONS
 	CHECK_ETAG (gdata_calendar_query_set_start_min (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_start_max (query, -1))
 	CHECK_ETAG (gdata_calendar_query_set_timezone (query, "about now"))

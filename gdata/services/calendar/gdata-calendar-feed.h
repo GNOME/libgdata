@@ -68,11 +68,6 @@ typedef struct {
 
 GType gdata_calendar_feed_get_type (void);
 
-#ifndef LIBGDATA_DISABLE_DEPRECATED
-const gchar *gdata_calendar_feed_get_timezone (GDataCalendarFeed *self) G_GNUC_PURE G_GNUC_DEPRECATED;
-guint gdata_calendar_feed_get_times_cleaned (GDataCalendarFeed *self) G_GNUC_PURE G_GNUC_DEPRECATED;
-#endif /* !LIBGDATA_DISABLE_DEPRECATED */
-
 G_END_DECLS
 
 #endif /* !GDATA_CALENDAR_FEED_H */
