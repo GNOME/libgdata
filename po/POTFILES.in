@@ -2,7 +2,6 @@
 # Please keep this file sorted alphabetically.
 gdata/gdata-access-handler.c
 gdata/gdata-batch-operation.c
-gdata/gdata-client-login-authorizer.c
 gdata/gdata-commentable.c
 gdata/gdata-download-stream.c
 gdata/gdata-entry.c
