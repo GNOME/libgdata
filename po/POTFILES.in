@@ -21,7 +21,6 @@ gdata/services/documents/gdata-documents-document.c
 gdata/services/documents/gdata-documents-entry.c
 gdata/services/documents/gdata-documents-feed.c
 gdata/services/documents/gdata-documents-service.c
-gdata/services/freebase/gdata-freebase-service.c
 gdata/services/picasaweb/gdata-picasaweb-service.c
 gdata/services/tasks/gdata-tasks-service.c
 gdata/services/youtube/gdata-youtube-service.c
