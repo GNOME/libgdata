@@ -181,9 +181,11 @@ gdata_goa_authorizer_set_goa_object (GDataGoaAuthorizer *self, GoaObject *goa_ob
 		add_authorization_domains (self, GDATA_TYPE_CALENDAR_SERVICE);
 	}
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	if (goa_object_peek_contacts (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_CONTACTS_SERVICE);
 	}
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	if (goa_object_peek_documents (goa_object) != NULL || goa_object_peek_files (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_DOCUMENTS_SERVICE);

@@ -25,6 +25,8 @@
 #include "common.h"
 #include "gdata-dummy-authorizer.h"
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 static UhmServer *mock_server = NULL;
 
 #undef CLIENT_ID  /* from common.h */
@@ -2699,3 +2701,5 @@ main (int argc, char *argv[])
 
 	return retval;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

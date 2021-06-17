@@ -26,6 +26,12 @@
  * #GDataContactsService is a subclass of #GDataService for communicating with the GData API of Google Contacts. It supports querying
  * for, inserting, editing and deleting contacts from a Google address book.
  *
+ * As of December 2021, the [Google Contacts API server will be
+ * disabled](https://developers.google.com/contacts/v3/announcement). This
+ * client-side API is deprecated. The
+ * [CardDAV interface](https://developers.google.com/people/carddav) should be
+ * used instead.
+ *
  * For more details of Google Contacts' GData API, see the <ulink type="http" url="http://code.google.com/apis/contacts/docs/2.0/reference.html">
  * online documentation</ulink>.
  *
@@ -143,6 +149,7 @@
  * </example>
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 
 #include <config.h>
@@ -156,6 +163,8 @@
 #include "gdata-service.h"
 #include "gdata-private.h"
 #include "gdata-query.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 static GList *get_authorization_domains (void);
 
@@ -192,6 +201,7 @@ get_authorization_domains (void)
  * Return value: a new #GDataContactsService, or %NULL; unref with g_object_unref()
  *
  * Since: 0.9.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataContactsService *
 gdata_contacts_service_new (GDataAuthorizer *authorizer)
@@ -215,6 +225,7 @@ gdata_contacts_service_new (GDataAuthorizer *authorizer)
  * Return value: (transfer none): the service's authorization domain
  *
  * Since: 0.9.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataAuthorizationDomain *
 gdata_contacts_service_get_primary_authorization_domain (void)
@@ -238,6 +249,7 @@ gdata_contacts_service_get_primary_authorization_domain (void)
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataFeed *
 gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
@@ -286,6 +298,7 @@ gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *q
  * and gdata_service_query_async(), which is the base asynchronous query function.
  *
  * Since: 0.9.1
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
@@ -334,6 +347,7 @@ gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQu
  * Return value: (transfer full): an updated #GDataContactsContact, or %NULL; unref with g_object_unref()
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataContactsContact *
 gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable, GError **error)
@@ -372,6 +386,7 @@ gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContacts
  * and gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable,
@@ -405,6 +420,7 @@ gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataCo
  * Return value: (transfer full): a #GDataFeed of query results; unref with g_object_unref()
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataFeed *
 gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
@@ -453,6 +469,7 @@ gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *que
  * which is the base asynchronous query function.
  *
  * Since: 0.9.1
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
@@ -499,6 +516,7 @@ gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuer
  * Return value: (transfer full): the inserted #GDataContactsGroup; unref with g_object_unref()
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataContactsGroup *
 gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable, GError **error)
@@ -550,6 +568,7 @@ gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGr
  * gdata_service_insert_entry_async(), which is the base asynchronous insertion function.
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable,
@@ -566,3 +585,5 @@ gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataCont
 	                                  callback, user_data);
 	g_free (request_uri);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

@@ -23,6 +23,9 @@
 
 #include "common.h"
 
+/* Uses the Contacts API for tests, but it’s deprecated */
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 static GThread *main_thread = NULL;
 static UhmServer *mock_server = NULL;
 
@@ -1137,3 +1140,5 @@ main (int argc, char *argv[])
 
 	return g_test_run ();
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
