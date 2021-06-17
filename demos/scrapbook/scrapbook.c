@@ -425,26 +425,62 @@ start_new_youtube_search (GtkWidget *widget, ScrapData *first) /* *first is a po
 	/* everything else is implemented somewhere else */
 }
 
-
-static void
-properties_set (GtkWidget *widget, ScrapProps *self)
+static GDataAuthorizer *
+create_authorizer (GError **error)
 {
-	GDataClientLoginAuthorizer *authorizer;
+	GDataOAuth2Authorizer *authorizer = NULL;  /* owned */
 	GList *domains = NULL; /* list of GDataAuthorizationDomains */
-	GError *error = NULL;
-
-	/* Get the username and password to use */
-	self->main_data->username = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->username_entry)));
-	self->main_data->password = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->password_entry)));
+	gchar *uri = NULL;
+	gchar code[100];
+	GError *child_error = NULL;
 
 	/* Domains we need to be authorised for */
 	domains = g_list_prepend (domains, gdata_youtube_service_get_primary_authorization_domain ());
 	domains = g_list_prepend (domains, gdata_picasaweb_service_get_primary_authorization_domain ());
 
-	/* Authenticate */
-	authorizer = gdata_client_login_authorizer_new_for_authorization_domains (CLIENT_ID, domains);
+	/* Go through the interactive OAuth dance. */
+	authorizer = gdata_oauth2_authorizer_new_for_authorization_domains (CLIENT_ID, CLIENT_SECRET,
+	                                                                    REDIRECT_URI,
+	                                                                    domains);
 
-	gdata_client_login_authorizer_authenticate (authorizer, self->main_data->username, self->main_data->password, NULL, &error);
+	/* Get an authentication URI */
+	uri = gdata_oauth2_authorizer_build_authentication_uri (authorizer,
+	                                                        NULL, FALSE);
+
+	/* Wait for the user to retrieve and enter the verifier. */
+	g_print ("Please navigate to the following URI and grant access:\n"
+	         "   %s\n", uri);
+	g_print ("Enter verifier (EOF to abort): ");
+
+	g_free (uri);
+
+	if (scanf ("%100s", code) != 1) {
+		/* User chose to abort. */
+		g_print ("\n");
+		g_clear_object (&authorizer);
+		return NULL;
+	}
+
+	/* Authorise the token. */
+	gdata_oauth2_authorizer_request_authorization (authorizer, code, NULL,
+	                                               &child_error);
+
+	if (child_error != NULL) {
+		g_propagate_error (error, child_error);
+		g_clear_object (&authorizer);
+		return NULL;
+	}
+
+	return GDATA_AUTHORIZER (authorizer);
+}
+
+static void
+properties_set (GtkWidget *widget, ScrapProps *self)
+{
+	GDataAuthorizer *authorizer;
+	GError *error = NULL;
+
+	authorizer = create_authorizer (&error);
 
 	if (error != NULL) { /* we show this to the user in case they mistyped their password */
 		GtkWidget *label;
@@ -458,8 +494,8 @@ properties_set (GtkWidget *widget, ScrapProps *self)
 		g_error_free (error);
 	}
 
-	gdata_service_set_authorizer (GDATA_SERVICE (self->main_data->youtube_service), GDATA_AUTHORIZER (authorizer));
-	gdata_service_set_authorizer (GDATA_SERVICE (self->main_data->picasaweb_service), GDATA_AUTHORIZER (authorizer));
+	gdata_service_set_authorizer (GDATA_SERVICE (self->main_data->youtube_service), authorizer);
+	gdata_service_set_authorizer (GDATA_SERVICE (self->main_data->picasaweb_service), authorizer);
 
 	gtk_widget_destroy (self->window);
 	g_object_unref (authorizer);
@@ -469,7 +505,7 @@ static void
 properties_show (GtkWidget *widget, ScrapData *first)
 {
 	ScrapProps	*self;
-	GtkWidget *label, *button, *box2;
+	GtkWidget *button;
 
 	self			= g_slice_new (struct _ScrapProps);
 	self->main_data	= first;
@@ -478,42 +514,6 @@ properties_show (GtkWidget *widget, ScrapData *first)
 	g_signal_connect (self->window, "delete-event", G_CALLBACK (gtk_widget_destroy), NULL);
 
 	self->box1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
-
-	/* Username/Password labels box */
-	box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
-
-	label = gtk_label_new ("Username");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (box2), label, TRUE, TRUE, 0);
-
-	label = gtk_label_new ("Password");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (box2), label, TRUE, TRUE, 0);
-
-	gtk_widget_show (box2);
-	gtk_box_pack_start (GTK_BOX (self->box1), box2, FALSE, FALSE, 0);
-
-	/* Username/Password entries box */
-	box2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 10);
-	self->username_entry = gtk_entry_new ();
-
-	if (self->main_data->username != NULL)
-		gtk_entry_set_text (GTK_ENTRY(self->username_entry), self->main_data->username);
-
-	gtk_widget_show	   (self->username_entry);
-	gtk_box_pack_start (GTK_BOX (box2), self->username_entry, TRUE, TRUE, 0);
-
-	self->password_entry = gtk_entry_new ();
-	gtk_entry_set_visibility (GTK_ENTRY (self->password_entry), FALSE);
-
-	if (self->main_data->password != NULL)
-		gtk_entry_set_text (GTK_ENTRY(self->password_entry), self->main_data->password);
-
-	gtk_widget_show	   (self->password_entry);
-	gtk_box_pack_start (GTK_BOX (box2), self->password_entry, TRUE, TRUE, 0);
-
-	gtk_box_pack_start (GTK_BOX (self->box1), box2, FALSE, FALSE, 0);
-	gtk_widget_show (box2);
 
 	/* OK button */
 	button = gtk_button_new_with_label ("_OK");

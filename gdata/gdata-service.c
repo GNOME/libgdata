@@ -51,7 +51,6 @@
 
 #include "gdata-service.h"
 #include "gdata-private.h"
-#include "gdata-client-login-authorizer.h"
 #include "gdata-marshal.h"
 #include "gdata-types.h"
 

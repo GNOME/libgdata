@@ -24,7 +24,7 @@
  * @include: gdata/gdata-authorizer.h
  *
  * The #GDataAuthorizer interface provides a uniform way to implement authentication and authorization processes for use by #GDataServices.
- * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataClientLoginAuthorizer or #GDataOAuth2Authorizer, for
+ * Client code will construct a new #GDataAuthorizer instance of their choosing, such as #GDataOAuth2Authorizer, for
  * the #GDataServices which will be used by the client, then authenticates and authorizes with the #GDataAuthorizer instead of the
  * #GDataService. The #GDataService then uses the #GDataAuthorizer to authorize individual network requests using whatever authorization token was
  * returned to the #GDataAuthorizer by the Google Accounts service.
@@ -38,8 +38,6 @@
  * #GDataAuthorizer implementations are provided for some of the standard authorization processes supported by Google for installed applications, as
  * listed in their <ulink type="http" url="http://code.google.com/apis/accounts/docs/GettingStarted.html">online documentation</ulink>:
  * <itemizedlist>
- *  <listitem>#GDataClientLoginAuthorizer for
- *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">ClientLogin</ulink> (deprecated)</listitem>
  *  <listitem>#GDataOAuth2Authorizer for
  *    <ulink type="http" url="https://developers.google.com/accounts/docs/OAuth2InstalledApp">OAuth 2.0</ulink> (preferred)</listitem>
  * </itemizedlist>

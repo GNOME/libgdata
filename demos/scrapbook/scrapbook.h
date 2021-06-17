@@ -23,8 +23,12 @@
 #include <gdata/gdata.h>
 #include <glib.h>
 #include <glib-object.h>
-#define DEVELOPER_KEY "AI39si5MkSF-0bzTmP5WETk1D-Z7inHaQJzX13PeG_5Uzeu8mz3vo40cFoqnxjejB-UqzYFrqzOSlsqJvHuPNEGqdycqnPo30A"
-#define CLIENT_ID "ytapi-GNOME-libgdata-444fubtt-0"
+
+#define DEVELOPER_KEY "AI39si7Me3Q7zYs6hmkFvpRBD2nrkVjYYsUO5lh_3HdOkGRc9g6Z4nzxZatk_aAo2EsA21k7vrda0OO6oFg2rnhMedZXPyXoEw"
+#define CLIENT_ID "352818697630-nqu2cmt5quqd6lr17ouoqmb684u84l1f.apps.googleusercontent.com"
+#define CLIENT_SECRET "-fA4pHQJxR3zJ-FyAMPQsikg"
+#define REDIRECT_URI "urn:ietf:wg:oauth:2.0:oob"
+
 #define THUMBNAIL_WIDTH 180
 #define MAX_RESULTS 	10
 
@@ -73,8 +77,6 @@ typedef struct _ScrapData {
 	ScrapPicSearch *pic_search;
 	ScrapPUpload	*p_upload;
 	gint			max_rows;
-	gchar			*username;
-	gchar			*password;
 	GtkListStore	*lStore;
 
 	GDataYouTubeService *youtube_service;
@@ -131,7 +133,6 @@ struct _ScrapPSearch { /* for finding albums */
 typedef struct _ScrapProps {
 	GtkWidget	*window;
 	GtkWidget	*box1;
-	GtkWidget	*username_entry, *password_entry;
 	ScrapData	*main_data;
 } ScrapProps;
 

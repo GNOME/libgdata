@@ -33,14 +33,13 @@
  * <example>
  * 	<title>Authenticating and Creating a New Album</title>
  * 	<programlisting>
- *	GDataClientLoginAuthorizer *authorizer;
+ *	GDataAuthorizer *authorizer;
  *	GDataPicasaWebService *service;
  *	GDataPicasaWebAlbum *album, *inserted_album;
  *
  *	/<!-- -->* Create a service object and authorize against the PicasaWeb service *<!-- -->/
- *	authorizer = gdata_client_login_authorizer_new ("companyName-applicationName-versionID", GDATA_TYPE_PICASAWEB_SERVICE);
- *	gdata_client_login_authorizer_authenticate (authorizer, username, password, NULL, NULL);
- *	service = gdata_picasaweb_service_new (GDATA_AUTHORIZER (authorizer));
+ *	authorizer = create_authorizer (…, gdata_picasaweb_service_get_primary_authorization_domain ());
+ *	service = gdata_picasaweb_service_new (authorizer);
  *
  *	/<!-- -->* Create a GDataPicasaWebAlbum entry for the new album, setting some information about it *<!-- -->/
  *	album = gdata_picasaweb_album_new (NULL);
