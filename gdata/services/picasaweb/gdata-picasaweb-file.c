@@ -180,6 +180,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataPicasaWebFile, gdata_picasaweb_file, GDATA_TYPE_ENTRY,
+                         G_ADD_PRIVATE (GDataPicasaWebFile)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMMENTABLE, gdata_picasaweb_file_commentable_init))
 
 static void
@@ -188,8 +189,6 @@ gdata_picasaweb_file_class_init (GDataPicasaWebFileClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
 	GDataEntryClass *entry_class = GDATA_ENTRY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataPicasaWebFilePrivate));
 
 	gobject_class->constructor = gdata_picasaweb_file_constructor;
 	gobject_class->get_property = gdata_picasaweb_file_get_property;
@@ -667,7 +666,7 @@ notify_summary_cb (GDataPicasaWebFile *self, GParamSpec *pspec, gpointer user_da
 static void
 gdata_picasaweb_file_init (GDataPicasaWebFile *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_PICASAWEB_FILE, GDataPicasaWebFilePrivate);
+	self->priv = gdata_picasaweb_file_get_instance_private (self);
 	self->priv->media_group = g_object_new (GDATA_TYPE_MEDIA_GROUP, NULL);
 	self->priv->exif_tags = g_object_new (GDATA_TYPE_EXIF_TAGS, NULL);
 	self->priv->georss_where = g_object_new (GDATA_TYPE_GEORSS_WHERE, NULL);
@@ -691,13 +690,13 @@ gdata_picasaweb_file_constructor (GType type, guint n_construct_params, GObjectC
 
 	if (_gdata_parsable_is_constructed_from_xml (GDATA_PARSABLE (object)) == FALSE) {
 		GDataPicasaWebFilePrivate *priv = GDATA_PICASAWEB_FILE (object)->priv;
-		GTimeVal time_val;
+		gint64 time_val;
 
 		/* Set the edited and timestamp properties to the current time (creation time). bgo#599140
 		 * We don't do this in *_init() since that would cause setting it from parse_xml() to fail (duplicate element). */
-		g_get_current_time (&time_val);
-		priv->timestamp = (gint64) time_val.tv_sec * 1000;
-		priv->edited = time_val.tv_sec;
+		time_val = g_get_real_time () / G_USEC_PER_SEC;
+		priv->timestamp = time_val * 1000;
+		priv->edited = time_val;
 	}
 
 	return object;

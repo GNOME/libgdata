@@ -62,6 +62,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGDIMAddress, gdata_gd_im_address, GDATA_TYPE_PARSABLE,
+                         G_ADD_PRIVATE (GDataGDIMAddress)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_COMPARABLE, gdata_gd_im_address_comparable_init))
 
 static void
@@ -69,8 +70,6 @@ gdata_gd_im_address_class_init (GDataGDIMAddressClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataGDIMAddressPrivate));
 
 	gobject_class->get_property = gdata_gd_im_address_get_property;
 	gobject_class->set_property = gdata_gd_im_address_set_property;
@@ -182,7 +181,7 @@ gdata_gd_im_address_comparable_init (GDataComparableIface *iface)
 static void
 gdata_gd_im_address_init (GDataGDIMAddress *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_GD_IM_ADDRESS, GDataGDIMAddressPrivate);
+	self->priv = gdata_gd_im_address_get_instance_private (self);
 }
 
 static void

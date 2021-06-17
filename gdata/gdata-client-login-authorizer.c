@@ -159,14 +159,13 @@ enum {
 static guint authorizer_signals[LAST_SIGNAL] = { 0, };
 
 G_DEFINE_TYPE_WITH_CODE (GDataClientLoginAuthorizer, gdata_client_login_authorizer, G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (GDataClientLoginAuthorizer)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_AUTHORIZER, authorizer_init))
 
 static void
 gdata_client_login_authorizer_class_init (GDataClientLoginAuthorizerClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataClientLoginAuthorizerPrivate));
 
 	gobject_class->get_property = get_property;
 	gobject_class->set_property = set_property;
@@ -302,7 +301,7 @@ authorizer_init (GDataAuthorizerInterface *iface)
 static void
 gdata_client_login_authorizer_init (GDataClientLoginAuthorizer *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CLIENT_LOGIN_AUTHORIZER, GDataClientLoginAuthorizerPrivate);
+	self->priv = gdata_client_login_authorizer_get_instance_private (self);
 
 	/* Set up the authentication mutex */
 	g_rec_mutex_init (&(self->priv->mutex));

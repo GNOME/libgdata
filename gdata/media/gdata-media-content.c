@@ -71,15 +71,13 @@ enum {
 	PROP_WIDTH
 };
 
-G_DEFINE_TYPE (GDataMediaContent, gdata_media_content, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataMediaContent, gdata_media_content, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_media_content_class_init (GDataMediaContentClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataMediaContentPrivate));
 
 	gobject_class->get_property = gdata_media_content_get_property;
 	gobject_class->finalize = gdata_media_content_finalize;
@@ -229,7 +227,7 @@ gdata_media_content_class_init (GDataMediaContentClass *klass)
 static void
 gdata_media_content_init (GDataMediaContent *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_MEDIA_CONTENT, GDataMediaContentPrivate);
+	self->priv = gdata_media_content_get_instance_private (self);
 }
 
 static void

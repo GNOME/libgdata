@@ -25,6 +25,8 @@
 #include "common.h"
 #include "gdata-dummy-authorizer.h"
 
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+
 static UhmServer *mock_server = NULL;
 
 #undef CLIENT_ID  /* from common.h */
@@ -304,14 +306,12 @@ test_contact_insert (InsertData *data, gconstpointer service)
 	GList *list;
 	GDate date;
 	GHashTable *properties;
-	GTimeVal current_time;
 	gint64 edited, creation_time;
 	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "contact-insert");
 
 	contact = gdata_contacts_contact_new (NULL);
-	g_get_current_time (&current_time);
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -752,13 +752,13 @@ static void
 test_group_insert (InsertGroupData *data, gconstpointer service)
 {
 	GDataContactsGroup *group, *new_group;
-	GTimeVal time_val;
+	gint64 time_val;
 	GHashTable *properties;
 	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "group-insert");
 
-	g_get_current_time (&time_val);
+	time_val = g_get_real_time () / G_USEC_PER_SEC;
 
 	group = gdata_contacts_group_new (NULL);
 
@@ -780,7 +780,7 @@ test_group_insert (InsertGroupData *data, gconstpointer service)
 	/* Check the properties. Time-based properties can't be checked when running against a mock server, since
 	 * the trace files may be quite old. */
 	if (uhm_server_get_enable_online (mock_server) == TRUE) {
-		g_assert_cmpint (gdata_contacts_group_get_edited (new_group), >=, time_val.tv_sec);
+		g_assert_cmpint (gdata_contacts_group_get_edited (new_group), >=, time_val);
 	}
 	g_assert (gdata_contacts_group_is_deleted (new_group) == FALSE);
 	g_assert (gdata_contacts_group_get_system_group_id (new_group) == NULL);
@@ -850,12 +850,12 @@ test_contact_properties (void)
 	gchar *nickname, *file_as, *billing_information, *directory_server, *gender, *initials, *maiden_name, *mileage, *occupation;
 	gchar *priority, *sensitivity, *short_name, *subject, *photo_etag;
 	GDate date, *date2;
-	GTimeVal current_time;
+	gint64 current_time;
 	gint64 edited;
 	gboolean deleted, birthday_has_year;
 
 	contact = gdata_contacts_contact_new (NULL);
-	g_get_current_time (&current_time);
+	current_time = g_get_real_time () / G_USEC_PER_SEC;
 
 	/* Check the kind is present and correct */
 	g_assert (GDATA_IS_CONTACTS_CONTACT (contact));
@@ -984,7 +984,7 @@ test_contact_properties (void)
 	              "subject", &subject,
 	              NULL);
 
-	g_assert_cmpint (edited, ==, current_time.tv_sec);
+	g_assert_cmpint (edited, ==, current_time);
 	g_assert (deleted == FALSE);
 	g_assert (photo_etag == NULL);
 	g_assert (name2 == name);
@@ -1751,7 +1751,7 @@ static void
 test_group_properties (void)
 {
 	GDataContactsGroup *group;
-	GTimeVal time_val;
+	gint64 time_val;
 	GHashTable *properties;
 	gint64 edited;
 	gboolean deleted;
@@ -1768,8 +1768,8 @@ test_group_properties (void)
 	g_assert (gdata_contacts_group_set_extended_property (group, "foobar", "barfoo") == TRUE);
 
 	/* Check various properties */
-	g_get_current_time (&time_val);
-	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, time_val.tv_sec);
+	time_val = g_get_real_time () / G_USEC_PER_SEC;
+	g_assert_cmpint (gdata_contacts_group_get_edited (group), ==, time_val);
 	g_assert (gdata_contacts_group_is_deleted (group) == FALSE);
 	g_assert (gdata_contacts_group_get_system_group_id (group) == NULL);
 
@@ -1785,7 +1785,7 @@ test_group_properties (void)
 	              "system-group-id", &system_group_id,
 	              NULL);
 
-	g_assert_cmpint (edited, ==, time_val.tv_sec);
+	g_assert_cmpint (edited, ==, time_val);
 	g_assert (deleted == FALSE);
 	g_assert (system_group_id == NULL);
 
@@ -2701,3 +2701,5 @@ main (int argc, char *argv[])
 
 	return retval;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

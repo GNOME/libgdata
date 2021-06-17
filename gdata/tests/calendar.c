@@ -495,7 +495,7 @@ test_event_insert (InsertEventData *data, gconstpointer service)
 	GDataGDWhere *where;
 	GDataGDWho *who;
 	GDataGDWhen *when;
-	GTimeVal start_time, end_time;
+	GDateTime *start_time, *end_time;
 	GError *error = NULL;
 
 	gdata_test_mock_server_start_trace (mock_server, "event-insert");
@@ -512,11 +512,13 @@ test_event_insert (InsertEventData *data, gconstpointer service)
 	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith‽", "john.smith@example.com");
 	gdata_calendar_event_add_person (event, who);
 	g_object_unref (who);
-	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);
-	g_time_val_from_iso8601 ("2009-04-17T17:00:00.000Z", &end_time);
-	when = gdata_gd_when_new (start_time.tv_sec, end_time.tv_sec, FALSE);
+	start_time = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
+	end_time = g_date_time_new_from_iso8601 ("2009-04-17T17:00:00.000Z", NULL);
+	when = gdata_gd_when_new (g_date_time_to_unix (start_time), g_date_time_to_unix (end_time), FALSE);
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
+	g_date_time_unref (start_time);
+	g_date_time_unref (end_time);
 
 	/* Insert the event */
 	new_event = data->new_event = gdata_calendar_service_insert_calendar_event (GDATA_CALENDAR_SERVICE (service),
@@ -540,8 +542,8 @@ G_STMT_START {
 	GDataGDWhere *where;
 	GDataGDWho *who;
 	GDataGDWhen *when;
-	GTimeVal start_time;
-	GTimeVal end_time;
+	GDateTime *start_time;
+	GDateTime *end_time;
 
 	event = gdata_calendar_event_new (NULL);
 
@@ -555,11 +557,13 @@ G_STMT_START {
 	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith‽", "john.smith@example.com");
 	gdata_calendar_event_add_person (event, who);
 	g_object_unref (who);
-	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);
-	g_time_val_from_iso8601 ("2009-04-17T17:00:00.000Z", &end_time);
-	when = gdata_gd_when_new (start_time.tv_sec, end_time.tv_sec, FALSE);
+	start_time = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
+	end_time = g_date_time_new_from_iso8601 ("2009-04-17T17:00:00.000Z", NULL);
+	when = gdata_gd_when_new (g_date_time_to_unix (start_time), g_date_time_to_unix (end_time), FALSE);
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
+	g_date_time_unref (start_time);
+	g_date_time_unref (end_time);
 
 	/* Insert the event */
 	gdata_calendar_service_insert_calendar_event_async (GDATA_CALENDAR_SERVICE (service),
@@ -587,7 +591,7 @@ test_event_json (void)
 	GDataGDWhere *where;
 	GDataGDWho *who;
 	GDataGDWhen *when;
-	GTimeVal start_time, end_time;
+	GDateTime *start_time, *end_time;
 
 	event = gdata_calendar_event_new (NULL);
 
@@ -601,11 +605,13 @@ test_event_json (void)
 	who = gdata_gd_who_new (GDATA_GD_WHO_EVENT_ORGANIZER, "John Smith‽", "john.smith@example.com");
 	gdata_calendar_event_add_person (event, who);
 	g_object_unref (who);
-	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &start_time);
-	g_time_val_from_iso8601 ("2009-04-17T17:00:00.000Z", &end_time);
-	when = gdata_gd_when_new (start_time.tv_sec, end_time.tv_sec, FALSE);
+	start_time = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
+	end_time = g_date_time_new_from_iso8601 ("2009-04-17T17:00:00.000Z", NULL);
+	when = gdata_gd_when_new (g_date_time_to_unix (start_time), g_date_time_to_unix (end_time), FALSE);
 	gdata_calendar_event_add_time (event, when);
 	g_object_unref (when);
+	g_date_time_unref (start_time);
+	g_date_time_unref (end_time);
 
 	/* Check the JSON */
 	gdata_test_assert_json (event, "{"
@@ -1099,7 +1105,7 @@ static void
 test_query_uri (void)
 {
 	gint64 _time;
-	GTimeVal time_val;
+	GDateTime *time_val;
 	gchar *query_uri;
 	GDataCalendarQuery *query = gdata_calendar_query_new ("q");
 
@@ -1130,15 +1136,17 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	g_assert_cmpstr (gdata_calendar_query_get_sort_order (query), ==, "descending");
 G_GNUC_END_IGNORE_DEPRECATIONS
 
-	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_start_min (query, time_val.tv_sec);
+	time_val = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
+	gdata_calendar_query_set_start_min (query, g_date_time_to_unix (time_val));
 	_time = gdata_calendar_query_get_start_min (query);
-	g_assert_cmpint (_time, ==, time_val.tv_sec);
+	g_assert_cmpint (_time, ==, g_date_time_to_unix (time_val));
+	g_date_time_unref (time_val);
 
-	g_time_val_from_iso8601 ("2010-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_start_max (query, time_val.tv_sec);
+	time_val = g_date_time_new_from_iso8601 ("2010-04-17T15:00:00.000Z", NULL);
+	gdata_calendar_query_set_start_max (query, g_date_time_to_unix (time_val));
 	_time = gdata_calendar_query_get_start_max (query);
-	g_assert_cmpint (_time, ==, time_val.tv_sec);
+	g_assert_cmpint (_time, ==, g_date_time_to_unix (time_val));
+	g_date_time_unref (time_val);
 
 	gdata_calendar_query_set_timezone (query, "America/Los Angeles");
 	g_assert_cmpstr (gdata_calendar_query_get_timezone (query), ==, "America/Los_Angeles");

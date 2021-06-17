@@ -75,6 +75,7 @@
  * </example>
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 
 #include <config.h>
@@ -85,6 +86,8 @@
 #include "gdata-contacts-query.h"
 #include "gdata-query.h"
 #include "gdata-private.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 static void gdata_contacts_query_finalize (GObject *object);
 static void gdata_contacts_query_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec);
@@ -105,15 +108,13 @@ enum {
 	PROP_GROUP
 };
 
-G_DEFINE_TYPE (GDataContactsQuery, gdata_contacts_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataContactsQuery, gdata_contacts_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataContactsQueryPrivate));
 
 	gobject_class->set_property = gdata_contacts_query_set_property;
 	gobject_class->get_property = gdata_contacts_query_get_property;
@@ -127,6 +128,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Sorting criterion. The only supported value is <literal>lastmodified</literal>.
 	 *
 	 * Since: 0.2.0
+	 * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_ORDER_BY,
 	                                 g_param_spec_string ("order-by",
@@ -142,6 +144,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * normally appear in query results.
 	 *
 	 * Since: 0.2.0
+	 * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_SHOW_DELETED,
 	                                 g_param_spec_boolean ("show-deleted",
@@ -155,6 +158,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * Sorting order direction. Can be either <literal>ascending</literal> or <literal>descending</literal>.
 	 *
 	 * Since: 0.2.0
+	 * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_SORT_ORDER,
 	                                 g_param_spec_string ("sort-order",
@@ -169,6 +173,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 	 * should be a group ID URI.
 	 *
 	 * Since: 0.2.0
+	 * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_GROUP,
 	                                 g_param_spec_string ("group",
@@ -180,7 +185,7 @@ gdata_contacts_query_class_init (GDataContactsQueryClass *klass)
 static void
 gdata_contacts_query_init (GDataContactsQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_CONTACTS_QUERY, GDataContactsQueryPrivate);
+	self->priv = gdata_contacts_query_get_instance_private (self);
 
 	/* https://developers.google.com/google-apps/contacts/v3/reference#contacts-query-parameters-reference
 	 * indicates that the Contacts service uses index pagination, but all
@@ -297,6 +302,7 @@ get_query_uri (GDataQuery *self, const gchar *feed_uri, GString *query_uri, gboo
  * Return value: a new #GDataContactsQuery
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataContactsQuery *
 gdata_contacts_query_new (const gchar *q)
@@ -316,6 +322,7 @@ gdata_contacts_query_new (const gchar *q)
  * Return value: a new #GDataContactsQuery
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataContactsQuery *
 gdata_contacts_query_new_with_limits (const gchar *q, guint start_index, guint max_results)
@@ -336,6 +343,7 @@ gdata_contacts_query_new_with_limits (const gchar *q, guint start_index, guint m
  * Return value: the order by property, or %NULL if it is unset
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 const gchar *
 gdata_contacts_query_get_order_by (GDataContactsQuery *self)
@@ -354,6 +362,7 @@ gdata_contacts_query_get_order_by (GDataContactsQuery *self)
  * Set @order_by to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_query_set_order_by (GDataContactsQuery *self, const gchar *order_by)
@@ -377,6 +386,7 @@ gdata_contacts_query_set_order_by (GDataContactsQuery *self, const gchar *order_
  * Return value: %TRUE if deleted contacts should be shown, %FALSE otherwise
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 gboolean
 gdata_contacts_query_show_deleted (GDataContactsQuery *self)
@@ -393,6 +403,7 @@ gdata_contacts_query_show_deleted (GDataContactsQuery *self)
  * Sets the #GDataContactsQuery:show-deleted property of the #GDataContactsQuery.
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_query_set_show_deleted (GDataContactsQuery *self, gboolean show_deleted)
@@ -414,6 +425,7 @@ gdata_contacts_query_set_show_deleted (GDataContactsQuery *self, gboolean show_d
  * Return value: the sort order property, or %NULL if it is unset
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 const gchar *
 gdata_contacts_query_get_sort_order (GDataContactsQuery *self)
@@ -432,6 +444,7 @@ gdata_contacts_query_get_sort_order (GDataContactsQuery *self)
  * Set @sort_order to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_query_set_sort_order (GDataContactsQuery *self, const gchar *sort_order)
@@ -455,6 +468,7 @@ gdata_contacts_query_set_sort_order (GDataContactsQuery *self, const gchar *sort
  * Return value: the group property, or %NULL if it is unset
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 const gchar *
 gdata_contacts_query_get_group (GDataContactsQuery *self)
@@ -473,6 +487,7 @@ gdata_contacts_query_get_group (GDataContactsQuery *self)
  * Set @group to %NULL to unset the property in the query URI.
  *
  * Since: 0.2.0
+ * Deprecated: 0.18.2: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 void
 gdata_contacts_query_set_group (GDataContactsQuery *self, const gchar *group)
@@ -486,3 +501,5 @@ gdata_contacts_query_set_group (GDataContactsQuery *self, const gchar *group)
 	/* Our current ETag will no longer be relevant */
 	gdata_query_set_etag (GDATA_QUERY (self), NULL);
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS

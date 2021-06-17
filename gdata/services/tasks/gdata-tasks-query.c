@@ -67,15 +67,13 @@ enum {
 	PROP_SHOW_HIDDEN,
 };
 
-G_DEFINE_TYPE (GDataTasksQuery, gdata_tasks_query, GDATA_TYPE_QUERY)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataTasksQuery, gdata_tasks_query, GDATA_TYPE_QUERY)
 
 static void
 gdata_tasks_query_class_init (GDataTasksQueryClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataQueryClass *query_class = GDATA_QUERY_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataTasksQueryPrivate));
 
 	gobject_class->set_property = gdata_tasks_query_set_property;
 	gobject_class->get_property = gdata_tasks_query_get_property;
@@ -181,7 +179,7 @@ gdata_tasks_query_class_init (GDataTasksQueryClass *klass)
 static void
 gdata_tasks_query_init (GDataTasksQuery *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_TASKS_QUERY, GDataTasksQueryPrivate);
+	self->priv = gdata_tasks_query_get_instance_private (self);
 	self->priv->completed_min = -1;
 	self->priv->completed_max = -1;
 	self->priv->due_min = -1;

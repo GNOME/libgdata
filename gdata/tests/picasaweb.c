@@ -782,7 +782,7 @@ typedef struct {
 static void
 set_up_insert_album (InsertAlbumData *data, gconstpointer service)
 {
-	GTimeVal timestamp;
+	GDateTime *timestamp;
 
 	data->album = gdata_picasaweb_album_new (NULL);
 	g_assert (GDATA_IS_PICASAWEB_ALBUM (data->album));
@@ -791,8 +791,9 @@ set_up_insert_album (InsertAlbumData *data, gconstpointer service)
 	gdata_entry_set_summary (GDATA_ENTRY (data->album), "Family photos of the feast!");
 	gdata_picasaweb_album_set_location (data->album, "Winnipeg, MN");
 
-	g_time_val_from_iso8601 ("2002-10-14T09:58:59.643554Z", &timestamp);
-	gdata_picasaweb_album_set_timestamp (data->album, (gint64) timestamp.tv_sec * 1000);
+	timestamp = g_date_time_new_from_iso8601 ("2002-10-14T09:58:59.643554Z", NULL);
+	gdata_picasaweb_album_set_timestamp (data->album, g_date_time_to_unix (timestamp) * 1000);
+	g_date_time_unref (timestamp);
 }
 
 static void
@@ -1757,12 +1758,12 @@ test_album_new (void)
 	GRegex *regex;
 	GMatchInfo *match_info;
 	gint64 delta;
-	GTimeVal timeval;
+	GDateTime *timeval;
 
 	g_test_bug ("598893");
 
 	/* Get the current time */
-	g_get_current_time (&timeval);
+	timeval = g_date_time_new_now_utc ();
 
 	/* Build a regex to match the timestamp from the XML, since we can't definitely say what it'll be. Note that we also assign any order to the
 	 * namespace definitions, since due to a change in GLib's hashing algorithm, they could be in different orders with different GLib versions. */
@@ -1795,9 +1796,10 @@ test_album_new (void)
 	xml = gdata_parsable_get_xml (GDATA_PARSABLE (album));
 	g_assert (g_regex_match (regex, xml, 0, &match_info) == TRUE);
 	parsed_time_str = g_match_info_fetch (match_info, 2);
-	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (((guint64) timeval.tv_sec) * 1000 + ((guint64) timeval.tv_usec) / 1000);
+	delta = g_ascii_strtoull (parsed_time_str, NULL, 10) - (g_date_time_to_unix (timeval) * 1000 + ((guint64) g_date_time_get_microsecond (timeval)) / 1000);
 	g_assert_cmpuint (ABS (delta), <, 1000);
 
+	g_date_time_unref (timeval);
 	g_free (parsed_time_str);
 	g_free (xml);
 	g_regex_unref (regex);

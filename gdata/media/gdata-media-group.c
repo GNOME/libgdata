@@ -66,15 +66,13 @@ struct _GDataMediaGroupPrivate {
 	gchar *description;
 };
 
-G_DEFINE_TYPE (GDataMediaGroup, gdata_media_group, GDATA_TYPE_PARSABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (GDataMediaGroup, gdata_media_group, GDATA_TYPE_PARSABLE)
 
 static void
 gdata_media_group_class_init (GDataMediaGroupClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 	GDataParsableClass *parsable_class = GDATA_PARSABLE_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (GDataMediaGroupPrivate));
 
 	gobject_class->dispose = gdata_media_group_dispose;
 	gobject_class->finalize = gdata_media_group_finalize;
@@ -89,7 +87,7 @@ gdata_media_group_class_init (GDataMediaGroupClass *klass)
 static void
 gdata_media_group_init (GDataMediaGroup *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GDATA_TYPE_MEDIA_GROUP, GDataMediaGroupPrivate);
+	self->priv = gdata_media_group_get_instance_private (self);
 	self->priv->restricted_countries = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 

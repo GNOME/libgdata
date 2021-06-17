@@ -96,6 +96,7 @@ enum {
 };
 
 G_DEFINE_TYPE_WITH_CODE (GDataGoaAuthorizer, gdata_goa_authorizer, G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (GDataGoaAuthorizer)
                          G_IMPLEMENT_INTERFACE (GDATA_TYPE_AUTHORIZER, gdata_goa_authorizer_interface_init))
 
 static void
@@ -180,9 +181,11 @@ gdata_goa_authorizer_set_goa_object (GDataGoaAuthorizer *self, GoaObject *goa_ob
 		add_authorization_domains (self, GDATA_TYPE_CALENDAR_SERVICE);
 	}
 
+	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 	if (goa_object_peek_contacts (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_CONTACTS_SERVICE);
 	}
+	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	if (goa_object_peek_documents (goa_object) != NULL || goa_object_peek_files (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_DOCUMENTS_SERVICE);
@@ -324,8 +327,6 @@ gdata_goa_authorizer_class_init (GDataGoaAuthorizerClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (GDataGoaAuthorizerPrivate));
-
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = gdata_goa_authorizer_set_property;
 	object_class->get_property = gdata_goa_authorizer_get_property;
@@ -360,7 +361,7 @@ gdata_goa_authorizer_init (GDataGoaAuthorizer *authorizer)
 	authorization_domains = g_hash_table_new_full ((GHashFunc) g_direct_hash, (GEqualFunc) g_direct_equal,
 	                                               (GDestroyNotify) g_object_unref, (GDestroyNotify) NULL);
 
-	authorizer->priv = G_TYPE_INSTANCE_GET_PRIVATE (authorizer, GDATA_TYPE_GOA_AUTHORIZER, GDataGoaAuthorizerPrivate);
+	authorizer->priv = gdata_goa_authorizer_get_instance_private (authorizer);
 	authorizer->priv->authorization_domains = authorization_domains;
 }
 
