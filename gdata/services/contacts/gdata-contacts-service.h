@@ -69,15 +69,20 @@ typedef struct {
 	void (*_g_reserved5) (void);
 } GDataContactsServiceClass;
 
+G_DEPRECATED
 GType gdata_contacts_service_get_type (void) G_GNUC_CONST;
 
+G_DEPRECATED
 GDataContactsService *gdata_contacts_service_new (GDataAuthorizer *authorizer) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
+G_DEPRECATED
 GDataAuthorizationDomain *gdata_contacts_service_get_primary_authorization_domain (void) G_GNUC_CONST;
 
+G_DEPRECATED
 GDataFeed *gdata_contacts_service_query_contacts (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                   GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_DEPRECATED
 void gdata_contacts_service_query_contacts_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                                   GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                   GDestroyNotify destroy_progress_user_data,
@@ -85,23 +90,29 @@ void gdata_contacts_service_query_contacts_async (GDataContactsService *self, GD
 
 #include <gdata/services/contacts/gdata-contacts-contact.h>
 
+G_DEPRECATED
 GDataContactsContact *gdata_contacts_service_insert_contact (GDataContactsService *self, GDataContactsContact *contact,
                                                              GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_DEPRECATED
 void gdata_contacts_service_insert_contact_async (GDataContactsService *self, GDataContactsContact *contact, GCancellable *cancellable,
                                                   GAsyncReadyCallback callback, gpointer user_data);
 
 #include <gdata/services/contacts/gdata-contacts-group.h>
 
+G_DEPRECATED
 GDataFeed *gdata_contacts_service_query_groups (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                 GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_DEPRECATED
 void gdata_contacts_service_query_groups_async (GDataContactsService *self, GDataQuery *query, GCancellable *cancellable,
                                                 GDataQueryProgressCallback progress_callback, gpointer progress_user_data,
                                                 GDestroyNotify destroy_progress_user_data,
                                                 GAsyncReadyCallback callback, gpointer user_data);
 
+G_DEPRECATED
 GDataContactsGroup *gdata_contacts_service_insert_group (GDataContactsService *self, GDataContactsGroup *group,
                                                          GCancellable *cancellable, GError **error) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_DEPRECATED
 void gdata_contacts_service_insert_group_async (GDataContactsService *self, GDataContactsGroup *group, GCancellable *cancellable,
                                                 GAsyncReadyCallback callback, gpointer user_data);
 

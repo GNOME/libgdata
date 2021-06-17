@@ -65,19 +65,30 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataContactsQueryClass;
 
+G_DEPRECATED
 GType gdata_contacts_query_get_type (void) G_GNUC_CONST;
 
+G_DEPRECATED
 GDataContactsQuery *gdata_contacts_query_new (const gchar *q) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
+G_DEPRECATED
 GDataContactsQuery *gdata_contacts_query_new_with_limits (const gchar *q, guint start_index,
                                                           guint max_results) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
+G_DEPRECATED
 const gchar *gdata_contacts_query_get_order_by (GDataContactsQuery *self) G_GNUC_PURE;
+G_DEPRECATED
 void gdata_contacts_query_set_order_by (GDataContactsQuery *self, const gchar *order_by);
+G_DEPRECATED
 gboolean gdata_contacts_query_show_deleted (GDataContactsQuery *self) G_GNUC_PURE;
+G_DEPRECATED
 void gdata_contacts_query_set_show_deleted (GDataContactsQuery *self, gboolean show_deleted);
+G_DEPRECATED
 const gchar *gdata_contacts_query_get_sort_order (GDataContactsQuery *self) G_GNUC_PURE;
+G_DEPRECATED
 void gdata_contacts_query_set_sort_order (GDataContactsQuery *self, const gchar *sort_order);
+G_DEPRECATED
 const gchar *gdata_contacts_query_get_group (GDataContactsQuery *self) G_GNUC_PURE;
+G_DEPRECATED
 void gdata_contacts_query_set_group (GDataContactsQuery *self, const gchar *group);
 
 G_END_DECLS

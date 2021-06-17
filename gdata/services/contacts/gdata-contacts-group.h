@@ -101,16 +101,24 @@ typedef struct {
 	void (*_g_reserved1) (void);
 } GDataContactsGroupClass;
 
+G_DEPRECATED
 GType gdata_contacts_group_get_type (void) G_GNUC_CONST;
 
+G_DEPRECATED
 GDataContactsGroup *gdata_contacts_group_new (const gchar *id) G_GNUC_WARN_UNUSED_RESULT G_GNUC_MALLOC;
 
+G_DEPRECATED
 gint64 gdata_contacts_group_get_edited (GDataContactsGroup *self);
+G_DEPRECATED
 gboolean gdata_contacts_group_is_deleted (GDataContactsGroup *self) G_GNUC_PURE;
+G_DEPRECATED
 const gchar *gdata_contacts_group_get_system_group_id (GDataContactsGroup *self) G_GNUC_PURE;
 
+G_DEPRECATED
 const gchar *gdata_contacts_group_get_extended_property (GDataContactsGroup *self, const gchar *name) G_GNUC_PURE;
+G_DEPRECATED
 GHashTable *gdata_contacts_group_get_extended_properties (GDataContactsGroup *self) G_GNUC_PURE;
+G_DEPRECATED
 gboolean gdata_contacts_group_set_extended_property (GDataContactsGroup *self, const gchar *name, const gchar *value);
 
 G_END_DECLS
