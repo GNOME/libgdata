@@ -227,18 +227,15 @@ GDATA_YOUTUBE_ACTION_EMBED
 GDATA_YOUTUBE_ACTION_SYNDICATE
 GDATA_YOUTUBE_LICENSE_CC
 GDATA_YOUTUBE_LICENSE_STANDARD
-GDATA_YOUTUBE_RATING_TYPE_SIMPLE
 GDATA_YOUTUBE_RATING_TYPE_MPAA
 GDATA_YOUTUBE_RATING_TYPE_V_CHIP
 GDataYouTubeVideo
 GDataYouTubeVideoClass
 GDataYouTubePermission
 gdata_youtube_video_new
-gdata_youtube_video_look_up_content
 gdata_youtube_video_get_thumbnails
 gdata_youtube_video_get_category
 gdata_youtube_video_set_category
-gdata_youtube_video_get_credit
 gdata_youtube_video_get_description
 gdata_youtube_video_set_description
 gdata_youtube_video_get_duration
@@ -255,14 +252,11 @@ gdata_youtube_video_set_access_control
 gdata_youtube_video_get_player_uri
 gdata_youtube_video_is_private
 gdata_youtube_video_set_is_private
-gdata_youtube_video_is_draft
-gdata_youtube_video_set_is_draft
 gdata_youtube_video_get_state
 gdata_youtube_video_get_rating
 gdata_youtube_video_get_uploaded
 gdata_youtube_video_get_recorded
 gdata_youtube_video_set_recorded
-gdata_youtube_video_get_video_id
 gdata_youtube_video_get_video_id_from_uri
 gdata_youtube_video_get_aspect_ratio
 gdata_youtube_video_set_aspect_ratio
@@ -441,10 +435,6 @@ GDataYouTubeUploader
 gdata_youtube_query_new
 gdata_youtube_query_get_age
 gdata_youtube_query_set_age
-gdata_youtube_query_get_format
-gdata_youtube_query_set_format
-gdata_youtube_query_get_language
-gdata_youtube_query_set_language
 gdata_youtube_query_get_license
 gdata_youtube_query_set_license
 gdata_youtube_query_get_location
@@ -455,10 +445,6 @@ gdata_youtube_query_get_restriction
 gdata_youtube_query_set_restriction
 gdata_youtube_query_get_safe_search
 gdata_youtube_query_set_safe_search
-gdata_youtube_query_get_sort_order
-gdata_youtube_query_set_sort_order
-gdata_youtube_query_get_uploader
-gdata_youtube_query_set_uploader
 <SUBSECTION Standard>
 GDATA_IS_YOUTUBE_QUERY
 GDATA_IS_YOUTUBE_QUERY_CLASS
@@ -1048,25 +1034,6 @@ GDataMediaCreditPrivate
 </SECTION>
 
 <SECTION>
-<FILE>gdata-youtube-credit</FILE>
-<TITLE>GDataYouTubeCredit</TITLE>
-GDATA_YOUTUBE_CREDIT_ENTITY_PARTNER
-GDataYouTubeCredit
-GDataYouTubeCreditClass
-gdata_youtube_credit_get_entity_type
-<SUBSECTION Standard>
-gdata_youtube_credit_get_type
-GDATA_YOUTUBE_CREDIT
-GDATA_YOUTUBE_CREDIT_CLASS
-GDATA_YOUTUBE_CREDIT_GET_CLASS
-GDATA_IS_YOUTUBE_CREDIT
-GDATA_IS_YOUTUBE_CREDIT_CLASS
-GDATA_TYPE_YOUTUBE_CREDIT
-<SUBSECTION Private>
-GDataYouTubeCreditPrivate
-</SECTION>
-
-<SECTION>
 <FILE>gdata-media-content</FILE>
 <TITLE>GDataMediaContent</TITLE>
 GDataMediaContent
@@ -1093,24 +1060,6 @@ GDATA_IS_MEDIA_CONTENT_CLASS
 GDATA_TYPE_MEDIA_CONTENT
 <SUBSECTION Private>
 GDataMediaContentPrivate
-</SECTION>
-
-<SECTION>
-<FILE>gdata-youtube-content</FILE>
-<TITLE>GDataYouTubeContent</TITLE>
-GDataYouTubeContent
-GDataYouTubeContentClass
-gdata_youtube_content_get_format
-<SUBSECTION Standard>
-gdata_youtube_content_get_type
-GDATA_YOUTUBE_CONTENT
-GDATA_YOUTUBE_CONTENT_CLASS
-GDATA_YOUTUBE_CONTENT_GET_CLASS
-GDATA_IS_YOUTUBE_CONTENT
-GDATA_IS_YOUTUBE_CONTENT_CLASS
-GDATA_TYPE_YOUTUBE_CONTENT
-<SUBSECTION Private>
-GDataYouTubeContentPrivate
 </SECTION>
 
 <SECTION>

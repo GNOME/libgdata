@@ -241,21 +241,9 @@ standard_feed_type_from_name (const gchar *name,
 {
 	/* Indexed by GDataYouTubeStandardFeedType. */
 	const gchar *feed_type_names[] = {
-		"top-rated",
-		"top-favorites",
-		"most-viewed",
 		"most-popular",
-		"most-recent",
-		"most-discussed",
-		"most-linked",
-		"most-responded",
-		"recently-featured",
-		"watch-on-mobile",
 	};
 	guint i;
-
-	G_STATIC_ASSERT (G_N_ELEMENTS (feed_type_names) ==
-	                 GDATA_YOUTUBE_WATCH_ON_MOBILE_FEED + 1);
 
 	for (i = 0; i < G_N_ELEMENTS (feed_type_names); i++) {
 		if (g_strcmp0 (feed_type_names[i], name) == 0) {
