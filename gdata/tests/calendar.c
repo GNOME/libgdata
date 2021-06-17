@@ -1461,7 +1461,7 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec, gpointer use
 }
 
 /* Set up a global GDataAuthorizer to be used for all the tests. Unfortunately,
- * the Google Calendar API is limited to OAuth1 and OAuth2 authorisation, so
+ * the Google Calendar API is limited to OAuth2 authorisation, so
  * this requires user interaction when online.
  *
  * If not online, use a dummy authoriser. */

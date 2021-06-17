@@ -40,8 +40,6 @@
  * <itemizedlist>
  *  <listitem>#GDataClientLoginAuthorizer for
  *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html">ClientLogin</ulink> (deprecated)</listitem>
- *  <listitem>#GDataOAuth1Authorizer for
- *    <ulink type="http" url="http://code.google.com/apis/accounts/docs/OAuthForInstalledApps.html">OAuth 1.0</ulink> (deprecated)</listitem>
  *  <listitem>#GDataOAuth2Authorizer for
  *    <ulink type="http" url="https://developers.google.com/accounts/docs/OAuth2InstalledApp">OAuth 2.0</ulink> (preferred)</listitem>
  * </itemizedlist>

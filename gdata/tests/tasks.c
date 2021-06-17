@@ -1303,7 +1303,7 @@ mock_server_notify_resolver_cb (GObject *object, GParamSpec *pspec,
 }
 
 /* Set up a global GDataAuthorizer to be used for all the tests. Unfortunately,
- * the Google Tasks API is limited to OAuth1 and OAuth2 authorisation, so this
+ * the Google Tasks API is limited to OAuth2 authorisation, so this
  * requires user interaction when online.
  *
  * If not online, use a dummy authoriser. */
