@@ -194,8 +194,6 @@ the following format "tag: Short explanation". The following tags are valid:
 
  - calendar: for the Google Calendar code in gdata/services/calendar.
 
- - contacts: for the Google Contacts code in gdata/services/contacts.
-
  - documents: for the Google Documents code in gdata/services/documents.
 
  - picasaweb: for the PicasaWeb code in gdata/services/picasaweb.

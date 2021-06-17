@@ -15,7 +15,6 @@ gdata/gdata-upload-stream.c
 gdata/services/calendar/gdata-calendar-calendar.c
 gdata/services/calendar/gdata-calendar-event.c
 gdata/services/calendar/gdata-calendar-service.c
-gdata/services/contacts/gdata-contacts-service.c
 gdata/services/documents/gdata-documents-access-rule.c
 gdata/services/documents/gdata-documents-document.c
 gdata/services/documents/gdata-documents-entry.c

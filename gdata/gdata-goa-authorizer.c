@@ -70,7 +70,6 @@
 #include "gdata-service.h"
 
 #include "services/calendar/gdata-calendar-service.h"
-#include "services/contacts/gdata-contacts-service.h"
 #include "services/documents/gdata-documents-service.h"
 #include "services/picasaweb/gdata-picasaweb-service.h"
 
@@ -180,12 +179,6 @@ gdata_goa_authorizer_set_goa_object (GDataGoaAuthorizer *self, GoaObject *goa_ob
 	if (goa_object_peek_calendar (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_CALENDAR_SERVICE);
 	}
-
-	G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	if (goa_object_peek_contacts (goa_object) != NULL) {
-		add_authorization_domains (self, GDATA_TYPE_CONTACTS_SERVICE);
-	}
-	G_GNUC_END_IGNORE_DEPRECATIONS
 
 	if (goa_object_peek_documents (goa_object) != NULL || goa_object_peek_files (goa_object) != NULL) {
 		add_authorization_domains (self, GDATA_TYPE_DOCUMENTS_SERVICE);

@@ -17,7 +17,6 @@ tests = {
   'authorization': {},
   'buffer': {},
   'calendar': {},
-  'contacts': {},
   'documents': {
     'dependencies': [gdk_pixbuf_dep],
     'should_fail': true,

@@ -1,5 +1,4 @@
 subdir('calendar')
-subdir('contacts')
 subdir('documents')
 subdir('picasaweb')
 subdir('tasks')
