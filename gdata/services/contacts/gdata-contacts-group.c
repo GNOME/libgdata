@@ -90,6 +90,7 @@
  * </example>
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 
 #include <config.h>
@@ -102,6 +103,8 @@
 #include "gdata-parser.h"
 #include "gdata-types.h"
 #include "gdata-private.h"
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 /* The maximum number of extended properties the server allows us. See
  * http://code.google.com/apis/contacts/docs/3.0/reference.html#ProjectionsAndExtended.
@@ -159,6 +162,7 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	 * Atom Publishing Protocol specification</ulink>.
 	 *
 	 * Since: 0.7.0
+	 * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_EDITED,
 	                                 g_param_spec_int64 ("edited",
@@ -172,6 +176,7 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	 * Whether the entry has been deleted.
 	 *
 	 * Since: 0.7.0
+	 * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_DELETED,
 	                                 g_param_spec_boolean ("deleted",
@@ -192,6 +197,7 @@ gdata_contacts_group_class_init (GDataContactsGroupClass *klass)
 	 * group ID.
 	 *
 	 * Since: 0.7.0
+	 * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
 	 */
 	g_object_class_install_property (gobject_class, PROP_SYSTEM_GROUP_ID,
 	                                 g_param_spec_string ("system-group-id",
@@ -454,6 +460,7 @@ get_entry_uri (const gchar *id)
  * Return value: a new #GDataContactsGroup; unref with g_object_unref()
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GDataContactsGroup *
 gdata_contacts_group_new (const gchar *id)
@@ -470,6 +477,7 @@ gdata_contacts_group_new (const gchar *id)
  * Return value: the UNIX timestamp for the time the file was last edited, or <code class="literal">-1</code>
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 gint64
 gdata_contacts_group_get_edited (GDataContactsGroup *self)
@@ -487,6 +495,7 @@ gdata_contacts_group_get_edited (GDataContactsGroup *self)
  * Return value: the group's system group ID, or %NULL
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 const gchar *
 gdata_contacts_group_get_system_group_id (GDataContactsGroup *self)
@@ -506,6 +515,7 @@ gdata_contacts_group_get_system_group_id (GDataContactsGroup *self)
  * Return value: the property's value, or %NULL
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 const gchar *
 gdata_contacts_group_get_extended_property (GDataContactsGroup *self, const gchar *name)
@@ -524,6 +534,7 @@ gdata_contacts_group_get_extended_property (GDataContactsGroup *self, const gcha
  * Return value: (transfer none): a #GHashTable of extended properties
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 GHashTable *
 gdata_contacts_group_get_extended_properties (GDataContactsGroup *self)
@@ -550,6 +561,7 @@ gdata_contacts_group_get_extended_properties (GDataContactsGroup *self)
  * Return value: %TRUE if the property was updated or deleted successfully, %FALSE otherwise
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 gboolean
 gdata_contacts_group_set_extended_property (GDataContactsGroup *self, const gchar *name, const gchar *value)
@@ -588,6 +600,7 @@ gdata_contacts_group_set_extended_property (GDataContactsGroup *self, const gcha
  * Return value: %TRUE if the group has been deleted, %FALSE otherwise
  *
  * Since: 0.7.0
+ * Deprecated: 0.18.0: The Google Contacts service is deprecated. Use Google’s CardDAV interface instead.
  */
 gboolean
 gdata_contacts_group_is_deleted (GDataContactsGroup *self)
@@ -595,3 +608,5 @@ gdata_contacts_group_is_deleted (GDataContactsGroup *self)
 	g_return_val_if_fail (GDATA_IS_CONTACTS_GROUP (self), FALSE);
 	return self->priv->deleted;
 }
+
+G_GNUC_END_IGNORE_DEPRECATIONS
