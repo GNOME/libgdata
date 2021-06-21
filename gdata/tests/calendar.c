@@ -1117,15 +1117,17 @@ test_query_uri (void)
 	g_assert_cmpstr (gdata_calendar_query_get_order_by (query), ==, "starttime");
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-	g_time_val_from_iso8601 ("2009-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_recurrence_expansion_start (query, time_val.tv_sec);
+	time_val = g_date_time_new_from_iso8601 ("2009-04-17T15:00:00.000Z", NULL);
+	gdata_calendar_query_set_recurrence_expansion_start (query, g_date_time_to_unix (time_val));
 	_time = gdata_calendar_query_get_recurrence_expansion_start (query);
-	g_assert_cmpint (_time, ==, time_val.tv_sec);
+	g_assert_cmpint (_time, ==, g_date_time_to_unix (time_val));
+	g_date_time_unref (time_val);
 
-	g_time_val_from_iso8601 ("2010-04-17T15:00:00.000Z", &time_val);
-	gdata_calendar_query_set_recurrence_expansion_end (query, time_val.tv_sec);
+	time_val = g_date_time_new_from_iso8601 ("2010-04-17T15:00:00.000Z", NULL);
+	gdata_calendar_query_set_recurrence_expansion_end (query, g_date_time_to_unix (time_val));
 	_time = gdata_calendar_query_get_recurrence_expansion_end (query);
-	g_assert_cmpint (_time, ==, time_val.tv_sec);
+	g_assert_cmpint (_time, ==, g_date_time_to_unix (time_val));
+	g_date_time_unref (time_val);
 G_GNUC_END_IGNORE_DEPRECATIONS
 
 	gdata_calendar_query_set_single_events (query, TRUE);
