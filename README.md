@@ -51,6 +51,19 @@ LIBGDATA_DEBUG=3 ./my-program-name &> libgdata.log
 If `LIBGDATA_DISABLE_DEPRECATED` is defined when compiling against libgdata, all
 deprecated API will be removed from included headers.
 
+## Default branch renamed to `main`
+
+The default development branch of libgdata has been renamed to `main`. To update
+your local checkout, use:
+```sh
+git checkout master
+git branch -m master main
+git fetch
+git branch --unset-upstream
+git branch -u origin/main
+git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+```
+
 ## Licensing
 
 libgdata is licensed under the LGPL; see COPYING for more details.
