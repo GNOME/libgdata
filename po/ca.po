@@ -483,7 +483,7 @@ msgstr "Heu d'estar autenticat per a inserir un grup."
 
 #: gdata/services/documents/gdata-documents-document.c:412
 msgid "You must be authenticated to download documents."
-msgstr "Heu d'estar autenticat per baixar documents."
+msgstr "Heu d'estar autenticat per a baixar documents."
 
 #: gdata/services/documents/gdata-documents-document.c:421
 #, c-format
@@ -508,7 +508,7 @@ msgstr "Heu d'estar autenticat per a consultar les unitats."
 
 #: gdata/services/documents/gdata-documents-service.c:793
 msgid "You must be authenticated to upload documents."
-msgstr "Heu d'estar autenticat per pujar documents."
+msgstr "Heu d'estar autenticat per a pujar documents."
 
 #: gdata/services/documents/gdata-documents-service.c:799
 msgid "The document has already been uploaded."
@@ -572,7 +572,7 @@ msgstr "L'àlbum no tenia cap enllaç de canal."
 
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:619
 msgid "You must be authenticated to upload a file."
-msgstr "Heu d'estar autenticat per pujar un fitxer."
+msgstr "Heu d'estar autenticat per a pujar un fitxer."
 
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:695
 msgid "The album has already been inserted."
@@ -612,29 +612,4 @@ msgstr ""
 
 #: gdata/services/youtube/gdata-youtube-service.c:1031
 msgid "You must be authenticated to upload a video."
-msgstr "Heu d'estar autenticat per pujar un vídeo."
-
-#~ msgid "A '%s' element was missing required content."
-#~ msgstr "A un element «%s» l'hi falta el contingut necessari."
-
-#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-#~ msgstr ""
-#~ "El contingut d'un element «%s» («%s») no estava en el format ISO 8601."
-
-#~ msgid "The calendar did not have a content URI."
-#~ msgstr "El calendari no tenia un URI de contingut."
-
-#~ msgid "This service is not available at the moment."
-#~ msgstr "Aquest servei no està disponible actualment."
-
-#~ msgid ""
-#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-#~ msgstr ""
-#~ "S'ha rebut un codi d'error desconegut «%s» al domini «%s» amb la ubicació "
-#~ "«%s»."
-
-#~ msgid "Unknown and unparsable error received."
-#~ msgstr "S'ha rebut un error desconegut i que no es pot analitzar."
-
-#~ msgid "The video did not have a related videos <link>."
-#~ msgstr "El vídeo no tenia vídeos relacionats <link>."
+msgstr "Heu d'estar autenticat per a pujar un vídeo."
