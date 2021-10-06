@@ -1,5 +1,7 @@
 Color struct
 
+Parsable.new_from_json symbol_type="function" name="from_json"
+Parsable.new_from_xml symbol_type="function" name="from_xml"
 Parsable.get_xml#method skip
 Parsable.get_json#method skip
 Query.get_query_uri#method skip
