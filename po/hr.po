@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2021-07-12 13:04+0000\n"
+"POT-Creation-Date: 2021-06-17 14:22+0000\n"
 "PO-Revision-Date: 2021-09-08 10:54+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -231,12 +231,12 @@ msgstr "Neispravan JSON je primljen s poslužitelja: %s"
 msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr "Sadržaj %s elementa (‘%s’) nije u heksadecimalnom RGB formatu."
 
-#: gdata/gdata-service.c:330
+#: gdata/gdata-service.c:358
 #, c-format
 msgid "Cannot connect to the service’s server."
 msgstr "Nemoguće povezivanje s poslužiteljem usluge."
 
-#: gdata/gdata-service.c:335
+#: gdata/gdata-service.c:363
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Nemoguće povezivanje s proxy poslužiteljem."
@@ -245,7 +245,7 @@ msgstr "Nemoguće povezivanje s proxy poslužiteljem."
 #. Translators: the parameter is an
 #. * error message returned by the
 #. * server.
-#: gdata/gdata-service.c:341
+#: gdata/gdata-service.c:369
 #: gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
@@ -254,7 +254,7 @@ msgstr ""
 "parametar: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: gdata/gdata-service.c:347
+#: gdata/gdata-service.c:375
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Potrebna je ovjera: %s"
@@ -264,7 +264,7 @@ msgstr "Potrebna je ovjera: %s"
 #. * error message returned by the
 #. * server.
 #. Translators: the parameter is an error message returned by the server.
-#: gdata/gdata-service.c:352
+#: gdata/gdata-service.c:380
 #: gdata/services/calendar/gdata-calendar-service.c:313
 #: gdata/services/youtube/gdata-youtube-video.c:946
 #, c-format
@@ -272,74 +272,74 @@ msgid "The requested resource was not found: %s"
 msgstr "Zatraženi resurs nije pronađen: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: gdata/gdata-service.c:358
+#: gdata/gdata-service.c:386
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Unos je promijenjen od kada je preuzet: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:372
+#: gdata/gdata-service.c:400
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Kôd greške %u pri ovjeri: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:378
+#: gdata/gdata-service.c:406
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Kôd greške %u pri zahtjevu: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:384
+#: gdata/gdata-service.c:412
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Kôd greške %u pri umetanju unosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:390
+#: gdata/gdata-service.c:418
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Kôd greške %u pri nadopuni unosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:396
+#: gdata/gdata-service.c:424
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Kôd greške %u pri brisanju unosa: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:402
+#: gdata/gdata-service.c:430
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "Kôd greške %u pri preuzimanju: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:408
+#: gdata/gdata-service.c:436
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Kôd greške %u pri slanju: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:414
+#: gdata/gdata-service.c:442
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Kôd greške %u pri pokretanju skupnih radnji: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: gdata/gdata-service.c:708
+#: gdata/gdata-service.c:736
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Neispravno preusmjeravanje URI-ja: %s"
 
-#: gdata/gdata-service.c:1398
+#: gdata/gdata-service.c:1426
 #: gdata/services/picasaweb/gdata-picasaweb-service.c:611
 #: gdata/services/youtube/gdata-youtube-service.c:995
 msgid "The entry has already been inserted."
