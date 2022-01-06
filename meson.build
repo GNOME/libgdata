@@ -78,7 +78,6 @@ gdata_deps = [
   dependency('gobject-2.0'),
   dependency('glib-2.0', version: '>= 2.62.0'),
   dependency('gio-2.0', version: '>= 2.44.0'),
-  dependency('gio-unix-2.0'),
   dependency('json-glib-1.0', version: '>= 0.15'),
   dependency('libxml-2.0'),
 ]
