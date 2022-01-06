@@ -22,10 +22,12 @@
 #include <glib.h>
 #include <locale.h>
 #include <string.h>
-#include <arpa/inet.h>
 #include <sys/types.h>
+#ifndef G_OS_WIN32
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#endif
 
 #include "gdata.h"
 #include "common.h"
