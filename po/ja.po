@@ -1,18 +1,18 @@
 # libgdata ja.po.
-# Copyright (C) 2009-2010, 2013, 2020 Free Software Foundation, Inc.
+# Copyright (C) 2009-2010, 2013, 2020, 2022 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libgdata package.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2009.
 # Nishio Futoshi <futoshi@momonga-linux.org>, 2009.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2010.
 # Jiro Matsuzawa <jmatsuzawa@gnome.org>, 2013.
-# sicklylife <translation@sicklylife.jp>, 2020.
+# sicklylife <translation@sicklylife.jp>, 2020, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
 "POT-Creation-Date: 2021-09-18 12:48+0000\n"
-"PO-Revision-Date: 2020-01-28 21:00+0900\n"
+"PO-Revision-Date: 2022-03-09 20:00+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -69,7 +69,7 @@ msgstr "ユーザーまたはサーバーによりアクセスが拒否されま
 #: gdata/gdata-parsable.c:350 gdata/gdata-parsable.c:361
 #, c-format
 msgid "Error parsing XML: %s"
-msgstr "XMLの解析エラー: %s"
+msgstr "XML の解析エラー: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
 #: gdata/gdata-parsable.c:363
@@ -407,10 +407,8 @@ msgstr "ドキュメントにアクセスするには認証が必要です。"
 
 #: gdata/services/documents/gdata-documents-service.c:681
 #: gdata/services/documents/gdata-documents-service.c:732
-#, fuzzy
-#| msgid "You must be authenticated to query documents."
 msgid "You must be authenticated to query drives."
-msgstr "ドキュメントにアクセスするには認証が必要です。"
+msgstr "ドライブにアクセスするには認証が必要です。"
 
 #: gdata/services/documents/gdata-documents-service.c:793
 msgid "You must be authenticated to upload documents."
