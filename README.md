@@ -70,5 +70,4 @@ libgdata is licensed under the LGPL; see COPYING for more details.
 
 ## Contact
 
-Philip Withnall <philip@tecnocode.co.uk>
 https://wiki.gnome.org/Projects/libgdata
