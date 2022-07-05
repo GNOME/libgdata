@@ -1,0 +1,39 @@
+image: fedora:latest
+
+variables:
+  DEPENDENCIES:
+    json-glib-devel
+    glib2-devel
+    libxml2-devel
+    gtk3-devel
+    libsoup-devel
+    gcr-devel
+    gnome-online-accounts-devel
+    uhttpmock-devel
+    gtk-doc
+    gobject-introspection-devel
+    meson
+    redhat-rpm-config
+    gcc
+    gcc-c++
+    glibc-devel
+    vala
+
+build_stable:
+  before_script:
+    - dnf update -y --nogpgcheck
+    - dnf install -y --nogpgcheck $DEPENDENCIES
+  script:
+    - meson . _build --prefix=/usr
+        -Dgtk=enabled
+        -Dgnome=enabled
+        -Dgoa=enabled
+        -Dalways_build_tests=true
+        -Dinstalled_tests=false
+        -Dman=true
+        -Dgtk_doc=true
+        -Dintrospection=true
+        -Dvapi=true
+    - ninja -C _build
+    - ninja -C _build install
+    - ninja -C _build test
