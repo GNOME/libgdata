@@ -4,6 +4,7 @@ variables:
   DEPENDENCIES:
     json-glib-devel
     glib2-devel
+    glib-networking
     libxml2-devel
     gtk3-devel
     libsoup-devel
@@ -18,6 +19,10 @@ variables:
     gcc-c++
     glibc-devel
     vala
+    libabigail
+  OLD_ABI_DEPENDENCIES:
+    liboauth-devel
+  LAST_ABI_BREAK: 27fb43ff72435854984f1c4ed35deff96d3c652a
 
 build_stable:
   before_script:
@@ -37,3 +42,6 @@ build_stable:
     - ninja -C _build
     - ninja -C _build install
     - ninja -C _build test
+    - curl https://gitlab.freedesktop.org/hadess/check-abi/-/raw/main/contrib/check-abi-fedora.sh | bash
+    - dnf install -y $OLD_ABI_DEPENDENCIES
+    - check-abi --suppr=.ci/gdata.suppr --parameters="-Dgtk=enabled -Dgnome=enabled -Dgoa=enabled -Dgtk_doc=false -Dintrospection=false" ${LAST_ABI_BREAK} $(git rev-parse HEAD)
