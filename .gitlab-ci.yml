@@ -25,6 +25,8 @@ variables:
   LAST_ABI_BREAK: 27fb43ff72435854984f1c4ed35deff96d3c652a
 
 build_stable:
+  tags:
+    - ipv6
   before_script:
     - dnf update -y --nogpgcheck
     - dnf install -y --nogpgcheck $DEPENDENCIES
