@@ -22,7 +22,7 @@ variables:
     libabigail
   OLD_ABI_DEPENDENCIES:
     liboauth-devel
-  LAST_ABI_BREAK: 27fb43ff72435854984f1c4ed35deff96d3c652a
+  LAST_ABI_BREAK: 5da08f0aeb4fd4f30c5c4f8aac662d03883bbf1a
 
 build_stable:
   tags:
