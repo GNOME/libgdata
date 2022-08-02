@@ -46,7 +46,7 @@
 
 #ifdef HAVE_GNOME
 #define GCR_API_SUBJECT_TO_CHANGE
-#include <gcr/gcr-base.h>
+#include <gcr/gcr.h>
 #endif /* HAVE_GNOME */
 
 #include "gdata-service.h"

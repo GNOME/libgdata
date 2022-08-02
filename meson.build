@@ -107,11 +107,11 @@ gtk_dep = dependency(
   not_found_message: 'GTK+ support requested but gtk+-3.0 ' + gtk_dep_req_version + ' could not be found',
 )
 
-# GNOME support, which pulls in gcr-base-3 to provide non-pageable memory
-gcr_dep = dependency('gcr-base-3', required: get_option('gnome'))
+# GNOME support, which pulls in gcr-4 to provide non-pageable memory
+gcr_dep = dependency('gcr-4', required: get_option('gnome'))
 enable_gnome = gcr_dep.found()
 if enable_gnome
-  gdata_private_deps += dependency('gcr-base-3')
+  gdata_private_deps += dependency('gcr-4')
 endif
 config_h.set('HAVE_GNOME', enable_gnome)
 
