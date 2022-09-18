@@ -1,5 +1,5 @@
 # Turkish translation for libgdata.
-# Copyright (C) 2011-2021 libgdata's COPYRIGHT HOLDER
+# Copyright (C) 2011-2022 libgdata's COPYRIGHT HOLDER
 # This file is distributed under the same license as the libgdata package.
 #
 # Senol Korkmaz <mail@senolkorkmaz.info>, 2011.
@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libgdata master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
-"POT-Creation-Date: 2021-02-11 21:33+0000\n"
+"POT-Creation-Date: 2022-08-02 09:55+0000\n"
 "PO-Revision-Date: 2019-09-05 17:38+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
@@ -23,134 +23,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: gdata/gdata-batch-operation.c:635
+#: gdata/gdata-batch-operation.c:632
 #, c-format
 msgid "Batch operations are unsupported by this service."
 msgstr "Toplu işlemler bu hizmet tarafından desteklenmiyor."
-
-#: gdata/gdata-client-login-authorizer.c:629
-#: gdata/gdata-oauth1-authorizer.c:850 gdata/gdata-oauth1-authorizer.c:1128
-#: gdata/gdata-oauth2-authorizer.c:953 gdata/gdata-oauth2-authorizer.c:964
-#: gdata/gdata-oauth2-authorizer.c:983 gdata/gdata-oauth2-authorizer.c:999
-#: gdata/gdata-oauth2-authorizer.c:1064 gdata/gdata-oauth2-authorizer.c:1076
-#: gdata/gdata-oauth2-authorizer.c:1087 gdata/gdata-oauth2-authorizer.c:1102
-#: gdata/gdata-oauth2-authorizer.c:1118
-msgid "The server returned a malformed response."
-msgstr "Sunucu bozuk bir yanıt döndürdü."
-
-#: gdata/gdata-client-login-authorizer.c:649 gdata/gdata-service.c:361
-#, c-format
-msgid "Cannot connect to the service’s server."
-msgstr "Hizmetin sunucusuna bağlanılamıyor."
-
-#: gdata/gdata-client-login-authorizer.c:654 gdata/gdata-service.c:366
-#, c-format
-msgid "Cannot connect to the proxy server."
-msgstr "Vekil sunucuya bağlanılamıyor."
-
-#. Translators: the parameter is an error message returned by the server.
-#. Translators: the parameter is an
-#. * error message returned by the
-#. * server.
-#: gdata/gdata-client-login-authorizer.c:660 gdata/gdata-service.c:372
-#: gdata/services/calendar/gdata-calendar-service.c:325
-#, c-format
-msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
-msgstr ""
-"Geçersiz istek URI veya başlığı, ya da desteklenmeyen standart dışı "
-"parametre: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: gdata/gdata-client-login-authorizer.c:666 gdata/gdata-service.c:378
-#, c-format
-msgid "Authentication required: %s"
-msgstr "Kimlik doğrulaması gerekli: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#. Translators: the parameter is an
-#. * error message returned by the
-#. * server.
-#. Translators: the parameter is an error message returned by the server.
-#: gdata/gdata-client-login-authorizer.c:671 gdata/gdata-service.c:383
-#: gdata/services/calendar/gdata-calendar-service.c:313
-#: gdata/services/youtube/gdata-youtube-video.c:1013
-#, c-format
-msgid "The requested resource was not found: %s"
-msgstr "İstenen kaynak bulunamadı: %s"
-
-#. Translators: the parameter is an error message returned by the server.
-#: gdata/gdata-client-login-authorizer.c:677 gdata/gdata-service.c:389
-#, c-format
-msgid "The entry has been modified since it was downloaded: %s"
-msgstr "Girdi indirildiği zamandan bu yana değişikliğe uğradı: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: gdata/gdata-client-login-authorizer.c:689 gdata/gdata-service.c:403
-#, c-format
-msgid "Error code %u when authenticating: %s"
-msgstr "Kimlik doğrulama esnasında %u kodlu hata: %s"
-
-#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
-#: gdata/gdata-client-login-authorizer.c:788
-msgid "A CAPTCHA must be filled out to log in."
-msgstr "Kullanıcı girişi yapmak için bir CAPTCHA doldurulmalı."
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:826
-#, c-format
-msgid "This account requires an application-specific password. (%s)"
-msgstr "Bu hesap, uygulamaya özgü bir parola gerektirir. (%s)"
-
-#: gdata/gdata-client-login-authorizer.c:833
-msgid "Your username or password were incorrect."
-msgstr "Kullanıcı adınız ya da parolanız yanlış."
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:854
-#, c-format
-msgid "Your account’s e-mail address has not been verified. (%s)"
-msgstr "Hesabınıza ait e-posta adresi doğrulanmadı. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:859
-#, c-format
-msgid "You have not agreed to the service’s terms and conditions. (%s)"
-msgstr "Bu hizmetin hüküm ve koşullarını kabul etmediniz. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:865
-#, c-format
-msgid ""
-"This account has been migrated. Please log in online to receive your new "
-"username and password. (%s)"
-msgstr ""
-"Bu hesap taşındı. Yeni kullanıcı adınızı ve parolanızı almak için lütfen "
-"çevrim içi giriş yapın. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:870
-#, c-format
-msgid "This account has been deleted. (%s)"
-msgstr "Bu hesap silindi. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:875
-#, c-format
-msgid "This account has been disabled. (%s)"
-msgstr "Bu hesap devre dışı bırakıldı. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:880
-#, c-format
-msgid "This account’s access to this service has been disabled. (%s)"
-msgstr "Bu hesabın bu hizmete erişimi devre dışı bırakıldı. (%s)"
-
-#. Translators: the parameter is a URI for further information.
-#: gdata/gdata-client-login-authorizer.c:885
-#, c-format
-msgid "This service is not available at the moment. (%s)"
-msgstr "Bu hizmet şu anda kullanılabilir durumda değil. (%s)"
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
@@ -174,59 +50,57 @@ msgid "This comment may not be deleted."
 msgstr "Bu yorum silinemez."
 
 #. Tried to seek too far
-#: gdata/gdata-download-stream.c:763
+#: gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Geçersiz arama isteği"
 
-#: gdata/gdata-oauth1-authorizer.c:825
-msgid "The server rejected the temporary credentials request."
-msgstr "Sunucu, geçici kimlik bilgileri isteğini reddetti."
+#: gdata/gdata-oauth2-authorizer.c:950 gdata/gdata-oauth2-authorizer.c:961
+#: gdata/gdata-oauth2-authorizer.c:980 gdata/gdata-oauth2-authorizer.c:996
+#: gdata/gdata-oauth2-authorizer.c:1061 gdata/gdata-oauth2-authorizer.c:1073
+#: gdata/gdata-oauth2-authorizer.c:1084 gdata/gdata-oauth2-authorizer.c:1099
+#: gdata/gdata-oauth2-authorizer.c:1115
+msgid "The server returned a malformed response."
+msgstr "Sunucu bozuk bir yanıt döndürdü."
 
-#: gdata/gdata-oauth1-authorizer.c:881 gdata/gdata-oauth1-authorizer.c:1154
-msgid "OAuth 1.0 support is disabled."
-msgstr "OAuth 1.0 desteği devre dışı bırakıldı."
-
-#. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
-#. * or the user denied authorization to the token on the authorization web page.
-#: gdata/gdata-oauth1-authorizer.c:1102 gdata/gdata-oauth2-authorizer.c:1113
+#: gdata/gdata-oauth2-authorizer.c:1110
 #: gdata/services/calendar/gdata-calendar-service.c:340
 #, c-format
 msgid "Access was denied by the user or server."
 msgstr "Kullanıcı ya da sunucu tarafından erişim engellendi."
 
 #. Translators: the parameter is an error message
-#: gdata/gdata-parsable.c:352 gdata/gdata-parsable.c:363
+#: gdata/gdata-parsable.c:350 gdata/gdata-parsable.c:361
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "XML ayrıştırma hatası: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: gdata/gdata-parsable.c:365
+#: gdata/gdata-parsable.c:363
 msgid "Empty document."
 msgstr "Boş belge."
 
 #. Translators: the parameter is an error message
-#: gdata/gdata-parsable.c:483 gdata/gdata-parsable.c:521
+#: gdata/gdata-parsable.c:481 gdata/gdata-parsable.c:519
 #: gdata/services/documents/gdata-documents-access-rule.c:144
 #: gdata/services/documents/gdata-documents-access-rule.c:154
-#: gdata/services/documents/gdata-documents-document.c:289
-#: gdata/services/documents/gdata-documents-entry.c:519
-#: gdata/services/documents/gdata-documents-entry.c:530
-#: gdata/services/documents/gdata-documents-entry.c:542
-#: gdata/services/documents/gdata-documents-entry.c:582
-#: gdata/services/documents/gdata-documents-entry.c:593
-#: gdata/services/documents/gdata-documents-entry.c:604
-#: gdata/services/documents/gdata-documents-entry.c:651
-#: gdata/services/documents/gdata-documents-entry.c:662
-#: gdata/services/documents/gdata-documents-entry.c:770
-#: gdata/services/documents/gdata-documents-entry.c:805
-#: gdata/services/documents/gdata-documents-entry.c:820
-#: gdata/services/documents/gdata-documents-entry.c:835
-#: gdata/services/documents/gdata-documents-entry.c:865
+#: gdata/services/documents/gdata-documents-document.c:287
+#: gdata/services/documents/gdata-documents-entry.c:480
+#: gdata/services/documents/gdata-documents-entry.c:491
+#: gdata/services/documents/gdata-documents-entry.c:503
+#: gdata/services/documents/gdata-documents-entry.c:543
+#: gdata/services/documents/gdata-documents-entry.c:554
+#: gdata/services/documents/gdata-documents-entry.c:565
+#: gdata/services/documents/gdata-documents-entry.c:612
+#: gdata/services/documents/gdata-documents-entry.c:623
+#: gdata/services/documents/gdata-documents-entry.c:731
+#: gdata/services/documents/gdata-documents-entry.c:766
+#: gdata/services/documents/gdata-documents-entry.c:781
+#: gdata/services/documents/gdata-documents-entry.c:796
+#: gdata/services/documents/gdata-documents-entry.c:826
+#: gdata/services/documents/gdata-documents-entry.c:842
 #: gdata/services/documents/gdata-documents-entry.c:881
-#: gdata/services/documents/gdata-documents-entry.c:920
-#: gdata/services/documents/gdata-documents-entry.c:937
-#: gdata/services/documents/gdata-documents-entry.c:982
+#: gdata/services/documents/gdata-documents-entry.c:898
+#: gdata/services/documents/gdata-documents-entry.c:943
 #: gdata/services/documents/gdata-documents-feed.c:82
 #: gdata/services/documents/gdata-documents-feed.c:93
 #: gdata/services/documents/gdata-documents-feed.c:130
@@ -235,7 +109,7 @@ msgstr "Boş belge."
 msgid "Error parsing JSON: %s"
 msgstr "JSON ayrıştırma hatası: %s"
 
-#: gdata/gdata-parsable.c:522
+#: gdata/gdata-parsable.c:520
 msgid "Outermost JSON node is not an object."
 msgstr "En dıştaki JSON düğümü bir nesne değil."
 
@@ -320,7 +194,7 @@ msgstr "Gerekli ögelerden biri (%s) yok."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: gdata/gdata-parser.c:200 gdata/gdata-parser.c:287
+#: gdata/gdata-parser.c:200 gdata/gdata-parser.c:291
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Bir tekiz öge (%s) çoğaltıldı."
@@ -329,7 +203,7 @@ msgstr "Bir tekiz öge (%s) çoğaltıldı."
 #. *
 #. * For example:
 #. *  A ‘title’ element was missing required content.
-#: gdata/gdata-parser.c:273
+#: gdata/gdata-parser.c:277
 #, c-format
 msgid "A ‘%s’ element was missing required content."
 msgstr "Gerekli içerikte bir ‘%s’ ögesi eksik."
@@ -339,13 +213,13 @@ msgstr "Gerekli içerikte bir ‘%s’ ögesi eksik."
 #. *
 #. * For example:
 #. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
-#: gdata/gdata-parser.c:303
+#: gdata/gdata-parser.c:307
 #, c-format
 msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
 msgstr "Bir ‘%s’ ögesinin içeriği olan (‘%s’), ISO 8601 biçiminde değil."
 
 #. Translators: the parameter is an error message.
-#: gdata/gdata-parser.c:314
+#: gdata/gdata-parser.c:318
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Sunucudan geçersiz bir JSON verisi alındı: %s"
@@ -356,87 +230,140 @@ msgstr "Sunucudan geçersiz bir JSON verisi alındı: %s"
 #. *
 #. * For example:
 #. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
-#: gdata/gdata-parser.c:1193
+#: gdata/gdata-parser.c:1199
 #, c-format
 msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr "%s ögesinin içeriği (‘%s’), onaltılık RGB biçiminde değil."
 
+#: gdata/gdata-service.c:330
+#, c-format
+msgid "Cannot connect to the service’s server."
+msgstr "Hizmetin sunucusuna bağlanılamıyor."
+
+#: gdata/gdata-service.c:335
+#, c-format
+msgid "Cannot connect to the proxy server."
+msgstr "Vekil sunucuya bağlanılamıyor."
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: gdata/gdata-service.c:341
+#: gdata/services/calendar/gdata-calendar-service.c:325
+#, c-format
+msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
+msgstr ""
+"Geçersiz istek URI veya başlığı, ya da desteklenmeyen standart dışı "
+"parametre: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-service.c:347
+#, c-format
+msgid "Authentication required: %s"
+msgstr "Kimlik doğrulaması gerekli: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-service.c:352
+#: gdata/services/calendar/gdata-calendar-service.c:313
+#: gdata/services/youtube/gdata-youtube-video.c:946
+#, c-format
+msgid "The requested resource was not found: %s"
+msgstr "İstenen kaynak bulunamadı: %s"
+
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-service.c:358
+#, c-format
+msgid "The entry has been modified since it was downloaded: %s"
+msgstr "Girdi indirildiği zamandan bu yana değişikliğe uğradı: %s"
+
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:409
+#: gdata/gdata-service.c:372
+#, c-format
+msgid "Error code %u when authenticating: %s"
+msgstr "Kimlik doğrulama esnasında %u kodlu hata: %s"
+
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:378
 #, c-format
 msgid "Error code %u when querying: %s"
 msgstr "Sorgulama esnasında %u kodlu hata: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:415
+#: gdata/gdata-service.c:384
 #, c-format
 msgid "Error code %u when inserting an entry: %s"
 msgstr "Bir girdi eklenmesi esnasında %u kodlu hata: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:421
+#: gdata/gdata-service.c:390
 #, c-format
 msgid "Error code %u when updating an entry: %s"
 msgstr "Bir girdinin güngellenmesi esnasında %u kodlu hata: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:427
+#: gdata/gdata-service.c:396
 #, c-format
 msgid "Error code %u when deleting an entry: %s"
 msgstr "Bir girdinin silinmesi esnasında %u kodlu hata: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:433
+#: gdata/gdata-service.c:402
 #, c-format
 msgid "Error code %u when downloading: %s"
 msgstr "İndirme esnasında %u kodlu hata: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:439
+#: gdata/gdata-service.c:408
 #, c-format
 msgid "Error code %u when uploading: %s"
 msgstr "Yükleme esnasında %u kodlu hata: %s"
 
 #. Translators: the first parameter is a HTTP status,
 #. * and the second is an error message returned by the server.
-#: gdata/gdata-service.c:445
+#: gdata/gdata-service.c:414
 #, c-format
 msgid "Error code %u when running a batch operation: %s"
 msgstr "Bir toplu işlemin yürütülmesi esnasında %u kodlu hata: %s"
 
 #. Translators: the parameter is the URI which is invalid.
-#: gdata/gdata-service.c:739
+#: gdata/gdata-service.c:708
 #, c-format
 msgid "Invalid redirect URI: %s"
 msgstr "Geçersiz yönlendirme URI’si: %s"
 
-#: gdata/gdata-service.c:1432
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:612
-#: gdata/services/youtube/gdata-youtube-service.c:1022
+#: gdata/gdata-service.c:1398
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:611
+#: gdata/services/youtube/gdata-youtube-service.c:995
 msgid "The entry has already been inserted."
 msgstr "Girdi daha önceden eklenmiş."
 
 #. Resumable upload error.
-#: gdata/gdata-upload-stream.c:794 gdata/gdata-upload-stream.c:876
+#: gdata/gdata-upload-stream.c:792 gdata/gdata-upload-stream.c:874
 #, c-format
 msgid "Error received from server after uploading a resumable upload chunk."
 msgstr ""
 "Devam ettirilebilir bir yükleme yığınının karşıya yüklenmesinden sonra "
 "sunucudan hata alındı."
 
-#: gdata/gdata-upload-stream.c:942
+#: gdata/gdata-upload-stream.c:940
 msgid "Stream is already closed"
 msgstr "Akış zaten kapalı"
 
 #: gdata/services/calendar/gdata-calendar-service.c:302
 #: gdata/services/tasks/gdata-tasks-service.c:195
-#: gdata/services/youtube/gdata-youtube-service.c:541
+#: gdata/services/youtube/gdata-youtube-service.c:540
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -447,7 +374,7 @@ msgstr ""
 
 #: gdata/services/calendar/gdata-calendar-service.c:334
 #: gdata/services/tasks/gdata-tasks-service.c:204
-#: gdata/services/youtube/gdata-youtube-service.c:557
+#: gdata/services/youtube/gdata-youtube-service.c:556
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Bu işlem için kimliğinizi doğrulatmalısınız."
@@ -464,35 +391,17 @@ msgstr "Tüm takvimleri sorgulamak için kimliğinizi doğrulatmalısınız."
 msgid "You must be authenticated to query your own calendars."
 msgstr "Kendi takviminizi sorgulamak için kimliğinizi doğrulatmalısınız."
 
-#: gdata/services/contacts/gdata-contacts-service.c:258
-#: gdata/services/contacts/gdata-contacts-service.c:311
-msgid "You must be authenticated to query contacts."
-msgstr "Bağlantı sorgulamak için kimliğinizi doğrulatmalısınız."
-
-#: gdata/services/contacts/gdata-contacts-service.c:425
-#: gdata/services/contacts/gdata-contacts-service.c:478
-msgid "You must be authenticated to query contact groups."
-msgstr "Bağlantı kümelerini sorgulamak için kimliğinizi doğrulatmalısınız."
-
-#: gdata/services/contacts/gdata-contacts-service.c:516
-msgid "The group has already been inserted."
-msgstr "Küme daha önceden eklenmiş."
-
-#: gdata/services/contacts/gdata-contacts-service.c:523
-msgid "You must be authenticated to insert a group."
-msgstr "Küme eklemek için kimliğinizi doğrulatmalısınız."
-
-#: gdata/services/documents/gdata-documents-document.c:412
+#: gdata/services/documents/gdata-documents-document.c:410
 msgid "You must be authenticated to download documents."
 msgstr "Belge indirmek için kimliğinizi doğrulatmalısınız."
 
-#: gdata/services/documents/gdata-documents-document.c:421
+#: gdata/services/documents/gdata-documents-document.c:419
 #, c-format
 msgid "Unknown or unsupported document export format ‘%s’."
 msgstr "Bilinmeyen veya desteklenmeyen belge dışa aktarma biçimi ‘%s’."
 
 #. Translators: the parameter is the invalid value of visibility variable
-#: gdata/services/documents/gdata-documents-entry.c:955
+#: gdata/services/documents/gdata-documents-entry.c:916
 #, c-format
 msgid "Invalid visibility: unrecognized value ‘%s’"
 msgstr "Geçersiz görünürlük: tanınmayan değer ‘%s’"
@@ -543,42 +452,37 @@ msgstr ""
 msgid "You must be authenticated to move documents and folders."
 msgstr "Dosya ve klasörleri taşımak için kimliğinizi doğrulatmalısınız."
 
-#: gdata/services/freebase/gdata-freebase-service.c:497
-#, c-format
-msgid "Property ‘%s’ does not hold an image"
-msgstr "‘%s’ herhangi bir görüntü içermiyor"
-
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:244
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:243
 msgid "You must specify a username or be authenticated to query a user."
 msgstr ""
 "Bir kullanıcı sorgulamak için kullanıcı adı belirtmeli ya da kimliğinizi "
 "doğrulatmalısınız."
 
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:372
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:432
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:371
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:431
 msgid "Query parameter not allowed for albums."
 msgstr "Sorgu parametresini albümler için kullanamazsınız."
 
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:379
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:444
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:378
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:443
 msgid "You must specify a username or be authenticated to query all albums."
 msgstr ""
 "Tüm albümleri sorgulamak için kullanıcı adı belirtmeli ya da kimliğinizi "
 "doğrulatmalısınız."
 
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:463
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:462
 msgid "The album did not have a feed link."
 msgstr "Albüm bir besleme bağlantısı içermiyor."
 
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:619
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:618
 msgid "You must be authenticated to upload a file."
 msgstr "Dosya yüklemek için kimliğinizi doğrulatmalısınız."
 
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:695
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:694
 msgid "The album has already been inserted."
 msgstr "Bu albüm daha önceden eklenmiş."
 
-#: gdata/services/picasaweb/gdata-picasaweb-service.c:702
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:701
 msgid "You must be authenticated to insert an album."
 msgstr "Albüm eklemek için kimliğinizi doğrulatmalısınız."
 
@@ -592,7 +496,7 @@ msgstr "Tüm görev listelerini sorgulamak için kimliğinizi doğrulatmalısın
 msgid "You must be authenticated to query your own tasks."
 msgstr "Kendi görevlerinizi sorgulamak için kimliğinizi doğrulatmalısınız."
 
-#: gdata/services/youtube/gdata-youtube-service.c:548
+#: gdata/services/youtube/gdata-youtube-service.c:547
 #, c-format
 msgid ""
 "You have exceeded your entry quota. Please delete some entries and try again."
@@ -601,7 +505,7 @@ msgstr ""
 "deneyiniz."
 
 #. Translators: the parameter is a URI.
-#: gdata/services/youtube/gdata-youtube-service.c:565
+#: gdata/services/youtube/gdata-youtube-service.c:564
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -610,30 +514,6 @@ msgstr ""
 "Bu işlemi gerçekleştirmek için Google hesabınızı bir YouTube kanalıyla "
 "ilişkilendirmelisiniz. Bunu yapmak için %s adresini ziyaret edin."
 
-#: gdata/services/youtube/gdata-youtube-service.c:1031
+#: gdata/services/youtube/gdata-youtube-service.c:1004
 msgid "You must be authenticated to upload a video."
 msgstr "Video yüklemek için kimliğinizi doğrulatmalısınız."
-
-#~ msgid "A '%s' element was missing required content."
-#~ msgstr "Bir '%s' ögesinde gerekli içerik eksik."
-
-#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
-#~ msgstr "Bir %s öğesinin içeriği olan (\"%s\"), ISO 8601 biçiminde değil."
-
-#~ msgid "The calendar did not have a content URI."
-#~ msgstr "Takvim, içerik URI'sine sahip değil."
-
-#~ msgid "This service is not available at the moment."
-#~ msgstr "Bu hizmet şu anda kullanılabilir durumda değil."
-
-#~ msgid ""
-#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-#~ msgstr ""
-#~ "\"%2$s\" etki alanının \"%3$s\" konumundan \"%1$s\" kodlu bilinmeyen bir "
-#~ "hata alındı."
-
-#~ msgid "Unknown and unparsable error received."
-#~ msgstr "Bilinmeyen ve ayrıştırılamayan bir hata alındı."
-
-#~ msgid "The video did not have a related videos <link>."
-#~ msgstr "Bu videonun ilgili olduğu başka video yok <link>."
