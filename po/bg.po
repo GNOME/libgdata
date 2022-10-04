@@ -1,14 +1,15 @@
 # Bulgarian translation of libgdata po-file.
-# Copyright (C) 2011, 2012, 2015 Free Software Foundation, Inc.
+# Copyright (C) 2011, 2012, 2015, Free Software Foundation, Inc.
+# Copyright (C) 2011, 2012, 2015, 2022 Alexander Shopov <ash@kambanaria.org>.
 # This file is distributed under the same license as the libgdata package.
 # Ivaylo Valkov <ivaylo@e-valkov.org>, 2011.
-# Alexander Shopov <ash@kambanaria.org>, 2011, 2012, 2015.
+# Alexander Shopov <ash@kambanaria.org>, 2011, 2012, 2015, 2022.
 msgid ""
 msgstr ""
-"Project-Id-Version: libgdata master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-11 14:03+0300\n"
-"PO-Revision-Date: 2015-04-11 14:03+0300\n"
+"Project-Id-Version: libgdata libgdata-0-18\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/libgdata/issues\n"
+"POT-Creation-Date: 2021-09-06 08:41+0000\n"
+"PO-Revision-Date: 2022-10-04 20:31+0200\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -17,32 +18,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../gdata/gdata-client-login-authorizer.c:629
-#: ../gdata/gdata-oauth1-authorizer.c:840
-#: ../gdata/gdata-oauth1-authorizer.c:1116
-#: ../gdata/gdata-oauth2-authorizer.c:915
-#: ../gdata/gdata-oauth2-authorizer.c:926
-#: ../gdata/gdata-oauth2-authorizer.c:945
-#: ../gdata/gdata-oauth2-authorizer.c:961
-#: ../gdata/gdata-oauth2-authorizer.c:1029
-#: ../gdata/gdata-oauth2-authorizer.c:1040
-#: ../gdata/gdata-oauth2-authorizer.c:1055
-#: ../gdata/gdata-oauth2-authorizer.c:1071
+#: gdata/gdata-batch-operation.c:632
+#, c-format
+msgid "Batch operations are unsupported by this service."
+msgstr "Пакетните операции не се поддържат от тази услуга."
+
+#: gdata/gdata-client-login-authorizer.c:628
+#: gdata/gdata-oauth1-authorizer.c:849 gdata/gdata-oauth1-authorizer.c:1127
+#: gdata/gdata-oauth2-authorizer.c:950 gdata/gdata-oauth2-authorizer.c:961
+#: gdata/gdata-oauth2-authorizer.c:980 gdata/gdata-oauth2-authorizer.c:996
+#: gdata/gdata-oauth2-authorizer.c:1061 gdata/gdata-oauth2-authorizer.c:1073
+#: gdata/gdata-oauth2-authorizer.c:1084 gdata/gdata-oauth2-authorizer.c:1099
+#: gdata/gdata-oauth2-authorizer.c:1115
 msgid "The server returned a malformed response."
 msgstr "Сървърът върна неправилен отговор."
 
-#: ../gdata/gdata-client-login-authorizer.c:649 ../gdata/gdata-service.c:361
+#: gdata/gdata-client-login-authorizer.c:648 gdata/gdata-service.c:359
 #, c-format
-msgid "Cannot connect to the service's server."
+msgid "Cannot connect to the service’s server."
 msgstr "Неуспешна връзка към сървъра за услугата."
 
-#: ../gdata/gdata-client-login-authorizer.c:654 ../gdata/gdata-service.c:366
+#: gdata/gdata-client-login-authorizer.c:653 gdata/gdata-service.c:364
 #, c-format
 msgid "Cannot connect to the proxy server."
 msgstr "Неуспешна връзка към сървъра-посредник."
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:660 ../gdata/gdata-service.c:372
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#: gdata/gdata-client-login-authorizer.c:659 gdata/gdata-service.c:370
+#: gdata/services/calendar/gdata-calendar-service.c:325
 #, c-format
 msgid "Invalid request URI or header, or unsupported nonstandard parameter: %s"
 msgstr ""
@@ -50,62 +56,69 @@ msgstr ""
 "заявката: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:666 ../gdata/gdata-service.c:378
+#: gdata/gdata-client-login-authorizer.c:665 gdata/gdata-service.c:376
 #, c-format
 msgid "Authentication required: %s"
 msgstr "Необходимо е удостоверяване: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:671 ../gdata/gdata-service.c:383
+#. Translators: the parameter is an
+#. * error message returned by the
+#. * server.
+#. Translators: the parameter is an error message returned by the server.
+#: gdata/gdata-client-login-authorizer.c:670 gdata/gdata-service.c:381
+#: gdata/services/calendar/gdata-calendar-service.c:313
+#: gdata/services/youtube/gdata-youtube-video.c:1012
 #, c-format
 msgid "The requested resource was not found: %s"
 msgstr "Заявеният ресурс не беше намерен: %s"
 
 #. Translators: the parameter is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:677 ../gdata/gdata-service.c:389
+#: gdata/gdata-client-login-authorizer.c:676 gdata/gdata-service.c:387
 #, c-format
 msgid "The entry has been modified since it was downloaded: %s"
 msgstr "Записът се е променил от последното изтегляне: %s"
 
 #. Translators: the first parameter is an HTTP status,
 #. * and the second is an error message returned by the server.
-#: ../gdata/gdata-client-login-authorizer.c:689 ../gdata/gdata-service.c:403
+#: gdata/gdata-client-login-authorizer.c:688 gdata/gdata-service.c:401
 #, c-format
 msgid "Error code %u when authenticating: %s"
 msgstr "Получен е код за грешка „%u“ при удостоверяване: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:788
+#. Translators: see http://en.wikipedia.org/wiki/CAPTCHA for information about CAPTCHAs
+#: gdata/gdata-client-login-authorizer.c:787
 msgid "A CAPTCHA must be filled out to log in."
 msgstr "За да влезете, попълнете данните от CAPTCHA."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:826
+#: gdata/gdata-client-login-authorizer.c:825
 #, c-format
 msgid "This account requires an application-specific password. (%s)"
 msgstr "Следната регистрация изисква своя парола: %s"
 
-#: ../gdata/gdata-client-login-authorizer.c:833
+#: gdata/gdata-client-login-authorizer.c:832
 msgid "Your username or password were incorrect."
 msgstr "Потребителското име или паролата са грешни."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:854
+#: gdata/gdata-client-login-authorizer.c:853
 #, c-format
-msgid "Your account's e-mail address has not been verified. (%s)"
+msgid "Your account’s e-mail address has not been verified. (%s)"
 msgstr ""
 "Пощенският адрес към регистрацията ви не е бил потвърден. За повече "
 "информация посетете „%s“."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:859
+#: gdata/gdata-client-login-authorizer.c:858
 #, c-format
-msgid "You have not agreed to the service's terms and conditions. (%s)"
+msgid "You have not agreed to the service’s terms and conditions. (%s)"
 msgstr ""
 "Не сте приели правилата и условията на услугата. За повече информация "
 "посетете „%s“."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:865
+#: gdata/gdata-client-login-authorizer.c:864
 #, c-format
 msgid ""
 "This account has been migrated. Please log in online to receive your new "
@@ -115,82 +128,115 @@ msgstr ""
 "и парола, влезте в услугата през браузър. За повече информация посетете „%s“."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:870
+#: gdata/gdata-client-login-authorizer.c:869
 #, c-format
 msgid "This account has been deleted. (%s)"
 msgstr "Тази регистрация е била изтрита. За повече информация посетете „%s“."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:875
+#: gdata/gdata-client-login-authorizer.c:874
 #, c-format
 msgid "This account has been disabled. (%s)"
 msgstr "Тази регистрация е била спряна. За повече информация посетете „%s“."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:880
+#: gdata/gdata-client-login-authorizer.c:879
 #, c-format
-msgid "This account's access to this service has been disabled. (%s)"
+msgid "This account’s access to this service has been disabled. (%s)"
 msgstr ""
 "Достъпът до тази услуга е бил спрян за тази регистрация. За повече "
 "информация вижте „%s“."
 
 #. Translators: the parameter is a URI for further information.
-#: ../gdata/gdata-client-login-authorizer.c:885
+#: gdata/gdata-client-login-authorizer.c:884
 #, c-format
 msgid "This service is not available at the moment. (%s)"
 msgstr "В момента тази услуга е недостъпна. За повече информация вижте „%s“."
 
 #. Translators: This is an error message for if a user attempts to retrieve comments from an entry (such as a video) which doesn't
 #. * support comments.
-#: ../gdata/gdata-commentable.c:172 ../gdata/gdata-commentable.c:262
+#. Translators: This is an error message for if a user attempts to retrieve comments from an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:172 gdata/gdata-commentable.c:258
 msgid "This entry does not support comments."
 msgstr "Този запис не поддържа коментари."
 
 #. Translators: This is an error message for if a user attempts to add a comment to an entry (such as a video) which doesn't support
 #. * comments.
-#: ../gdata/gdata-commentable.c:349 ../gdata/gdata-commentable.c:435
+#. Translators: This is an error message for if a user attempts to add a comment to an entry
+#. * (such as a video) which doesn't support comments.
+#: gdata/gdata-commentable.c:338 gdata/gdata-commentable.c:420
 msgid "Comments may not be added to this entry."
-msgstr "Към този запис не могат да бъдат добавяни коментари."
+msgstr "Към този запис не може да бъдат добавяни коментари."
 
 #. Translators: This is an error message for if a user attempts to delete a comment they're not allowed to delete.
-#: ../gdata/gdata-commentable.c:518 ../gdata/gdata-commentable.c:594
+#: gdata/gdata-commentable.c:494 gdata/gdata-commentable.c:563
 msgid "This comment may not be deleted."
 msgstr "Този коментар не може да бъде изтрит."
 
 #. Tried to seek too far
-#: ../gdata/gdata-download-stream.c:762
+#: gdata/gdata-download-stream.c:762
 msgid "Invalid seek request"
 msgstr "Неправилна заявка за търсене"
 
-#: ../gdata/gdata-oauth1-authorizer.c:815
+#: gdata/gdata-oauth1-authorizer.c:824
 msgid "The server rejected the temporary credentials request."
 msgstr "Сървърът отхвърли заявката за временна акредитация."
 
+#: gdata/gdata-oauth1-authorizer.c:880 gdata/gdata-oauth1-authorizer.c:1153
+msgid "OAuth 1.0 support is disabled."
+msgstr "Поддръжката на OAuth 1.0 е изключена."
+
 #. Server returned an error. This either means that there was a server error or, more likely, the server doesn't trust the client
 #. * or the user denied authorization to the token on the authorization web page.
-#: ../gdata/gdata-oauth1-authorizer.c:1090
-#: ../gdata/gdata-oauth2-authorizer.c:1066
+#: gdata/gdata-oauth1-authorizer.c:1101 gdata/gdata-oauth2-authorizer.c:1110
+#: gdata/services/calendar/gdata-calendar-service.c:340
+#, c-format
 msgid "Access was denied by the user or server."
 msgstr "Достъпът бе отказан от потребителя или сървъра."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:349 ../gdata/gdata-parsable.c:360
+#: gdata/gdata-parsable.c:350 gdata/gdata-parsable.c:361
 #, c-format
 msgid "Error parsing XML: %s"
 msgstr "Грешка при анализа на документа с XML: %s"
 
 #. Translators: this is a dummy error message to be substituted into "Error parsing XML: %s".
-#: ../gdata/gdata-parsable.c:362
+#: gdata/gdata-parsable.c:363
 msgid "Empty document."
 msgstr "Празен документ."
 
 #. Translators: the parameter is an error message
-#: ../gdata/gdata-parsable.c:480 ../gdata/gdata-parsable.c:518
+#: gdata/gdata-parsable.c:481 gdata/gdata-parsable.c:519
+#: gdata/services/documents/gdata-documents-access-rule.c:144
+#: gdata/services/documents/gdata-documents-access-rule.c:154
+#: gdata/services/documents/gdata-documents-document.c:287
+#: gdata/services/documents/gdata-documents-entry.c:518
+#: gdata/services/documents/gdata-documents-entry.c:529
+#: gdata/services/documents/gdata-documents-entry.c:541
+#: gdata/services/documents/gdata-documents-entry.c:581
+#: gdata/services/documents/gdata-documents-entry.c:592
+#: gdata/services/documents/gdata-documents-entry.c:603
+#: gdata/services/documents/gdata-documents-entry.c:650
+#: gdata/services/documents/gdata-documents-entry.c:661
+#: gdata/services/documents/gdata-documents-entry.c:769
+#: gdata/services/documents/gdata-documents-entry.c:804
+#: gdata/services/documents/gdata-documents-entry.c:819
+#: gdata/services/documents/gdata-documents-entry.c:834
+#: gdata/services/documents/gdata-documents-entry.c:864
+#: gdata/services/documents/gdata-documents-entry.c:880
+#: gdata/services/documents/gdata-documents-entry.c:919
+#: gdata/services/documents/gdata-documents-entry.c:936
+#: gdata/services/documents/gdata-documents-entry.c:981
+#: gdata/services/documents/gdata-documents-feed.c:82
+#: gdata/services/documents/gdata-documents-feed.c:93
+#: gdata/services/documents/gdata-documents-feed.c:130
+#: gdata/services/documents/gdata-documents-feed.c:148
 #, c-format
 msgid "Error parsing JSON: %s"
 msgstr "Грешка при анализа на JSON: %s"
 
-#: ../gdata/gdata-parsable.c:519
+#: gdata/gdata-parsable.c:520
 msgid "Outermost JSON node is not an object."
 msgstr "Най-външният елемент в JSON не е обект."
 
@@ -198,7 +244,7 @@ msgstr "Най-външният елемент в JSON не е обект."
 #. *
 #. * For example:
 #. *  A <title> element was missing required content.
-#: ../gdata/gdata-parser.c:69
+#: gdata/gdata-parser.c:69
 #, c-format
 msgid "A %s element was missing required content."
 msgstr "Липсва задължителното съдържание за елемент „%s“."
@@ -207,10 +253,10 @@ msgstr "Липсва задължителното съдържание за ел
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a <media:group/media:uploaded> element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:85
+#. *  The content of a <media:group/media:uploaded> element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:85
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a %s element (‘%s’) was not in ISO 8601 format."
 msgstr ""
 "Съдържанието („%2$s“) на елемент от вида %1$s не е във формат ISO 8601."
 
@@ -218,20 +264,20 @@ msgstr ""
 #. * (including the angle brackets ("<" and ">")) to which the property belongs, and the third is the unknown value.
 #. *
 #. * For example:
-#. *  The value of the @time property of a <media:group/media:thumbnail> element ("00:01:42.500") was unknown.
-#: ../gdata/gdata-parser.c:105
+#. *  The value of the @time property of a <media:group/media:thumbnail> element (‘00:01:42.500’) was unknown.
+#: gdata/gdata-parser.c:105
 #, c-format
-msgid "The value of the %s property of a %s element (\"%s\") was unknown."
+msgid "The value of the %s property of a %s element (‘%s’) was unknown."
 msgstr "Стойността („%3$s“) на атрибута %1$s на елемента %2$s беше неизвестна."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
 #. * and the second parameter is the unknown content of that element.
 #. *
 #. * For example:
-#. *  The content of a <gphoto:access> element ("protected") was unknown.
-#: ../gdata/gdata-parser.c:123
+#. *  The content of a <gphoto:access> element (‘protected’) was unknown.
+#: gdata/gdata-parser.c:123
 #, c-format
-msgid "The content of a %s element (\"%s\") was unknown."
+msgid "The content of a %s element (‘%s’) was unknown."
 msgstr "Съдържанието („%2$s“) на елемент от вида %1$s беше неизвестно."
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets ("<" and ">")),
@@ -239,7 +285,7 @@ msgstr "Съдържанието („%2$s“) на елемент от вида 
 #. *
 #. * For example:
 #. *  A required property of a <entry/gAcl:role> element (@value) was not present.
-#: ../gdata/gdata-parser.c:143
+#: gdata/gdata-parser.c:143
 #, c-format
 msgid "A required property of a %s element (%s) was not present."
 msgstr "Липсва задължителният атрибут („%2$s“) на елемент от вида „%1$s“."
@@ -250,7 +296,7 @@ msgstr "Липсва задължителният атрибут („%2$s“) н
 #. * For example:
 #. *  Values were present for properties @rel and @label of a <entry/gContact:relation> element when only one of the
 #. *  two is allowed.
-#: ../gdata/gdata-parser.c:166
+#: gdata/gdata-parser.c:166
 #, c-format
 msgid ""
 "Values were present for properties %s and %s of a %s element when only one "
@@ -263,7 +309,7 @@ msgstr ""
 #. *
 #. * For example:
 #. *  A required element (<entry/title>) was not present.
-#: ../gdata/gdata-parser.c:185
+#: gdata/gdata-parser.c:185
 #, c-format
 msgid "A required element (%s) was not present."
 msgstr "Задължителният елемент „%s“ липсва."
@@ -276,7 +322,7 @@ msgstr "Задължителният елемент „%s“ липсва."
 #. *
 #. * For example:
 #. *  A singleton element (title) was duplicated.
-#: ../gdata/gdata-parser.c:200 ../gdata/gdata-parser.c:287
+#: gdata/gdata-parser.c:200 gdata/gdata-parser.c:296
 #, c-format
 msgid "A singleton element (%s) was duplicated."
 msgstr "Беше открит дубликат на уникалния елемент „%s“."
@@ -284,226 +330,118 @@ msgstr "Беше открит дубликат на уникалния елем�
 #. Translators: the parameter is the name of an JSON element.
 #. *
 #. * For example:
-#. *  A 'title' element was missing required content.
-#: ../gdata/gdata-parser.c:273
+#. *  A ‘title’ element was missing required content.
+#: gdata/gdata-parser.c:282
 #, c-format
-msgid "A '%s' element was missing required content."
+msgid "A ‘%s’ element was missing required content."
 msgstr "Липсва задължителното съдържание за елемент „%s“."
 
 #. Translators: the first parameter is the name of an JSON element,
 #. * and the second parameter is the erroneous value (which was not in ISO 8601 format).
 #. *
 #. * For example:
-#. *  The content of a 'uploaded' element ("2009-05-06 26:30Z") was not in ISO 8601 format.
-#: ../gdata/gdata-parser.c:303
+#. *  The content of a ‘uploaded’ element (‘2009-05-06 26:30Z’) was not in ISO 8601 format.
+#: gdata/gdata-parser.c:312
 #, c-format
-msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+msgid "The content of a ‘%s’ element (‘%s’) was not in ISO 8601 format."
 msgstr ""
-"Съдържанието („%2$s“) на елемент от вида „%1$s“ не е във формат ISO 8601."
+"Съдържанието („%2$s“) на елемент от вида %1$s не е във формат ISO 8601."
 
 #. Translators: the parameter is an error message.
-#: ../gdata/gdata-parser.c:313
+#: gdata/gdata-parser.c:323
 #, c-format
 msgid "Invalid JSON was received from the server: %s"
 msgstr "Получен е неправилен JSON от сървъра: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:409
-#, c-format
-msgid "Error code %u when querying: %s"
-msgstr "Получен е код за грешка „%u“ от заявката: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:415
-#, c-format
-msgid "Error code %u when inserting an entry: %s"
-msgstr "Получен е код за грешка „%u“ при добавяне на запис: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:421
-#, c-format
-msgid "Error code %u when updating an entry: %s"
-msgstr "Получен е код за грешка „%u“ при обновяване на запис: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:427
-#, c-format
-msgid "Error code %u when deleting an entry: %s"
-msgstr "Получен е код за грешка „%u“ при изтриване на запис: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:433
-#, c-format
-msgid "Error code %u when downloading: %s"
-msgstr "Получен е код за грешка „%u“ при изтегляне: %s"
-
-#. Translators: the first parameter is an HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:439
-#, c-format
-msgid "Error code %u when uploading: %s"
-msgstr "Получен е код за грешка „%u“ при качване: %s"
-
-#. Translators: the first parameter is a HTTP status,
-#. * and the second is an error message returned by the server.
-#: ../gdata/gdata-service.c:445
-#, c-format
-msgid "Error code %u when running a batch operation: %s"
-msgstr "Получен е код за грешка „%u“ при пакетна обработка: %s"
-
-#. Translators: the parameter is the URI which is invalid.
-#: ../gdata/gdata-service.c:737
-#, c-format
-msgid "Invalid redirect URI: %s"
-msgstr "Неправилен адрес за пренасочване: %s"
-
-#: ../gdata/gdata-service.c:1449
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:624
-#: ../gdata/services/youtube/gdata-youtube-service.c:888
-msgid "The entry has already been inserted."
-msgstr "Записът вече е бил добавен."
-
-#. Resumable upload error.
-#: ../gdata/gdata-upload-stream.c:748 ../gdata/gdata-upload-stream.c:830
-#, c-format
-msgid "Error received from server after uploading a resumable upload chunk."
-msgstr ""
-"Получена е грешка от сървъра след качването на поредно парче данни от серия "
-"за възобновяемо качване."
-
-#: ../gdata/gdata-upload-stream.c:896
-msgid "Stream is already closed"
-msgstr "Потокът вече е затворен"
 
 #. Translators: the first parameter is the name of an XML element (including the angle brackets
 #. * ("<" and ">"), and the second parameter is the erroneous value (which was not in hexadecimal
 #. * RGB format).
 #. *
 #. * For example:
-#. *  The content of a <entry/gCal:color> element ("00FG56") was not in hexadecimal RGB format.
-#: ../gdata/services/calendar/gdata-calendar-calendar.c:406
+#. *  The content of a <entry/gCal:color> element (‘00FG56’) was not in hexadecimal RGB format.
+#: gdata/gdata-parser.c:1205
 #, c-format
-msgid "The content of a %s element (\"%s\") was not in hexadecimal RGB format."
+msgid "The content of a %s element (‘%s’) was not in hexadecimal RGB format."
 msgstr ""
 "Съдържанието („%s“) на елемент от вида %s не беше в шестнадесетичен формат "
 "ЧЗС (RGB)."
 
-#: ../gdata/services/calendar/gdata-calendar-service.c:315
-#: ../gdata/services/calendar/gdata-calendar-service.c:366
-msgid "You must be authenticated to query all calendars."
-msgstr "Необходима е идентификация, за да правите заявки за всички календари."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:412
-#: ../gdata/services/calendar/gdata-calendar-service.c:463
-#: ../gdata/services/calendar/gdata-calendar-service.c:508
-#: ../gdata/services/calendar/gdata-calendar-service.c:568
-msgid "You must be authenticated to query your own calendars."
-msgstr ""
-"Необходима е идентификация, за да правите заявки за собствените си календари."
-
-#: ../gdata/services/calendar/gdata-calendar-service.c:517
-#: ../gdata/services/calendar/gdata-calendar-service.c:581
-msgid "The calendar did not have a content URI."
-msgstr "Липсва адрес за съдържанието на календара."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:258
-#: ../gdata/services/contacts/gdata-contacts-service.c:308
-msgid "You must be authenticated to query contacts."
-msgstr "Необходима е идентификация, за да правите заявки за контакти."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:424
-#: ../gdata/services/contacts/gdata-contacts-service.c:474
-msgid "You must be authenticated to query contact groups."
-msgstr "Необходима е идентификация, за да правите заявки за групи от контакти."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:514
-msgid "The group has already been inserted."
-msgstr "Групата вече е била добавена."
-
-#: ../gdata/services/contacts/gdata-contacts-service.c:521
-msgid "You must be authenticated to insert a group."
-msgstr "Необходима е идентификация, за да добавяте групи."
-
-#: ../gdata/services/documents/gdata-documents-document.c:300
-msgid "You must be authenticated to download documents."
-msgstr "Необходима е идентификация, за да изтегляте документи."
-
-#: ../gdata/services/documents/gdata-documents-service.c:519
-#: ../gdata/services/documents/gdata-documents-service.c:569
-msgid "You must be authenticated to query documents."
-msgstr "Необходима е идентификация, за да правите заявки за документи."
-
-#: ../gdata/services/documents/gdata-documents-service.c:614
-msgid "You must be authenticated to upload documents."
-msgstr "Необходима е идентификация, за да качвате документи."
-
-#: ../gdata/services/documents/gdata-documents-service.c:620
-msgid "The document has already been uploaded."
-msgstr "Документът вече е бил качен."
-
-#: ../gdata/services/documents/gdata-documents-service.c:764
-msgid "You must be authenticated to update documents."
-msgstr "Необходима е идентификация, за да обновявате документи."
-
-#: ../gdata/services/documents/gdata-documents-service.c:946
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:407
 #, c-format
-msgid ""
-"The content type of the supplied document ('%s') could not be recognized."
-msgstr ""
-"Неуспешно разпознаване на вида на съдържанието на предоставения документ "
-"(„%s“)."
+msgid "Error code %u when querying: %s"
+msgstr "Получен е код за грешка „%u“ от заявката: %s"
 
-#: ../gdata/services/documents/gdata-documents-service.c:986
-msgid "You must be authenticated to copy documents."
-msgstr "Необходима е идентификация, за да копирате документи."
-
-#: ../gdata/services/documents/gdata-documents-service.c:1148
-#: ../gdata/services/documents/gdata-documents-service.c:1331
-msgid "You must be authenticated to move documents and folders."
-msgstr "Необходима е идентификация, за да местите документи и папки."
-
-#: ../gdata/services/freebase/gdata-freebase-service.c:479
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:413
 #, c-format
-msgid "Property '%s' does not hold an image"
-msgstr "Свойството „%s“ не съдържа изображение"
+msgid "Error code %u when inserting an entry: %s"
+msgstr "Получен е код за грешка „%u“ при добавяне на запис: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:244
-msgid "You must specify a username or be authenticated to query a user."
-msgstr "Необходима е идентификация, за да правите заявки за потребител."
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:419
+#, c-format
+msgid "Error code %u when updating an entry: %s"
+msgstr "Получен е код за грешка „%u“ при обновяване на запис: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:387
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:444
-msgid "Query parameter not allowed for albums."
-msgstr "Заявката за албуми не може да има параметър."
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:425
+#, c-format
+msgid "Error code %u when deleting an entry: %s"
+msgstr "Получен е код за грешка „%u“ при изтриване на запис: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:394
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:455
-msgid "You must specify a username or be authenticated to query all albums."
-msgstr "Необходима е идентификация, за да правите заявки за всички албуми."
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:431
+#, c-format
+msgid "Error code %u when downloading: %s"
+msgstr "Получен е код за грешка „%u“ при изтегляне: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:476
-msgid "The album did not have a feed link."
-msgstr "Липсва списък с емисии за албума."
+#. Translators: the first parameter is an HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:437
+#, c-format
+msgid "Error code %u when uploading: %s"
+msgstr "Получен е код за грешка „%u“ при качване: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:631
-msgid "You must be authenticated to upload a file."
-msgstr "Необходима е идентификация, за да качвате файлове."
+#. Translators: the first parameter is a HTTP status,
+#. * and the second is an error message returned by the server.
+#: gdata/gdata-service.c:443
+#, c-format
+msgid "Error code %u when running a batch operation: %s"
+msgstr "Получен е код за грешка „%u“ при пакетна обработка: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:707
-msgid "The album has already been inserted."
-msgstr "Албумът вече е бил добавен."
+#. Translators: the parameter is the URI which is invalid.
+#: gdata/gdata-service.c:737
+#, c-format
+msgid "Invalid redirect URI: %s"
+msgstr "Неправилен адрес за пренасочване: %s"
 
-#: ../gdata/services/picasaweb/gdata-picasaweb-service.c:714
-msgid "You must be authenticated to insert an album."
-msgstr "Необходима е идентификация, за да добавяте албуми."
+#: gdata/gdata-service.c:1427
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:612
+#: gdata/services/youtube/gdata-youtube-service.c:1021
+msgid "The entry has already been inserted."
+msgstr "Записът вече е бил добавен."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:195
-#: ../gdata/services/youtube/gdata-youtube-service.c:478
+#. Resumable upload error.
+#: gdata/gdata-upload-stream.c:792 gdata/gdata-upload-stream.c:874
+#, c-format
+msgid "Error received from server after uploading a resumable upload chunk."
+msgstr ""
+"Получена е грешка от сървъра след качването на поредно парче данни от серия "
+"за възобновяемо качване."
+
+#: gdata/gdata-upload-stream.c:940
+msgid "Stream is already closed"
+msgstr "Потокът вече е затворен"
+
+#: gdata/services/calendar/gdata-calendar-service.c:302
+#: gdata/services/tasks/gdata-tasks-service.c:195
+#: gdata/services/youtube/gdata-youtube-service.c:540
 #, c-format
 msgid ""
 "You have made too many API calls recently. Please wait a few minutes and try "
@@ -512,33 +450,165 @@ msgstr ""
 "Направили сте прекалено много заявки към програмния интерфейс (API) за много "
 "кратко време. Изчакайте няколко минути и опитайте отново."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:204
-#: ../gdata/services/youtube/gdata-youtube-service.c:473
+#: gdata/services/calendar/gdata-calendar-service.c:334
+#: gdata/services/tasks/gdata-tasks-service.c:204
+#: gdata/services/youtube/gdata-youtube-service.c:556
 #, c-format
 msgid "You must be authenticated to do this."
 msgstr "Необходима е идентификация, за да извършите действието."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:330
-#: ../gdata/services/tasks/gdata-tasks-service.c:381
+#: gdata/services/calendar/gdata-calendar-service.c:465
+#: gdata/services/calendar/gdata-calendar-service.c:519
+msgid "You must be authenticated to query all calendars."
+msgstr "Необходима е идентификация, за да правите заявки за всички календари."
+
+#: gdata/services/calendar/gdata-calendar-service.c:563
+#: gdata/services/calendar/gdata-calendar-service.c:617
+#: gdata/services/calendar/gdata-calendar-service.c:677
+#: gdata/services/calendar/gdata-calendar-service.c:739
+msgid "You must be authenticated to query your own calendars."
+msgstr ""
+"Необходима е идентификация, за да правите заявки за собствените си календари."
+
+#: gdata/services/contacts/gdata-contacts-service.c:270
+#: gdata/services/contacts/gdata-contacts-service.c:324
+msgid "You must be authenticated to query contacts."
+msgstr "Необходима е идентификация, за да правите заявки за контакти."
+
+#: gdata/services/contacts/gdata-contacts-service.c:441
+#: gdata/services/contacts/gdata-contacts-service.c:495
+msgid "You must be authenticated to query contact groups."
+msgstr "Необходима е идентификация, за да правите заявки за групи от контакти."
+
+#: gdata/services/contacts/gdata-contacts-service.c:534
+msgid "The group has already been inserted."
+msgstr "Групата вече е била добавена."
+
+#: gdata/services/contacts/gdata-contacts-service.c:541
+msgid "You must be authenticated to insert a group."
+msgstr "Необходима е идентификация, за да добавяте групи."
+
+#: gdata/services/documents/gdata-documents-document.c:410
+msgid "You must be authenticated to download documents."
+msgstr "Необходима е идентификация, за да изтегляте документи."
+
+#: gdata/services/documents/gdata-documents-document.c:419
+#, c-format
+msgid "Unknown or unsupported document export format ‘%s’."
+msgstr "Непознат или неподдържан формат за изнасяне „%s“."
+
+#. Translators: the parameter is the invalid value of visibility variable
+#: gdata/services/documents/gdata-documents-entry.c:954
+#, c-format
+msgid "Invalid visibility: unrecognized value ‘%s’"
+msgstr "Неправилна видимост, непозната стойност „%s“"
+
+#: gdata/services/documents/gdata-documents-service.c:582
+#: gdata/services/documents/gdata-documents-service.c:635
+msgid "You must be authenticated to query documents."
+msgstr "Необходима е идентификация, за да правите заявки за документи."
+
+#: gdata/services/documents/gdata-documents-service.c:681
+#: gdata/services/documents/gdata-documents-service.c:732
+msgid "You must be authenticated to query drives."
+msgstr "Необходима е идентификация, за да правите заявки за устройства."
+
+#: gdata/services/documents/gdata-documents-service.c:793
+msgid "You must be authenticated to upload documents."
+msgstr "Необходима е идентификация, за да качвате документи."
+
+#: gdata/services/documents/gdata-documents-service.c:799
+msgid "The document has already been uploaded."
+msgstr "Документът вече е бил качен."
+
+#: gdata/services/documents/gdata-documents-service.c:944
+msgid "You must be authenticated to update documents."
+msgstr "Необходима е идентификация, за да обновявате документи."
+
+#: gdata/services/documents/gdata-documents-service.c:1111
+#, c-format
+msgid ""
+"The content type of the supplied document (‘%s’) could not be recognized."
+msgstr ""
+"Неуспешно разпознаване на вида на съдържанието на предоставения документ "
+"(„%s“)."
+
+#: gdata/services/documents/gdata-documents-service.c:1151
+msgid "You must be authenticated to copy documents."
+msgstr "Необходима е идентификация, за да копирате документи."
+
+#: gdata/services/documents/gdata-documents-service.c:1170
+#: gdata/services/documents/gdata-documents-service.c:1535
+msgid "Parent folder not found"
+msgstr "Родителската папка не е открита"
+
+#: gdata/services/documents/gdata-documents-service.c:1304
+msgid "You must be authenticated to insert or move documents and folders."
+msgstr ""
+"Необходима е идентификация, за да вмъквате или местите документи и папки."
+
+#: gdata/services/documents/gdata-documents-service.c:1508
+msgid "You must be authenticated to move documents and folders."
+msgstr "Необходима е идентификация, за да местите документи и папки."
+
+#: gdata/services/freebase/gdata-freebase-service.c:497
+#, c-format
+msgid "Property ‘%s’ does not hold an image"
+msgstr "Свойството „%s“ не съдържа изображение"
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:244
+msgid "You must specify a username or be authenticated to query a user."
+msgstr "Необходима е идентификация, за да правите заявки за потребител."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:372
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:432
+msgid "Query parameter not allowed for albums."
+msgstr "Заявката за албуми не може да има параметър."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:379
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:444
+msgid "You must specify a username or be authenticated to query all albums."
+msgstr "Необходима е идентификация, за да правите заявки за всички албуми."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:463
+msgid "The album did not have a feed link."
+msgstr "Липсва списък с емисии за албума."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:619
+msgid "You must be authenticated to upload a file."
+msgstr "Необходима е идентификация, за да качвате файлове."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:695
+msgid "The album has already been inserted."
+msgstr "Албумът вече е бил добавен."
+
+#: gdata/services/picasaweb/gdata-picasaweb-service.c:702
+msgid "You must be authenticated to insert an album."
+msgstr "Необходима е идентификация, за да добавяте албуми."
+
+#: gdata/services/tasks/gdata-tasks-service.c:330
+#: gdata/services/tasks/gdata-tasks-service.c:384
 msgid "You must be authenticated to query all tasklists."
 msgstr ""
 "Необходима е идентификация, за да правите заявки за всички списъци със "
 "задачи."
 
-#: ../gdata/services/tasks/gdata-tasks-service.c:430
-#: ../gdata/services/tasks/gdata-tasks-service.c:487
+#: gdata/services/tasks/gdata-tasks-service.c:431
+#: gdata/services/tasks/gdata-tasks-service.c:491
 msgid "You must be authenticated to query your own tasks."
 msgstr ""
 "Необходима е идентификация, за да правите заявки за собствените си списъци "
 "със задачи."
 
-#: ../gdata/services/youtube/gdata-youtube-service.c:457
+#: gdata/services/youtube/gdata-youtube-service.c:547
 #, c-format
-msgid "This service is not available at the moment."
-msgstr "В момента услугата е недостъпна."
+msgid ""
+"You have exceeded your entry quota. Please delete some entries and try again."
+msgstr ""
+"Превишили сте лимита си за записи. Изтрийте някои записи и опитайте отново."
 
 #. Translators: the parameter is a URI.
-#: ../gdata/services/youtube/gdata-youtube-service.c:462
+#: gdata/services/youtube/gdata-youtube-service.c:564
 #, c-format
 msgid ""
 "Your Google Account must be associated with a YouTube channel to do this. "
@@ -547,36 +617,31 @@ msgstr ""
 "Регистрацията ви за Google трябва да е свързана с канала ви в YouTube. За да "
 "направите това, посетете „%s“."
 
-#. Translators: the first parameter is an error code, which is a coded string.
-#. * The second parameter is an error domain, which is another coded string.
-#. * The third parameter is the location of the error, which is either a URI or an XPath.
-#: ../gdata/services/youtube/gdata-youtube-service.c:467
-#: ../gdata/services/youtube/gdata-youtube-service.c:488
-#: ../gdata/services/youtube/gdata-youtube-service.c:494
-#, c-format
-msgid ""
-"Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
-msgstr ""
-"Беше върнат неизвестен код за грешка „%1$s“ за местоположението „%3$s“ към "
-"домейна „%2$s“."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:481
-#, c-format
-msgid ""
-"You have exceeded your entry quota. Please delete some entries and try again."
-msgstr ""
-"Превишили сте лимита си за записи. Изтрийте някои записи и опитайте отново."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:512
-#, c-format
-msgid "Unknown and unparsable error received."
-msgstr "Получи се неизвестна грешка, която не може да бъде обработена."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:776
-#: ../gdata/services/youtube/gdata-youtube-service.c:833
-msgid "The video did not have a related videos <link>."
-msgstr "Липсва връзка (<link>) за сходни видео клипове за клипа."
-
-#: ../gdata/services/youtube/gdata-youtube-service.c:895
+#: gdata/services/youtube/gdata-youtube-service.c:1030
 msgid "You must be authenticated to upload a video."
 msgstr "Необходима е идентификация, за да качвате видео клипове."
+
+#~ msgid "A '%s' element was missing required content."
+#~ msgstr "Липсва задължителното съдържание за елемент „%s“."
+
+#~ msgid "The content of a '%s' element (\"%s\") was not in ISO 8601 format."
+#~ msgstr ""
+#~ "Съдържанието („%2$s“) на елемент от вида „%1$s“ не е във формат ISO 8601."
+
+#~ msgid "The calendar did not have a content URI."
+#~ msgstr "Липсва адрес за съдържанието на календара."
+
+#~ msgid "This service is not available at the moment."
+#~ msgstr "В момента услугата е недостъпна."
+
+#~ msgid ""
+#~ "Unknown error code \"%s\" in domain \"%s\" received with location \"%s\"."
+#~ msgstr ""
+#~ "Беше върнат неизвестен код за грешка „%1$s“ за местоположението „%3$s“ "
+#~ "към домейна „%2$s“."
+
+#~ msgid "Unknown and unparsable error received."
+#~ msgstr "Получи се неизвестна грешка, която не може да бъде обработена."
+
+#~ msgid "The video did not have a related videos <link>."
+#~ msgstr "Липсва връзка (<link>) за сходни видео клипове за клипа."
