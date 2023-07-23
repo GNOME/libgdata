@@ -145,7 +145,7 @@ libgdata_lib = shared_library(
 
 libgdata_dep = declare_dependency(
   sources: enum_headers,
-  include_directories: gdata_inc_dir,
+  include_directories: top_inc_dir,
   dependencies: gdata_deps,
   link_with: libgdata_lib,
 )

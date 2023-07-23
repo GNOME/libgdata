@@ -43,7 +43,7 @@ foreach test_name, extra_args: tests
     test_name,
     test_name + '.c',
     c_args: common_c_args + ['-DG_LOG_DOMAIN="@0@"'.format(gdata_name)],
-    include_directories: top_inc_dir,
+    include_directories: gdata_inc_dir,
     dependencies: common_deps + extra_args.get('dependencies', []),
     sources: tests_sources,
     install: install_tests and not should_fail,

@@ -37,9 +37,8 @@ gdata_include_subdir = gdata_name / 'gdata'
 current = 28
 revision = 0
 age = 6
-gdata_soversion = '@0@.@1@.@2@'.format(current - age, age, revision)
 
-top_inc_dir = include_directories('.')
+gdata_soversion = '@0@.@1@.@2@'.format(current - age, age, revision)
 
 ########################
 # Configuration begins #
@@ -60,14 +59,12 @@ pkgconfig = import('pkgconfig')
 # Internationalisation support
 i18n = import('i18n')
 
-build_root = meson.current_build_dir()
-
 # FIXME: Work around the namespace being incorrectly detected
 # by glib-mkenums. This needs to be fixed by changing the
 # namespace in libgdata. See !6.
 sed = find_program('sed')
-enum_source_cmd = [sed, '-e', 's/-in//', '-e', 's/g_data/gdata/', build_root / '@INPUT@']
-enum_header_cmd = [sed, '-e', 's/g_data/gdata/', '-e', 's/G_TYPE_DATA/GDATA_TYPE/', build_root / '@INPUT@']
+enum_source_cmd = [sed, '-e', 's/-in//', '-e', 's/g_data/gdata/', '@INPUT@']
+enum_header_cmd = [sed, '-e', 's/g_data/gdata/', '-e', 's/G_TYPE_DATA/GDATA_TYPE/', '@INPUT@']
 
 top_inc_dir = include_directories('.')
 

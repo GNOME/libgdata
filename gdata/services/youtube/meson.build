@@ -43,7 +43,7 @@ sources += custom_target(
   enums + '.c',
   input: enums_in[0],
   output: enums + '.c',
-  command: [sed, '-e', 's/-in//', '-e', 's/g_data_you_tube/gdata_youtube/', build_root / '@INPUT@'],
+  command: [sed, '-e', 's/-in//', '-e', 's/g_data_you_tube/gdata_youtube/', '@INPUT@'],
   capture: true,
 )
 
@@ -51,7 +51,7 @@ enum_headers += custom_target(
   enums + '.h',
   input: enums_in[1],
   output: enums + '.h',
-  command: [sed, '-e', 's/g_data_you_tube/gdata_youtube/', '-e', 's/G_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/', build_root / '@INPUT@'],
+  command: [sed, '-e', 's/g_data_you_tube/gdata_youtube/', '-e', 's/G_TYPE_DATA_YOU_TUBE/GDATA_TYPE_YOUTUBE/', '@INPUT@'],
   capture: true,
   install: true,
   install_dir: gdata_includedir / include_subdir,
