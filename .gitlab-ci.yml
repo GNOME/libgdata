@@ -8,7 +8,7 @@ variables:
     libxml2-devel
     gtk3-devel
     libsoup-devel
-    gcr-devel
+    gcr3-devel
     gnome-online-accounts-devel
     uhttpmock-devel
     gtk-doc
