@@ -224,8 +224,8 @@
 						disclosure of passwords, etc. in bug reports. Currently, this is implemented using a fixed set of
 						search patterns, so it's possible that certain bits of private information will not be redacted; any
 						such occurrence is a bug which should be reported on
-						<ulink type="http" url="https://bugzilla.gnome.org/enter_bug.cgi?product=libgdata">GNOME
-						Bugzilla</ulink>.</para>
+						<ulink type="http" url="https://gitlab.gnome.org/GNOME/libgdata/-/issues/">GNOME
+						GitLab</ulink>.</para>
 				</listitem>
 			</itemizedlist>
 
